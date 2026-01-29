@@ -46,7 +46,7 @@ export default function SignalsPage() {
             <Button variant="ghost" size="sm">
               Refresh
             </Button>
-            <Button variant="primary" size="sm">
+            <Button variant="default" size="sm">
               Add Source
             </Button>
           </div>
@@ -81,7 +81,7 @@ export default function SignalsPage() {
             Add news feeds, job board scrapers, and funding announcement monitors to get started.
           </p>
           <div className="flex flex-col sm:flex-row items-center gap-3">
-            <Button variant="primary">
+            <Button variant="default">
               Configure Signal Sources
             </Button>
             <Button variant="secondary">

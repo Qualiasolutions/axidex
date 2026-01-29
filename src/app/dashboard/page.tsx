@@ -61,7 +61,7 @@ export default function DashboardPage() {
             <p className="text-sm text-[var(--text-tertiary)] max-w-sm mb-8">
               Configure your signal sources to start detecting buying signals from news, job boards, and funding announcements.
             </p>
-            <Button variant="primary" size="sm">
+            <Button variant="default" size="sm">
               Add Signal Source
             </Button>
           </div>
