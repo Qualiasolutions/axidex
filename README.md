@@ -1,36 +1,88 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Axidex
 
-## Getting Started
+Signal intelligence platform for sales teams. Detects buying signals and delivers AI-generated outreach.
 
-First, run the development server:
+**Live:** https://axidex.vercel.app
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## What It Does
+
+Axidex monitors for buying signals across:
+- Hiring announcements
+- Funding events
+- Company expansions
+- Leadership changes
+- Product launches
+- Partnerships
+
+When signals are detected, AI generates personalized outreach emails ready for your sales team.
+
+## Stack
+
+- **Framework:** Next.js 16 + React 19
+- **Database:** Supabase
+- **Styling:** Tailwind CSS 4
+- **Animation:** Motion (Framer Motion)
+- **Deployment:** Vercel (auto-deploy on push)
+
+## Project Structure
+
+```
+src/
+├── app/
+│   ├── page.tsx              # Landing page
+│   ├── layout.tsx            # Root layout
+│   ├── globals.css           # Design system (CSS variables)
+│   └── dashboard/
+│       ├── page.tsx          # Overview
+│       ├── layout.tsx        # Dashboard shell
+│       └── signals/page.tsx  # Signals list
+├── components/
+│   ├── ui/                   # Button, Badge, Motion primitives
+│   ├── layout/               # Sidebar, Header
+│   ├── dashboard/            # Stats cards
+│   └── signals/              # Signal cards
+├── lib/
+│   ├── utils.ts              # cn(), date formatting
+│   └── supabase/             # Client/server Supabase setup
+└── types/
+    └── index.ts              # Signal, User, Email types
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Design System
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Premium minimalist light theme with warm orange accent:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```css
+--bg-primary: #ffffff
+--accent: #ea580c
+--text-primary: #171717
+```
 
-## Learn More
+Typography-focused, icon-minimal aesthetic.
 
-To learn more about Next.js, take a look at the following resources:
+## Development
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm install
+npm run dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Environment Variables
 
-## Deploy on Vercel
+Copy `.env.example` to `.env.local`:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+OPENAI_API_KEY=
+ANTHROPIC_API_KEY=
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Deployment
+
+Auto-deploys to Vercel on push to `main`.
+
+Manual deploy:
+```bash
+vercel --prod
+```
