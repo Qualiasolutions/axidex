@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PULSE - Signal Intelligence Platform | Development Costs</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --navy-blue: #1e293b;
+            --dark-blue: #0f172a;
+            --teal-primary: #00a4ac;
+            --teal-light: #00c4cc;
+            --teal-dark: #008a91;
+            --bg-light: #f8fafc;
+            --text-primary: #334155;
+            --text-secondary: #64748b;
+            --white: #ffffff;
+            --border: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, var(--navy-blue) 0%, var(--dark-blue) 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: var(--white);
+            padding: 2rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-image {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+        }
+
+        .company-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .company-name {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--navy-blue);
+            margin-bottom: 0.2rem;
+        }
+
+        .company-tagline {
+            font-size: 0.9rem;
+            color: var(--teal-primary);
+            font-weight: 500;
+        }
+
+        .project-info {
+            text-align: right;
+        }
+
+        .project-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--navy-blue);
+            margin-bottom: 0.3rem;
+        }
+
+        .project-subtitle {
+            color: var(--teal-primary);
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .client-badge {
+            display: inline-block;
+            background: var(--bg-light);
+            padding: 0.5rem 1rem;
+            border-left: 3px solid var(--teal-primary);
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--navy-blue);
+            font-weight: 600;
+        }
+
+        .main-content {
+            padding: 3rem 0;
+        }
+
+        .intro-section {
+            background: var(--white);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .intro-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--navy-blue);
+            margin-bottom: 1rem;
+        }
+
+        .intro-text {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+        }
+
+        .feature-item::before {
+            content: "✓";
+            color: var(--teal-primary);
+            font-weight: bold;
+        }
+
+        .cost-overview {
+            background: var(--white);
+            margin: 2rem 0;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .total-cost {
+            text-align: center;
+            padding: 2rem 0;
+            border-bottom: 2px solid var(--teal-primary);
+            margin-bottom: 2rem;
+        }
+
+        .total-amount {
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: var(--navy-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .total-label {
+            color: var(--teal-primary);
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .cost-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .cost-category {
+            background: var(--white);
+            border-left: 4px solid var(--teal-primary);
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+
+        .cost-category:hover {
+            box-shadow: 0 4px 25px rgba(0, 164, 172, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .category-header {
+            background: var(--bg-light);
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .category-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--navy-blue);
+        }
+
+        .category-total {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--teal-primary);
+        }
+
+        .category-content {
+            padding: 1rem 1.5rem;
+        }
+
+        .service-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .service-item:last-child {
+            border-bottom: none;
+        }
+
+        .service-name {
+            font-weight: 600;
+            color: var(--navy-blue);
+            font-size: 0.95rem;
+        }
+
+        .service-details {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.2rem;
+        }
+
+        .service-cost {
+            font-weight: 700;
+            color: var(--teal-dark);
+            font-size: 1rem;
+        }
+
+        .timeline-section {
+            background: var(--white);
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .timeline-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--navy-blue);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .timeline-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .timeline-item {
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--bg-light);
+            border-top: 3px solid var(--teal-primary);
+        }
+
+        .timeline-week {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--teal-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-desc {
+            font-size: 0.95rem;
+            color: var(--text-primary);
+        }
+
+        .footer-note {
+            background: var(--navy-blue);
+            color: var(--white);
+            padding: 1.5rem;
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 0.9rem;
+        }
+
+        .footer-note strong {
+            color: var(--teal-light);
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+            .project-info {
+                text-align: center;
+            }
+            .feature-list {
+                grid-template-columns: 1fr;
+            }
+            .timeline-grid {
+                grid-template-columns: 1fr;
+            }
+            .cost-breakdown {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo-section">
+                    <img src="https://images.squarespace-cdn.com/content/v1/65bf52f873aac538961445c5/19d16cc5-aa83-437c-9c2a-61de5268d5bf/Untitled+design+-+2025-01-19T070746.544.png" alt="Qualia Solutions" class="logo-image">
+                    <div class="company-info">
+                        <div class="company-name">QUALIA SOLUTIONS</div>
+                        <div class="company-tagline">Where Consciousness Meets Technology</div>
+                    </div>
+                </div>
+                <div class="project-info">
+                    <div class="project-title">PULSE</div>
+                    <div class="project-subtitle">Signal Intelligence Platform</div>
+                    <div class="client-badge">Prepared for Glluztech</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            
+            <div class="intro-section">
+                <div class="intro-title">What is PULSE?</div>
+                <div class="intro-text">
+                    PULSE is an AI-powered lead intelligence platform that automatically finds buying signals 
+                    (hiring, funding, expansion news) and delivers them to your sales team with ready-to-send emails.
+                </div>
+                <div class="feature-list">
+                    <div class="feature-item">Scrapes news, job boards & PR feeds in real-time</div>
+                    <div class="feature-item">AI-powered buyer intent classification</div>
+                    <div class="feature-item">Auto-generates personalized outreach emails</div>
+                    <div class="feature-item">Delivers via dashboard, Slack, or email</div>
+                </div>
+            </div>
+
+            <div class="cost-overview">
+                <div class="total-cost">
+                    <div class="total-amount">€2,050</div>
+                    <div class="total-label">Total Estimated Investment</div>
+                </div>
+
+                <div class="cost-breakdown">
+                    
+                    <div class="cost-category">
+                        <div class="category-header">
+                            <div class="category-title">Hosting & Infrastructure</div>
+                            <div class="category-total">€270</div>
+                        </div>
+                        <div class="category-content">
+                            <div class="service-item">
+                                <div>
+                                    <div class="service-name">Vercel Pro</div>
+                                    <div class="service-details">Frontend hosting & serverless</div>
+                                </div>
+                                <div class="service-cost">€20</div>
+                            </div>
+                            <div class="service-item">
+                                <div>
+                                    <div class="service-name">Vercel Static IP Add-on</div>
+                                    <div class="service-details">Dedicated IP for proxy whitelisting</div>
+                                </div>
+                                <div class="service-cost">€100</div>
+                            </div>
+                            <div class="service-item">
+                                <div>
+                                    <div class="service-name">Supabase Pro</div>
+                                    <div class="service-details">PostgreSQL + Auth + Storage</div>
+                                </div>
+                                <div class="service-cost">€25</div>
+                            </div>
+                            <div class="service-item">
+                                <div>
+                                    <div class="service-name">Railway Starter</div>
+                                    <div class="service-details">Python backend hosting</div>
+                                </div>
+                                <div class="service-cost">€50</div>
+                            </div>
+                            <div class="service-item">
+                                <div>
+                                    <div class="service-name">Upstash Redis</div>
+                                    <div class="service-details">Rate limiting & job queues</div>
+                                </div>
+                                <div class="service-cost">€75</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cost-category">
+                        <div class="category-header">
+                            <div class="category-title">AI & LLM Services</div>
+                            <div class="category-total">€530</div>
+                        </div>
+                        <div class="category-content">
+                            <div class="service-item">
+                                <div>
+                                    <div class="service-name">OpenAI API Credits</div>
+                                    <div class="service-details">GPT-4o for entity extraction</div>
+                                </div>
+                                <div class="service-cost">€200</div>
+                            </div>
+                            <div class="service-item">
+                                <div>
+                                    <div class="service-name">Anthropic API Credits</div>
+                                    <div class="service-details">Claude 3.5 Sonnet for email drafts</div>
+                                </div>
+                                <div class="service-cost">€150</div>
+                            </div>
+                            <div class="service-item">
+                                <div>
+                                    <div class="service-name">Pinecone Starter</div>
+                                    <div class="service-details">Vector DB for deduplication</div>
+                                </div>
+                                <div class="service-cost">€70</div>
+                            </div>
+                            <div class="service-item">
+                                <div>
+                                    <div class="service-name">LangSmith Plus</div>
+                                    <div class="service-details">LLM observability & prompt tracing</div>
+                                </div>
+                                <div class="service-cost">€110</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cost-category">
+                        <div class="category-header">
+                            <div class="category-title">Data Collection & Proxies</div>
+                            <div class="category-total">€400</div>
+                        </div>
+                        <div class="category-content">
+                            <div class="service-item">
+                                <div>
+                                    <div class="service-name">BrightData Residential</div>
+                                    <div class="service-details">10GB residential proxy bandwidth</div>
+                                </div>
+                                <div class="service-cost">€150</div>
+                            </div>
+                            <div class="service-item">
+                                <div>
+                                    <div class="service-name">ScrapingBee Startup</div>
+                                    <div class="service-details">150k API credits for JS rendering</div>
+                                </div>
+                                <div class="service-cost">€130</div>
+                            </div>
+                            <div class="service-item">
+                                <div>
+                                    <div class="service-name">Browserless Scale</div>
+                                    <div class="service-details">Headless Chrome automation</div>
+                                </div>
+                                <div class="service-cost">€120</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cost-category">
+                        <div class="category-header">
+                            <div class="category-title">Notifications & Email</div>
+                            <div class="category-total">€100</div>
+                        </div>
+                        <div class="category-content">
+                            <div class="service-item">
+                                <div>
+                                    <div class="service-name">SendGrid Essentials</div>
+                                    <div class="service-details">Email delivery (50k emails/mo)</div>
+                                </div>
+                                <div class="service-cost">€20</div>
+                            </div>
+                            <div class="service-item">
+                                <div>
+                                    <div class="service-name">Resend Pro</div>
+                                    <div class="service-details">Transactional email API</div>
+                                </div>
+                                <div class="service-cost">€30</div>
+                            </div>
+                            <div class="service-item">
+                                <div>
+                                    <div class="service-name">Knock Starter</div>
+                                    <div class="service-details">Multi-channel notifications</div>
+                                </div>
+                                <div class="service-cost">€50</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cost-category">
+                        <div class="category-header">
+                            <div class="category-title">Monitoring & Security</div>
+                            <div class="category-total">€150</div>
+                        </div>
+                        <div class="category-content">
+                            <div class="service-item">
+                                <div>
+                                    <div class="service-name">Sentry Team</div>
+                                    <div class="service-details">Error tracking & performance</div>
+                                </div>
+                                <div class="service-cost">€30</div>
+                            </div>
+                            <div class="service-item">
+                                <div>
+                                    <div class="service-name">Cloudflare Pro</div>
+                                    <div class="service-details">DDoS protection + CDN</div>
+                                </div>
+                                <div class="service-cost">€25</div>
+                            </div>
+                            <div class="service-item">
+                                <div>
+                                    <div class="service-name">Better Stack (Logtail)</div>
+                                    <div class="service-details">Log management & uptime</div>
+                                </div>
+                                <div class="service-cost">€35</div>
+                            </div>
+                            <div class="service-item">
+                                <div>
+                                    <div class="service-name">1Password Teams</div>
+                                    <div class="service-details">API keys & secrets vault</div>
+                                </div>
+                                <div class="service-cost">€60</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cost-category">
+                        <div class="category-header">
+                            <div class="category-title">Development & Tooling</div>
+                            <div class="category-total">€600</div>
+                        </div>
+                        <div class="category-content">
+                            <div class="service-item">
+                                <div>
+                                    <div class="service-name">GitHub Team</div>
+                                    <div class="service-details">Repos + Actions CI/CD minutes</div>
+                                </div>
+                                <div class="service-cost">€45</div>
+                            </div>
+                            <div class="service-item">
+                                <div>
+                                    <div class="service-name">Cursor Pro (3 months)</div>
+                                    <div class="service-details">AI-powered IDE for development</div>
+                                </div>
+                                <div class="service-cost">€60</div>
+                            </div>
+                            <div class="service-item">
+                                <div>
+                                    <div class="service-name">Claude Pro (3 months)</div>
+                                    <div class="service-details">AI assistant for coding</div>
+                                </div>
+                                <div class="service-cost">€60</div>
+                            </div>
+                            <div class="service-item">
+                                <div>
+                                    <div class="service-name">v0.dev Pro</div>
+                                    <div class="service-details">UI component generation</div>
+                                </div>
+                                <div class="service-cost">€40</div>
+                            </div>
+                            <div class="service-item">
+                                <div>
+                                    <div class="service-name">Linear Standard</div>
+                                    <div class="service-details">Project & issue tracking</div>
+                                </div>
+                                <div class="service-cost">€40</div>
+                            </div>
+                            <div class="service-item">
+                                <div>
+                                    <div class="service-name">Neon Pro</div>
+                                    <div class="service-details">Serverless Postgres for dev/staging</div>
+                                </div>
+                                <div class="service-cost">€20</div>
+                            </div>
+                            <div class="service-item">
+                                <div>
+                                    <div class="service-name">Domain + SSL</div>
+                                    <div class="service-details">pulse.glluztech.com or custom</div>
+                                </div>
+                                <div class="service-cost">€15</div>
+                            </div>
+                            <div class="service-item">
+                                <div>
+                                    <div class="service-name">Development Labor</div>
+                                    <div class="service-details">3-week sprint implementation</div>
+                                </div>
+                                <div class="service-cost">€320</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="timeline-section">
+                <div class="timeline-title">Development Timeline</div>
+                <div class="timeline-grid">
+                    <div class="timeline-item">
+                        <div class="timeline-week">Week 1</div>
+                        <div class="timeline-desc">Core scrapers operational (news + job boards)</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-week">Week 2</div>
+                        <div class="timeline-desc">AI pipeline extracting & storing signals</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-week">Week 3</div>
+                        <div class="timeline-desc">Dashboard + notifications live</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-note">
+                <strong>Next Steps:</strong> Confirm scope and target signal sources → Finalize requirements → Kick off development
+            </div>
+
+        </div>
+    </main>
+</body>
+</html>
