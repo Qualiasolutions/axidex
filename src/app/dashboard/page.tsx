@@ -3,7 +3,7 @@
 import { Header } from "@/components/layout/header";
 import { StatsCard } from "@/components/dashboard/stats-card";
 import { Button } from "@/components/ui/button";
-import { Zap, TrendingUp, Target, Mail, Plus, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
 
@@ -11,43 +11,39 @@ export default function DashboardPage() {
   return (
     <>
       <Header title="Overview" subtitle="Your signal intelligence at a glance" />
-      <main className="p-4 sm:p-6 lg:p-8 space-y-8">
+      <main className="p-6 lg:p-8 space-y-8">
         {/* Stats Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
           <StatsCard
             title="Total Signals"
             value="—"
-            icon={Zap}
             index={0}
           />
           <StatsCard
             title="High Priority"
             value="—"
-            icon={Target}
             index={1}
           />
           <StatsCard
             title="Conversion Rate"
             value="—"
-            icon={TrendingUp}
             index={2}
           />
           <StatsCard
             title="Emails Drafted"
             value="—"
-            icon={Mail}
             index={3}
           />
         </div>
 
         {/* Empty State - Recent Signals */}
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
+          initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.2 }}
-          className="bg-[var(--bg-secondary)] rounded-xl border border-[var(--border-subtle)]"
+          className="bg-[var(--bg-primary)] rounded-xl border border-[var(--border-subtle)]"
         >
-          <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--border-subtle)]">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--border-subtle)]">
             <h2 className="text-sm font-medium text-[var(--text-primary)]">Recent Signals</h2>
             <Link
               href="/dashboard/signals"
@@ -58,18 +54,14 @@ export default function DashboardPage() {
           </div>
 
           {/* Empty state content */}
-          <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
-            <div className="w-12 h-12 rounded-xl bg-[var(--accent-muted)] flex items-center justify-center mb-4">
-              <Zap className="w-6 h-6 text-[var(--accent)]" />
-            </div>
+          <div className="flex flex-col items-center justify-center py-20 px-6 text-center">
             <h3 className="text-base font-medium text-[var(--text-primary)] mb-2">
               No signals yet
             </h3>
-            <p className="text-sm text-[var(--text-tertiary)] max-w-sm mb-6">
+            <p className="text-sm text-[var(--text-tertiary)] max-w-sm mb-8">
               Configure your signal sources to start detecting buying signals from news, job boards, and funding announcements.
             </p>
-            <Button variant="primary" size="sm" className="gap-2">
-              <Plus className="w-4 h-4" />
+            <Button variant="primary" size="sm">
               Add Signal Source
             </Button>
           </div>
@@ -77,7 +69,7 @@ export default function DashboardPage() {
 
         {/* Quick Actions */}
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
+          initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.3 }}
           className="grid grid-cols-1 sm:grid-cols-3 gap-4"
@@ -98,11 +90,11 @@ export default function DashboardPage() {
               description: "Set up Slack, email, or webhook notifications",
               href: "/dashboard/settings",
             },
-          ].map((action, index) => (
+          ].map((action) => (
             <Link
               key={action.title}
               href={action.href}
-              className="group bg-[var(--bg-secondary)] rounded-xl p-5 border border-[var(--border-subtle)] hover:border-[var(--border-default)] transition-colors"
+              className="group bg-[var(--bg-primary)] rounded-xl p-5 border border-[var(--border-subtle)] hover:border-[var(--border-default)] transition-colors"
             >
               <h3 className="text-sm font-medium text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors">
                 {action.title}

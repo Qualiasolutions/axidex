@@ -3,7 +3,6 @@
 import { Header } from "@/components/layout/header";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Filter, Plus, Zap, RefreshCw } from "lucide-react";
 import { motion } from "motion/react";
 import type { SignalType } from "@/types";
 
@@ -20,7 +19,7 @@ export default function SignalsPage() {
   return (
     <>
       <Header title="Signals" subtitle="Real-time buying signals from your target accounts" />
-      <main className="p-4 sm:p-6 lg:p-8 space-y-6">
+      <main className="p-6 lg:p-8 space-y-6">
         {/* Filters */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
@@ -29,15 +28,14 @@ export default function SignalsPage() {
           className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
         >
           <div className="flex items-center gap-2 flex-wrap">
-            <Button variant="secondary" size="sm" className="gap-2">
-              <Filter className="w-3.5 h-3.5" />
+            <Button variant="secondary" size="sm">
               All Types
             </Button>
             <div className="hidden sm:flex items-center gap-1">
               {signalFilters.map((filter) => (
                 <button
                   key={filter.type}
-                  className="px-2.5 py-1.5 text-xs font-medium text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-elevated)] rounded-md transition-colors"
+                  className="px-2.5 py-1.5 text-xs font-medium text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] rounded-md transition-colors"
                 >
                   {filter.label}
                 </button>
@@ -45,12 +43,10 @@ export default function SignalsPage() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="sm" className="gap-2">
-              <RefreshCw className="w-3.5 h-3.5" />
+            <Button variant="ghost" size="sm">
               Refresh
             </Button>
-            <Button variant="primary" size="sm" className="gap-2">
-              <Plus className="w-3.5 h-3.5" />
+            <Button variant="primary" size="sm">
               Add Source
             </Button>
           </div>
@@ -72,24 +68,20 @@ export default function SignalsPage() {
 
         {/* Empty state */}
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
+          initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.1 }}
-          className="flex flex-col items-center justify-center py-20 px-6 text-center bg-[var(--bg-secondary)] rounded-xl border border-[var(--border-subtle)]"
+          className="flex flex-col items-center justify-center py-24 px-6 text-center bg-[var(--bg-primary)] rounded-xl border border-[var(--border-subtle)]"
         >
-          <div className="w-14 h-14 rounded-2xl bg-[var(--accent-muted)] flex items-center justify-center mb-5">
-            <Zap className="w-7 h-7 text-[var(--accent)]" />
-          </div>
           <h3 className="text-lg font-medium text-[var(--text-primary)] mb-2">
             No signals detected
           </h3>
           <p className="text-sm text-[var(--text-tertiary)] max-w-md mb-8 leading-relaxed">
-            PULSE will automatically detect buying signals when you configure your signal sources.
+            Axidex will automatically detect buying signals when you configure your signal sources.
             Add news feeds, job board scrapers, and funding announcement monitors to get started.
           </p>
           <div className="flex flex-col sm:flex-row items-center gap-3">
-            <Button variant="primary" className="gap-2">
-              <Plus className="w-4 h-4" />
+            <Button variant="primary">
               Configure Signal Sources
             </Button>
             <Button variant="secondary">

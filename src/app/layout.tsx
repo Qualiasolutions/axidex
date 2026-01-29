@@ -13,9 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "PULSE - Signal Intelligence Platform",
-  description: "AI-powered lead intelligence platform that finds buying signals and delivers them to your sales team with ready-to-send emails.",
-  keywords: ["sales signals", "lead intelligence", "AI sales", "buying signals", "sales automation"],
+  title: "Axidex",
+  description: "Signal intelligence for modern sales teams.",
 };
 
 export default function RootLayout({

@@ -11,13 +11,13 @@ export function Badge({ children, variant = "default", className }: BadgeProps) 
   return (
     <span
       className={cn(
-        "inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-medium tracking-wide uppercase",
+        "inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium",
         {
-          "bg-[var(--bg-elevated)] text-[var(--text-tertiary)] border border-[var(--border-subtle)]": variant === "default",
-          "bg-[var(--success)]/10 text-[var(--success)] border border-[var(--success)]/20": variant === "success",
-          "bg-[var(--warning)]/10 text-[var(--warning)] border border-[var(--warning)]/20": variant === "warning",
-          "bg-[var(--danger)]/10 text-[var(--danger)] border border-[var(--danger)]/20": variant === "danger",
-          "bg-[var(--accent-muted)] text-[var(--accent)] border border-[var(--accent-border)]": variant === "accent",
+          "bg-[var(--bg-tertiary)] text-[var(--text-secondary)]": variant === "default",
+          "bg-emerald-50 text-emerald-700": variant === "success",
+          "bg-amber-50 text-amber-700": variant === "warning",
+          "bg-red-50 text-red-700": variant === "danger",
+          "bg-[var(--accent-muted)] text-[var(--accent)]": variant === "accent",
         },
         className
       )}
@@ -31,9 +31,9 @@ const signalTypeConfig: Record<SignalType, { label: string; variant: BadgeProps[
   hiring: { label: "Hiring", variant: "accent" },
   funding: { label: "Funding", variant: "success" },
   expansion: { label: "Expansion", variant: "warning" },
-  partnership: { label: "Partnership", variant: "accent" },
+  partnership: { label: "Partnership", variant: "default" },
   product_launch: { label: "Launch", variant: "success" },
-  leadership_change: { label: "Leadership", variant: "warning" },
+  leadership_change: { label: "Leadership", variant: "default" },
 };
 
 export function SignalTypeBadge({ type }: { type: SignalType }) {
@@ -43,7 +43,7 @@ export function SignalTypeBadge({ type }: { type: SignalType }) {
 
 const priorityConfig: Record<SignalPriority, { label: string; variant: BadgeProps["variant"] }> = {
   high: { label: "High", variant: "danger" },
-  medium: { label: "Med", variant: "warning" },
+  medium: { label: "Medium", variant: "warning" },
   low: { label: "Low", variant: "default" },
 };
 
