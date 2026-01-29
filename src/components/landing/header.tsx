@@ -41,13 +41,17 @@ export function Header() {
 
         {/* Desktop CTA */}
         <div className="hidden md:flex items-center gap-4">
-          <Button variant="ghost" className="text-sm font-medium text-foreground hover:text-accent">
-            Log In
-          </Button>
-          <Button className="group h-10 px-5 bg-accent text-white hover:bg-accent/90 transition-all duration-300 shadow-md">
-            Get Started
-            <ArrowRight className="size-4 ml-1 transition-transform group-hover:translate-x-1" />
-          </Button>
+          <Link href="/login">
+            <Button variant="ghost" className="text-sm font-medium text-foreground hover:text-accent">
+              Log In
+            </Button>
+          </Link>
+          <Link href="/dashboard">
+            <Button className="group h-10 px-5 bg-accent text-white hover:bg-accent/90 transition-all duration-300 shadow-md">
+              Get Started
+              <ArrowRight className="size-4 ml-1 transition-transform group-hover:translate-x-1" />
+            </Button>
+          </Link>
         </div>
 
         {/* Mobile Menu Button */}
@@ -78,13 +82,17 @@ export function Header() {
               </Link>
             ))}
             <div className="flex flex-col gap-3 pt-4 border-t border-border">
-              <Button variant="ghost" className="justify-start text-foreground">
-                Log In
-              </Button>
-              <Button className="bg-accent text-white hover:bg-accent/90">
-                Get Started
-                <ArrowRight className="size-4 ml-1" />
-              </Button>
+              <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
+                <Button variant="ghost" className="justify-start text-foreground w-full">
+                  Log In
+                </Button>
+              </Link>
+              <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)}>
+                <Button className="bg-accent text-white hover:bg-accent/90 w-full">
+                  Get Started
+                  <ArrowRight className="size-4 ml-1" />
+                </Button>
+              </Link>
             </div>
           </nav>
         </div>

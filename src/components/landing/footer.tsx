@@ -107,7 +107,21 @@ export function Footer() {
 
         {/* Bottom Bar */}
         <div className="border-t border-border/50 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-xs text-muted-foreground">© 2026 Axidex Inc. All rights reserved.</p>
+          <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4">
+            <p className="text-xs text-muted-foreground">© 2026 GLLUZ LTD. All rights reserved.</p>
+            <span className="hidden sm:inline text-muted-foreground/30">·</span>
+            <p className="text-xs text-muted-foreground">
+              Powered by{" "}
+              <a
+                href="https://qualiasolutions.co"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-accent hover:underline"
+              >
+                Qualia Solutions
+              </a>
+            </p>
+          </div>
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <span className="size-2 rounded-full bg-green-500 animate-pulse" aria-hidden="true" />
             All systems operational

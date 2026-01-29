@@ -3,8 +3,16 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Building2, Briefcase, TrendingUp } from "lucide-react"
+import { useRouter } from "next/navigation"
 
 export function Hero() {
+  const router = useRouter()
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    router.push("/dashboard")
+  }
+
   return (
     <section className="w-full max-w-7xl px-6 pt-20 pb-32 lg:px-12 flex flex-col lg:flex-row items-center gap-16 relative">
       {/* Background glow */}
@@ -35,7 +43,7 @@ export function Hero() {
         </p>
 
         {/* Email Form */}
-        <form className="flex flex-col sm:flex-row gap-4 mt-2" onSubmit={(e) => e.preventDefault()}>
+        <form className="flex flex-col sm:flex-row gap-4 mt-2" onSubmit={handleSubmit}>
           <div className="relative flex-1 max-w-sm">
             <Input
               type="email"
