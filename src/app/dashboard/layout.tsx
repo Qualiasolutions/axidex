@@ -6,9 +6,12 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-[#0f172a]">
+    <div className="min-h-screen bg-[var(--bg-primary)]">
       <Sidebar />
-      <div className="ml-64">{children}</div>
+      {/* Main content area - responsive margin for sidebar */}
+      <div className="lg:ml-60 min-h-screen transition-all duration-300">
+        {children}
+      </div>
     </div>
   );
 }

@@ -1,64 +1,55 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import {
-  Zap,
-  Mail,
-  Bell,
-  ArrowRight,
-  CheckCircle,
-  Target,
-} from "lucide-react";
+import { Zap, ArrowRight, CheckCircle } from "lucide-react";
+import { motion } from "motion/react";
 
 const features = [
   {
-    icon: Zap,
-    title: "Real-Time Signal Detection",
-    description:
-      "Monitors news, job boards, funding announcements, and PR feeds 24/7 to catch buying signals the moment they happen.",
+    title: "Real-Time Detection",
+    description: "Monitor news, job boards, and funding announcements 24/7.",
   },
   {
-    icon: Target,
-    title: "AI-Powered Intent Classification",
-    description:
-      "Advanced AI classifies signals by buyer intent, helping you prioritize the hottest leads first.",
+    title: "AI Classification",
+    description: "Smart intent scoring prioritizes the hottest leads first.",
   },
   {
-    icon: Mail,
-    title: "Auto-Generated Outreach",
-    description:
-      "Get personalized, ready-to-send emails crafted by AI that reference the specific signal detected.",
+    title: "Auto Outreach",
+    description: "AI-generated emails personalized to each signal.",
   },
   {
-    icon: Bell,
-    title: "Multi-Channel Delivery",
-    description:
-      "Receive signals via dashboard, Slack, Teams, or email - however your team works best.",
+    title: "Multi-Channel",
+    description: "Deliver via dashboard, Slack, Teams, or email.",
   },
 ];
 
 const signalTypes = [
-  { name: "Hiring Signals", description: "New job postings indicating growth" },
-  { name: "Funding Events", description: "Series A, B, C rounds and acquisitions" },
-  { name: "Expansion News", description: "New offices, markets, and territories" },
-  { name: "Leadership Changes", description: "New C-suite and VP appointments" },
-  { name: "Product Launches", description: "New products and feature releases" },
-  { name: "Partnership Announcements", description: "Strategic partnerships and integrations" },
+  "Hiring Signals",
+  "Funding Events",
+  "Expansion News",
+  "Leadership Changes",
+  "Product Launches",
+  "Partnerships",
 ];
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-[#0f172a]">
+    <div className="min-h-screen bg-[var(--bg-primary)]">
       {/* Navigation */}
-      <nav className="border-b border-[#1e293b]">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#00a4ac] to-[#00c4cc] flex items-center justify-center">
-              <Zap className="w-5 h-5 text-white" />
+      <nav className="fixed top-0 left-0 right-0 z-50 border-b border-[var(--border-subtle)] bg-[var(--bg-primary)]/80 backdrop-blur-xl">
+        <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[var(--accent)] to-cyan-400 flex items-center justify-center">
+              <Zap className="w-4 h-4 text-[var(--bg-primary)]" />
             </div>
-            <span className="text-xl font-bold text-white">PULSE</span>
-          </div>
-          <div className="flex items-center gap-4">
-            <Link href="/login" className="text-sm text-[#94a3b8] hover:text-white transition-colors">
+            <span className="text-base font-semibold text-[var(--text-primary)]">PULSE</span>
+          </Link>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/login"
+              className="text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+            >
               Sign In
             </Link>
             <Link href="/dashboard">
@@ -71,152 +62,226 @@ export default function Home() {
       </nav>
 
       {/* Hero */}
-      <section className="pt-24 pb-16 px-6">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#00a4ac]/10 border border-[#00a4ac]/20 text-[#00c4cc] text-sm mb-6">
-            <Zap className="w-4 h-4" />
-            Signal Intelligence Platform
-          </div>
-          <h1 className="text-5xl md:text-6xl font-bold text-white leading-tight">
-            Be First to Every{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00a4ac] to-[#00c4cc]">
-              Sales Opportunity
+      <section className="pt-32 pb-20 px-6">
+        <div className="max-w-3xl mx-auto text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--accent-muted)] border border-[var(--accent-border)] text-[var(--accent)] text-xs font-medium mb-6">
+              <Zap className="w-3 h-3" />
+              Signal Intelligence
+            </div>
+          </motion.div>
+
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="text-4xl sm:text-5xl lg:text-6xl font-semibold text-[var(--text-primary)] leading-[1.1] tracking-tight"
+          >
+            Be first to every
+            <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--accent)] to-cyan-400">
+              sales opportunity
             </span>
-          </h1>
-          <p className="mt-6 text-xl text-[#94a3b8] max-w-2xl mx-auto">
-            PULSE monitors the web for buying signals - hiring, funding, expansion news - and
-            delivers them to your sales team with AI-generated outreach emails.
-          </p>
-          <div className="mt-10 flex items-center justify-center gap-4">
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="mt-6 text-lg text-[var(--text-secondary)] max-w-xl mx-auto leading-relaxed"
+          >
+            PULSE detects buying signals—hiring, funding, expansion—and delivers
+            them with AI-generated outreach emails.
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3"
+          >
             <Link href="/dashboard">
-              <Button variant="primary" size="lg" className="gap-2">
-                Start Free Trial <ArrowRight className="w-4 h-4" />
+              <Button variant="primary" size="lg" className="gap-2 w-full sm:w-auto">
+                Start Free Trial
+                <ArrowRight className="w-4 h-4" />
               </Button>
             </Link>
-            <Button variant="secondary" size="lg">
-              Watch Demo
+            <Button variant="secondary" size="lg" className="w-full sm:w-auto">
+              Book a Demo
             </Button>
-          </div>
-          <div className="mt-12 flex items-center justify-center gap-8 text-sm text-[#64748b]">
-            <div className="flex items-center gap-2">
-              <CheckCircle className="w-4 h-4 text-[#00a4ac]" />
-              No credit card required
-            </div>
-            <div className="flex items-center gap-2">
-              <CheckCircle className="w-4 h-4 text-[#00a4ac]" />
-              14-day free trial
-            </div>
-            <div className="flex items-center gap-2">
-              <CheckCircle className="w-4 h-4 text-[#00a4ac]" />
-              Cancel anytime
-            </div>
-          </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="mt-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-[var(--text-tertiary)]"
+          >
+            {["No credit card", "14-day trial", "Cancel anytime"].map((item) => (
+              <div key={item} className="flex items-center gap-1.5">
+                <CheckCircle className="w-3.5 h-3.5 text-[var(--accent)]" />
+                {item}
+              </div>
+            ))}
+          </motion.div>
         </div>
       </section>
 
       {/* Stats */}
-      <section className="py-16 px-6 border-y border-[#1e293b] bg-[#0f172a]/50">
-        <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
-          {[
-            { value: "50K+", label: "Signals Detected Daily" },
-            { value: "2.5x", label: "More Pipeline Generated" },
-            { value: "85%", label: "Time Saved on Research" },
-            { value: "3min", label: "Average Detection Time" },
-          ].map((stat) => (
-            <div key={stat.label} className="text-center">
-              <div className="text-3xl md:text-4xl font-bold text-[#00c4cc]">{stat.value}</div>
-              <div className="text-sm text-[#64748b] mt-1">{stat.label}</div>
-            </div>
-          ))}
+      <section className="py-16 px-6 border-y border-[var(--border-subtle)]">
+        <div className="max-w-4xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="grid grid-cols-2 md:grid-cols-4 gap-8"
+          >
+            {[
+              { value: "50K+", label: "Signals / Day" },
+              { value: "2.5×", label: "More Pipeline" },
+              { value: "85%", label: "Time Saved" },
+              { value: "3min", label: "Detection" },
+            ].map((stat, index) => (
+              <motion.div
+                key={stat.label}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: index * 0.1 }}
+                className="text-center"
+              >
+                <div className="text-2xl sm:text-3xl font-semibold text-[var(--accent)] tabular-nums">
+                  {stat.value}
+                </div>
+                <div className="text-xs text-[var(--text-tertiary)] mt-1 uppercase tracking-wider">
+                  {stat.label}
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
         </div>
       </section>
 
       {/* Features */}
       <section className="py-24 px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-white">
-              Everything You Need to Win Deals First
+        <div className="max-w-5xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-2xl sm:text-3xl font-semibold text-[var(--text-primary)]">
+              Everything to win deals first
             </h2>
-            <p className="mt-4 text-[#94a3b8] max-w-2xl mx-auto">
-              PULSE combines real-time data collection, AI analysis, and automated outreach into one
-              powerful platform.
+            <p className="mt-3 text-[var(--text-secondary)] max-w-lg mx-auto">
+              Real-time data collection, AI analysis, and automated outreach in one platform.
             </p>
-          </div>
-          <div className="grid md:grid-cols-2 gap-6">
-            {features.map((feature) => (
-              <div
+          </motion.div>
+
+          <div className="grid sm:grid-cols-2 gap-4">
+            {features.map((feature, index) => (
+              <motion.div
                 key={feature.title}
-                className="bg-[#1e293b] rounded-xl p-6 border border-[#334155] hover:border-[#00a4ac]/50 transition-colors"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: index * 0.1 }}
+                className="group bg-[var(--bg-secondary)] rounded-xl p-6 border border-[var(--border-subtle)] hover:border-[var(--border-default)] transition-colors"
               >
-                <div className="w-12 h-12 rounded-lg bg-[#00a4ac]/10 flex items-center justify-center mb-4">
-                  <feature.icon className="w-6 h-6 text-[#00a4ac]" />
-                </div>
-                <h3 className="text-lg font-semibold text-white">{feature.title}</h3>
-                <p className="mt-2 text-[#94a3b8]">{feature.description}</p>
-              </div>
+                <h3 className="text-base font-medium text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors">
+                  {feature.title}
+                </h3>
+                <p className="mt-2 text-sm text-[var(--text-tertiary)] leading-relaxed">
+                  {feature.description}
+                </p>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
       {/* Signal Types */}
-      <section className="py-24 px-6 bg-[#1e293b]/30">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-white">
-              Signals That Drive Revenue
+      <section className="py-24 px-6 bg-[var(--bg-secondary)]/50">
+        <div className="max-w-5xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-2xl sm:text-3xl font-semibold text-[var(--text-primary)]">
+              Signals that drive revenue
             </h2>
-            <p className="mt-4 text-[#94a3b8] max-w-2xl mx-auto">
-              Track the buying signals that matter most to your business.
-            </p>
-          </div>
-          <div className="grid md:grid-cols-3 gap-4">
-            {signalTypes.map((signal) => (
-              <div
-                key={signal.name}
-                className="bg-[#0f172a] rounded-lg p-5 border border-[#334155]"
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="flex flex-wrap justify-center gap-3"
+          >
+            {signalTypes.map((signal, index) => (
+              <motion.div
+                key={signal}
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.3, delay: index * 0.05 }}
+                className="flex items-center gap-2 px-4 py-2 bg-[var(--bg-primary)] rounded-lg border border-[var(--border-subtle)] text-sm text-[var(--text-secondary)]"
               >
-                <div className="flex items-center gap-3">
-                  <div className="w-2 h-2 rounded-full bg-[#00a4ac]" />
-                  <h3 className="font-medium text-white">{signal.name}</h3>
-                </div>
-                <p className="mt-2 text-sm text-[#64748b] ml-5">{signal.description}</p>
-              </div>
+                <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]" />
+                {signal}
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* CTA */}
       <section className="py-24 px-6">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-white">
-            Ready to Never Miss a Deal Again?
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="max-w-2xl mx-auto text-center"
+        >
+          <h2 className="text-2xl sm:text-3xl font-semibold text-[var(--text-primary)]">
+            Never miss a deal again
           </h2>
-          <p className="mt-4 text-[#94a3b8] max-w-xl mx-auto">
-            Join hundreds of sales teams using PULSE to find and close deals faster.
+          <p className="mt-4 text-[var(--text-secondary)]">
+            Join sales teams using PULSE to find and close deals faster.
           </p>
-          <div className="mt-10">
+          <div className="mt-8">
             <Link href="/dashboard">
               <Button variant="primary" size="lg" className="gap-2">
-                Start Your Free Trial <ArrowRight className="w-4 h-4" />
+                Start Free Trial
+                <ArrowRight className="w-4 h-4" />
               </Button>
             </Link>
           </div>
-        </div>
+        </motion.div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-[#1e293b] py-12 px-6">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+      <footer className="border-t border-[var(--border-subtle)] py-8 px-6">
+        <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded bg-gradient-to-br from-[#00a4ac] to-[#00c4cc] flex items-center justify-center">
-              <Zap className="w-4 h-4 text-white" />
+            <div className="w-5 h-5 rounded bg-gradient-to-br from-[var(--accent)] to-cyan-400 flex items-center justify-center">
+              <Zap className="w-3 h-3 text-[var(--bg-primary)]" />
             </div>
-            <span className="font-semibold text-white">PULSE</span>
+            <span className="text-sm font-medium text-[var(--text-primary)]">PULSE</span>
           </div>
-          <p className="text-sm text-[#64748b]">
+          <p className="text-xs text-[var(--text-tertiary)]">
             © {new Date().getFullYear()} Qualia Solutions. All rights reserved.
           </p>
         </div>

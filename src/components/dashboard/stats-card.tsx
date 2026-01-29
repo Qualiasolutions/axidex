@@ -1,5 +1,8 @@
+"use client";
+
 import { cn } from "@/lib/utils";
 import type { LucideIcon } from "lucide-react";
+import { motion } from "motion/react";
 
 interface StatsCardProps {
   title: string;
@@ -10,38 +13,50 @@ interface StatsCardProps {
   };
   icon: LucideIcon;
   className?: string;
+  index?: number;
 }
 
-export function StatsCard({ title, value, change, icon: Icon, className }: StatsCardProps) {
+export function StatsCard({ title, value, change, icon: Icon, className, index = 0 }: StatsCardProps) {
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay: index * 0.05, ease: [0.21, 0.47, 0.32, 0.98] }}
       className={cn(
-        "bg-[#1e293b] rounded-lg p-5 border border-[#334155]",
+        "group relative bg-[var(--bg-secondary)] rounded-xl p-5 border border-[var(--border-subtle)]",
+        "hover:border-[var(--border-default)] transition-colors duration-200",
         className
       )}
     >
-      <div className="flex items-start justify-between">
-        <div>
-          <p className="text-sm text-[#64748b] font-medium">{title}</p>
-          <p className="text-2xl font-bold text-white mt-1">{value}</p>
+      <div className="flex items-start justify-between gap-4">
+        <div className="space-y-1">
+          <p className="text-xs font-medium text-[var(--text-tertiary)] uppercase tracking-wider">
+            {title}
+          </p>
+          <p className="text-2xl font-semibold text-[var(--text-primary)] tabular-nums">
+            {value}
+          </p>
           {change && (
             <p
-              className={cn("text-xs mt-1 flex items-center gap-1", {
-                "text-green-400": change.trend === "up",
-                "text-red-400": change.trend === "down",
-                "text-[#64748b]": change.trend === "neutral",
+              className={cn("text-xs font-medium flex items-center gap-1", {
+                "text-[var(--success)]": change.trend === "up",
+                "text-[var(--danger)]": change.trend === "down",
+                "text-[var(--text-tertiary)]": change.trend === "neutral",
               })}
             >
-              {change.trend === "up" && "↑"}
-              {change.trend === "down" && "↓"}
-              {change.value}% from last week
+              <span>
+                {change.trend === "up" && "↑"}
+                {change.trend === "down" && "↓"}
+              </span>
+              {change.value}%
+              <span className="text-[var(--text-tertiary)] font-normal">vs last week</span>
             </p>
           )}
         </div>
-        <div className="w-10 h-10 rounded-lg bg-[#00a4ac]/10 flex items-center justify-center">
-          <Icon className="w-5 h-5 text-[#00a4ac]" />
+        <div className="w-10 h-10 rounded-lg bg-[var(--accent-muted)] flex items-center justify-center group-hover:bg-[var(--accent)]/15 transition-colors">
+          <Icon className="w-5 h-5 text-[var(--accent)]" />
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
