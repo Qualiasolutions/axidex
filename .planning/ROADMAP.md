@@ -58,6 +58,7 @@ Plans:
 **Goal:** Users see live signals and can generate personalized outreach emails
 **Depends on:** Phase 2 (needs signals in database)
 **Requirements:** DASH-01, DASH-02, DASH-03, DASH-04, DASH-05, DASH-06, DASH-07, DASH-08, DASH-09, AI-03, AI-04, AI-05
+**Plans:** 3 plans (Wave 1: 03-01 | Wave 2: 03-02, 03-03 parallel)
 
 **Success Criteria** (what must be TRUE):
 1. Dashboard shows real signals from database (not empty states)
@@ -68,12 +69,10 @@ Plans:
 6. Dashboard stats show accurate counts (total, by type, by priority)
 7. New signals appear in dashboard without page refresh (real-time)
 
-**Plans:** TBD
-
 Plans:
-- [ ] 03-01: Signal display and filtering
-- [ ] 03-02: Signal detail view with email generation
-- [ ] 03-03: Real-time updates and stats
+- [ ] 03-01-PLAN.md — Signals API, list page with filters (type, priority, date)
+- [ ] 03-02-PLAN.md — Signal detail view with Claude-powered email generation
+- [ ] 03-03-PLAN.md — Dashboard stats and Supabase realtime updates
 
 ### Phase 4: Automation & Hardening
 **Goal:** LinkedIn signals flow in, notifications alert users to high-priority signals
@@ -99,7 +98,7 @@ Plans:
 |-------|----------------|--------|-----------|
 | 1. Foundation | 2/2 | ✓ Complete | 2026-01-30 |
 | 2. Signal Ingestion | 3/3 | ✓ Complete | 2026-01-30 |
-| 3. Dashboard & Emails | 0/3 | Not started | - |
+| 3. Dashboard & Emails | 0/3 | Planned | - |
 | 4. Automation & Hardening | 0/2 | Not started | - |
 
 ---
