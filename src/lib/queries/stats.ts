@@ -26,12 +26,23 @@ export async function fetchDashboardStats(
 
   const signalsList = (signals || []) as SignalSubset[];
 
+  // Fetch generated emails count
+  const { count: emailsCount, error: emailsError } = await supabase
+    .from("generated_emails")
+    .select("*", { count: "exact", head: true })
+    .eq("user_id", userId);
+
+  if (emailsError) {
+    throw emailsError;
+  }
+
   // Calculate aggregated stats
   const total_signals = signalsList.length;
   const new_signals = signalsList.filter((s) => s.status === "new").length;
   const high_priority = signalsList.filter((s) => s.priority === "high").length;
   const converted = signalsList.filter((s) => s.status === "converted").length;
   const conversion_rate = total_signals > 0 ? Math.round((converted / total_signals) * 100) : 0;
+  const emails_drafted = emailsCount || 0;
 
   // Group by signal type
   const signals_by_type = signalsList.reduce((acc, signal) => {
@@ -62,6 +73,7 @@ export async function fetchDashboardStats(
     new_signals,
     high_priority,
     conversion_rate,
+    emails_drafted,
     signals_by_type,
     signals_by_day,
   };

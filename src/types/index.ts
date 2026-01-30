@@ -60,6 +60,7 @@ export interface DashboardStats {
   new_signals: number;
   high_priority: number;
   conversion_rate: number;
+  emails_drafted: number;
   signals_by_type: Record<SignalType, number>;
   signals_by_day: { date: string; count: number }[];
 }
