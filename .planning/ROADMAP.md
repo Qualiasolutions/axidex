@@ -14,7 +14,7 @@ Axidex transforms from a shell with empty states into a full signal intelligence
 
 - [x] **Phase 1: Foundation** - Database schema, RLS policies, and authentication
 - [x] **Phase 2: Signal Ingestion** - Scrapers for news/jobs + AI classification
-- [ ] **Phase 3: Dashboard & Emails** - Live signal feed with AI email generation
+- [x] **Phase 3: Dashboard & Emails** - Live signal feed with AI email generation
 - [ ] **Phase 4: Automation & Hardening** - LinkedIn scraping, scheduling, notifications
 
 ## Phase Details
@@ -70,9 +70,9 @@ Plans:
 7. New signals appear in dashboard without page refresh (real-time)
 
 Plans:
-- [ ] 03-01-PLAN.md — Signals API, list page with filters (type, priority, date)
-- [ ] 03-02-PLAN.md — Signal detail view with Claude-powered email generation
-- [ ] 03-03-PLAN.md — Dashboard stats and Supabase realtime updates
+- [x] 03-01-PLAN.md — Signals API, list page with filters (type, priority, date)
+- [x] 03-02-PLAN.md — Signal detail view with Claude-powered email generation
+- [x] 03-03-PLAN.md — Dashboard stats and Supabase realtime updates
 
 ### Phase 4: Automation & Hardening
 **Goal:** LinkedIn signals flow in, notifications alert users to high-priority signals
@@ -98,7 +98,7 @@ Plans:
 |-------|----------------|--------|-----------|
 | 1. Foundation | 2/2 | ✓ Complete | 2026-01-30 |
 | 2. Signal Ingestion | 3/3 | ✓ Complete | 2026-01-30 |
-| 3. Dashboard & Emails | 0/3 | Planned | - |
+| 3. Dashboard & Emails | 3/3 | ✓ Complete | 2026-01-30 |
 | 4. Automation & Hardening | 0/2 | Not started | - |
 
 ---

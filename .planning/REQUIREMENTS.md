@@ -33,21 +33,21 @@
 
 - [x] **AI-01**: OpenAI GPT-4o extracts entities (company, role, funding amount) from raw content
 - [x] **AI-02**: Classification model determines signal type and priority
-- [ ] **AI-03**: Anthropic Claude generates personalized outreach email per signal
-- [ ] **AI-04**: Email generation triggered on-demand when user requests
-- [ ] **AI-05**: LLM usage tracked with budget caps and alerts
+- [x] **AI-03**: Anthropic Claude generates personalized outreach email per signal
+- [x] **AI-04**: Email generation triggered on-demand when user requests
+- [~] **AI-05**: LLM usage tracked with budget caps and alerts (tracking implemented, budget caps deferred)
 
 ### Dashboard
 
-- [ ] **DASH-01**: Dashboard displays real signals from database
-- [ ] **DASH-02**: User can filter signals by type (hiring/funding/expansion)
-- [ ] **DASH-03**: User can filter signals by date range
-- [ ] **DASH-04**: User can filter signals by priority level
-- [ ] **DASH-05**: User can click signal to view full details
-- [ ] **DASH-06**: Signal detail shows AI-generated email
-- [ ] **DASH-07**: User can copy email to clipboard with one click
-- [ ] **DASH-08**: Dashboard shows stats (total signals, by type, by priority)
-- [ ] **DASH-09**: Dashboard updates in real-time when new signals arrive
+- [x] **DASH-01**: Dashboard displays real signals from database
+- [x] **DASH-02**: User can filter signals by type (hiring/funding/expansion)
+- [x] **DASH-03**: User can filter signals by date range
+- [x] **DASH-04**: User can filter signals by priority level
+- [x] **DASH-05**: User can click signal to view full details
+- [x] **DASH-06**: Signal detail shows AI-generated email
+- [x] **DASH-07**: User can copy email to clipboard with one click
+- [x] **DASH-08**: Dashboard shows stats (total signals, by type, by priority)
+- [x] **DASH-09**: Dashboard updates in real-time when new signals arrive
 
 ### Notifications
 
@@ -106,18 +106,18 @@
 | SCRP-07 | Phase 2 | Complete |
 | AI-01 | Phase 2 | Complete |
 | AI-02 | Phase 2 | Complete |
-| AI-03 | Phase 3 | Pending |
-| AI-04 | Phase 3 | Pending |
-| AI-05 | Phase 3 | Pending |
-| DASH-01 | Phase 3 | Pending |
-| DASH-02 | Phase 3 | Pending |
-| DASH-03 | Phase 3 | Pending |
-| DASH-04 | Phase 3 | Pending |
-| DASH-05 | Phase 3 | Pending |
-| DASH-06 | Phase 3 | Pending |
-| DASH-07 | Phase 3 | Pending |
-| DASH-08 | Phase 3 | Pending |
-| DASH-09 | Phase 3 | Pending |
+| AI-03 | Phase 3 | Complete |
+| AI-04 | Phase 3 | Complete |
+| AI-05 | Phase 3 | Partial |
+| DASH-01 | Phase 3 | Complete |
+| DASH-02 | Phase 3 | Complete |
+| DASH-03 | Phase 3 | Complete |
+| DASH-04 | Phase 3 | Complete |
+| DASH-05 | Phase 3 | Complete |
+| DASH-06 | Phase 3 | Complete |
+| DASH-07 | Phase 3 | Complete |
+| DASH-08 | Phase 3 | Complete |
+| DASH-09 | Phase 3 | Complete |
 | NOTF-01 | Phase 4 | Pending |
 | NOTF-02 | Phase 4 | Pending |
 
@@ -128,4 +128,4 @@
 
 ---
 *Requirements defined: 2026-01-30*
-*Last updated: 2026-01-30 — Phase 2 requirements complete*
+*Last updated: 2026-01-30 — Phase 3 requirements complete*
