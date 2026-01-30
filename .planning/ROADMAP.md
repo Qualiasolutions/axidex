@@ -40,8 +40,8 @@ Milestone v1.1 takes Axidex from dev environment to production. Deploy infrastru
 4. RLS verified: users cannot access other users' data
 
 Plans:
-- [ ] 06-01-PLAN.md - Database migrations and Vercel environment setup
-- [ ] 06-02-PLAN.md - Railway worker deployment and Supabase webhook/Edge Function
+- [ ] 06-01-PLAN.md — Database migrations and Vercel environment setup
+- [ ] 06-02-PLAN.md — Railway worker deployment and Supabase webhook/Edge Function
 
 ### Phase 7: Observability
 **Goal:** Errors are captured, worker health is monitored, and failures trigger alerts
@@ -56,8 +56,8 @@ Plans:
 4. Alert fires when worker health check fails for 5+ minutes
 
 Plans:
-- [ ] 07-01-PLAN.md - Sentry SDK integration (Next.js + Python worker)
-- [ ] 07-02-PLAN.md - Worker health endpoint and failure alerting
+- [ ] 07-01-PLAN.md — Sentry SDK integration (Next.js + Python worker)
+- [ ] 07-02-PLAN.md — Worker health endpoint and failure alerting
 
 ### Phase 8: LinkedIn Scraping
 **Goal:** LinkedIn job signals flow into the database via Bright Data
@@ -72,8 +72,8 @@ Plans:
 4. Scraper runs on schedule without rate limiting
 
 Plans:
-- [ ] 08-01-PLAN.md - Bright Data API integration and LinkedIn Jobs scraper
-- [ ] 08-02-PLAN.md - Deduplication, rate limiting, and scheduler integration
+- [ ] 08-01-PLAN.md — Bright Data API integration and LinkedIn Jobs scraper
+- [ ] 08-02-PLAN.md — Deduplication, rate limiting, and scheduler integration
 
 ### Phase 9: Notifications
 **Goal:** Users receive email alerts for high-priority signals matching their criteria
@@ -88,7 +88,7 @@ Plans:
 4. User receives email within 5 minutes of matching signal insertion
 
 Plans:
-- [ ] 09-01-PLAN.md - Notification preferences UI and email delivery flow
+- [ ] 09-01-PLAN.md — Notification preferences UI and email delivery flow
 
 ## Progress
 
@@ -96,7 +96,7 @@ Plans:
 
 | Phase | Plans Complete | Status |
 |-------|----------------|--------|
-| 6. Production Deployment | 0/2 | Pending |
+| 6. Production Deployment | 0/2 | Planned |
 | 7. Observability | 0/2 | Pending |
 | 8. LinkedIn Scraping | 0/2 | Pending |
 | 9. Notifications | 0/1 | Pending |
