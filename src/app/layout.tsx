@@ -11,6 +11,30 @@ const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"], variable: '--font-jet
 export const metadata: Metadata = {
   title: 'Axidex - Signal Intelligence Platform',
   description: 'Turn buying signals into revenue. Axidex detects hiring, funding, and expansion signals in real-time with AI-powered outreach.',
+  metadataBase: new URL('https://axidex.vercel.app'),
+  keywords: ['sales intelligence', 'buying signals', 'AI outreach', 'lead generation', 'sales automation'],
+  authors: [{ name: 'Axidex' }],
+  creator: 'Axidex',
+  robots: {
+    index: true,
+    follow: true,
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://axidex.vercel.app',
+    title: 'Axidex - Signal Intelligence Platform',
+    description: 'Turn buying signals into revenue with AI-powered signal detection and smart outreach.',
+    siteName: 'Axidex',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Axidex - Signal Intelligence Platform',
+    description: 'Turn buying signals into revenue with AI-powered signal detection.',
+  },
+  icons: {
+    icon: '/favicon.ico',
+  },
 }
 
 export default function RootLayout({

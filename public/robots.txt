@@ -1,0 +1,11 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /dashboard/*
+Disallow: /api
+Disallow: /api/*
+Disallow: /admin
+Disallow: /admin/*
+
+Sitemap: https://axidex.vercel.app/sitemap.xml
