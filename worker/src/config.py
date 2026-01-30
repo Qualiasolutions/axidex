@@ -13,6 +13,11 @@ class Settings(BaseSettings):
     bright_data_username: Optional[str] = None
     bright_data_password: Optional[str] = None
 
+    # OpenAI
+    openai_api_key: Optional[str] = None
+    openai_model: str = "gpt-4o-mini"  # Use mini for cost efficiency, upgrade to gpt-4o for quality
+    ai_enabled: bool = True  # Can disable AI for testing
+
     @property
     def proxy_url(self) -> Optional[str]:
         if self.bright_data_username and self.bright_data_password:
