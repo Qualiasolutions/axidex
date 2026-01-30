@@ -78,17 +78,16 @@ Plans:
 **Goal:** LinkedIn signals flow in, notifications alert users to high-priority signals
 **Depends on:** Phase 3 (core flow must work first)
 **Requirements:** SCRP-04, NOTF-01, NOTF-02
+**Plans:** 2 plans (Wave 1: parallel)
 
 **Success Criteria** (what must be TRUE):
 1. LinkedIn Jobs scraped with proxy rotation (no rate limit bans)
 2. User can configure notification preferences in settings
 3. User receives email notification when high-priority signal matches their criteria
 
-**Plans:** TBD
-
 Plans:
-- [ ] 04-01: LinkedIn scraper with proxy rotation
-- [ ] 04-02: Notification preferences and email alerts
+- [ ] 04-01-PLAN.md — LinkedIn Jobs scraper with Bright Data proxy rotation
+- [ ] 04-02-PLAN.md — Notification preferences UI and email alerts via Resend
 
 ## Progress
 
