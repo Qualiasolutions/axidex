@@ -16,7 +16,7 @@ Axidex transforms from a shell with empty states into a full signal intelligence
 - [x] **Phase 2: Signal Ingestion** - Scrapers for news/jobs + AI classification
 - [x] **Phase 3: Dashboard & Emails** - Live signal feed with AI email generation
 - [x] **Phase 4: Automation & Hardening** - LinkedIn scraping, scheduling, notifications
-- [ ] **Phase 5: UI Polish** - Pagination, search, priority filters for production-ready UX
+- [x] **Phase 5: UI Polish** - Pagination, search, priority filters for production-ready UX
 
 ## Phase Details
 
@@ -104,8 +104,8 @@ Plans:
 4. All filters work together and persist in URL for sharing
 
 Plans:
-- [ ] 05-01-PLAN.md — Pagination controls for signals list
-- [ ] 05-02-PLAN.md — Search input and priority filter controls
+- [x] 05-01-PLAN.md — Pagination controls for signals list
+- [x] 05-02-PLAN.md — Search input and priority filter controls
 
 ## Progress
 
@@ -117,7 +117,7 @@ Plans:
 | 2. Signal Ingestion | 3/3 | ✓ Complete | 2026-01-30 |
 | 3. Dashboard & Emails | 3/3 | ✓ Complete | 2026-01-30 |
 | 4. Automation & Hardening | 2/2 | ✓ Complete | 2026-01-30 |
-| 5. UI Polish | 0/2 | Not started | - |
+| 5. UI Polish | 2/2 | ✓ Complete | 2026-01-30 |
 
 ---
 *Roadmap created: 2026-01-30*
