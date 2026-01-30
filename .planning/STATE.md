@@ -5,35 +5,35 @@
 See: .planning/PROJECT.md (updated 2026-01-30)
 
 **Core value:** Sales teams get actionable signals with ready-to-send emails — no manual research.
-**Current focus:** Phase 2 Signal Ingestion - Python worker with TechCrunch scraper
+**Current focus:** Phase 2 Signal Ingestion - Scrapers and deduplication complete
 
 ## Current Position
 
 Phase: 2 of 4 (Signal Ingestion)
-Plan: 1 of 3 in current phase
+Plan: 2 of 3 in current phase
 Status: In progress
-Last activity: 2026-01-30 — Completed 02-01-PLAN.md (Python Worker Infrastructure)
+Last activity: 2026-01-30 — Completed 02-02-PLAN.md (Job Board & Company Scrapers)
 
-Progress: [███░░░░░░░] 30%
+Progress: [████░░░░░░] 40%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 3
-- Average duration: 2min 50s
-- Total execution time: 0.14 hours
+- Total plans completed: 4
+- Average duration: 3min 7s
+- Total execution time: 0.21 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 1. Foundation | 2/2 | 4min 24s | 2min 12s |
-| 2. Signal Ingestion | 1/3 | 4min 6s | 4min 6s |
+| 2. Signal Ingestion | 2/3 | 9min 35s | 4min 48s |
 | 3. Dashboard & Emails | 0/3 | - | - |
 | 4. Automation & Hardening | 0/2 | - | - |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (84s), 01-02 (180s), 02-01 (246s)
+- Last 5 plans: 01-01 (84s), 01-02 (180s), 02-01 (246s), 02-02 (329s)
 - Trend: Slightly increasing (more complex plans)
 
 *Updated after each plan completion*
@@ -53,12 +53,15 @@ Recent decisions affecting current work:
 | D004 | Lazy-load settings via get_settings() | 02-01 | Allow imports without env vars for testing/IDE |
 | D005 | selectolax for RSS/HTML parsing | 02-01 | Faster than BeautifulSoup, sufficient for feeds |
 | D006 | Rule-based signal classification | 02-01 | Keyword matching faster/cheaper than LLM |
+| D007 | Hash + prefix dedup before vector | 02-02 | Catches 80%+ duplicates without API costs |
+| D008 | 384-dim embeddings for pgvector | 02-02 | Matches all-MiniLM-L6-v2 model |
 
 ### Pending Todos
 
-- Apply migrations to Supabase project (`supabase db push` or dashboard)
+- Apply migrations to Supabase project (001, 002, 003) via dashboard or `supabase db push`
 - Configure Supabase Auth (enable email provider, set site URL)
 - Deploy worker to Railway (requires SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
+- Optional: Configure Bright Data proxy for job board scraping
 
 ### Blockers/Concerns
 
@@ -67,10 +70,10 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-01-30 15:12 UTC
-Stopped at: Completed 02-01-PLAN.md (Python Worker Infrastructure)
+Last session: 2026-01-30 15:15 UTC
+Stopped at: Completed 02-02-PLAN.md (Job Board & Company Scrapers)
 Resume file: None
 
 ---
 *State initialized: 2026-01-30*
-*Next: 02-02-PLAN.md (Job Board Scraper)*
+*Next: 02-03-PLAN.md (AI Pipeline)*
