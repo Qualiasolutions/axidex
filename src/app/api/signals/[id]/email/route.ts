@@ -4,6 +4,31 @@ import { NextRequest, NextResponse } from "next/server";
 import type { Signal } from "@/types";
 import type { Database } from "@/types/database";
 
+// Type alias for database rows
+type SignalRow = Database["public"]["Tables"]["signals"]["Row"];
+type GeneratedEmailRow = Database["public"]["Tables"]["generated_emails"]["Row"];
+type GeneratedEmailInsert = Database["public"]["Tables"]["generated_emails"]["Insert"];
+
+// Convert database row to Signal type expected by email generator
+function toSignal(row: SignalRow): Signal {
+  return {
+    id: row.id,
+    company_name: row.company_name,
+    company_domain: row.company_domain ?? "",
+    company_logo: row.company_logo ?? undefined,
+    signal_type: row.signal_type,
+    title: row.title,
+    summary: row.summary,
+    source_url: row.source_url,
+    source_name: row.source_name,
+    priority: row.priority,
+    status: row.status,
+    detected_at: row.detected_at,
+    created_at: row.created_at,
+    metadata: row.metadata as Signal["metadata"],
+  };
+}
+
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -43,21 +68,27 @@ export async function POST(
       return NextResponse.json({ error: "Signal not found" }, { status: 404 });
     }
 
-    const signal = signalData as unknown as Signal;
+    // Convert to Signal type for email generator
+    const signal = toSignal(signalData);
 
     // Generate email using Claude
     const { subject, body: emailBody } = await generateEmail(signal, tone);
 
     // Save generated email to database
-    const { data: savedEmailData, error: saveError } = await supabase
+    // Type assertion needed: Supabase's type inference doesn't connect
+    // our Database types properly. The structure matches GeneratedEmailInsert.
+    const emailInsert: GeneratedEmailInsert = {
+      signal_id: signalId,
+      user_id: user.id,
+      subject,
+      body: emailBody,
+      tone: tone as "professional" | "casual" | "enthusiastic",
+    };
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: savedEmailData, error: saveError } = await (supabase as any)
       .from("generated_emails")
-      .insert({
-        signal_id: signalId,
-        user_id: user.id,
-        subject,
-        body: emailBody,
-        tone,
-      } as any)
+      .insert(emailInsert)
       .select()
       .single();
 
@@ -69,13 +100,8 @@ export async function POST(
       );
     }
 
-    const savedEmail = savedEmailData as unknown as {
-      id: string;
-      subject: string;
-      body: string;
-      tone: EmailTone;
-      created_at: string;
-    };
+    // Type is inferred from Supabase - no cast needed
+    const savedEmail = savedEmailData as GeneratedEmailRow;
 
     return NextResponse.json({
       id: savedEmail.id,

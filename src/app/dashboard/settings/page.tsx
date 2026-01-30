@@ -5,6 +5,10 @@ import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { motion } from "motion/react";
 import { Loader2, Check, Bell, BellOff } from "lucide-react";
+import type { Json } from "@/types/database";
+
+// Type for notification preferences stored as JSONB
+type NotificationPrefsJson = Json;
 
 const SIGNAL_TYPES = [
   { id: "hiring", label: "Hiring", description: "Job postings, team growth" },
@@ -94,6 +98,8 @@ export default function SettingsPage() {
     }
 
     // Update notification preferences
+    // The notification_preferences column is JSONB, which accepts our object directly
+    // Type assertion needed: Supabase's type inference doesn't connect our Database types properly
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { error: updateError } = await (supabase as any)
       .from("profiles")

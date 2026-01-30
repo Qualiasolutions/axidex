@@ -8,10 +8,30 @@ import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 
+// Whitelist of allowed redirect paths to prevent open redirect attacks
+const ALLOWED_REDIRECTS = [
+  '/dashboard',
+  '/dashboard/signals',
+  '/dashboard/settings',
+];
+
+function isValidRedirect(path: string): boolean {
+  // Must start with / and not contain protocol or double slashes
+  if (!path.startsWith('/') || path.startsWith('//') || path.includes('://')) {
+    return false;
+  }
+  // Must be in whitelist or start with an allowed prefix
+  return ALLOWED_REDIRECTS.some(allowed =>
+    path === allowed || path.startsWith(allowed + '/')
+  );
+}
+
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirectTo = searchParams.get("redirect") || "/dashboard";
+  const rawRedirect = searchParams.get("redirect") || "/dashboard";
+  // Validate redirect to prevent open redirect attacks
+  const redirectTo = isValidRedirect(rawRedirect) ? rawRedirect : "/dashboard";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
