@@ -3,7 +3,39 @@
 **Defined:** 2026-01-30
 **Core Value:** Sales teams get actionable signals with ready-to-send emails — no manual research.
 
-## v1 Requirements
+## v1.1 Requirements
+
+### Deployment
+
+- [ ] **DEPL-01**: Supabase migrations (001-009) applied to production database
+- [ ] **DEPL-02**: Worker deployed to Railway with SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, OPENAI_API_KEY
+- [ ] **DEPL-03**: Vercel environment variables configured (ANTHROPIC_API_KEY, RESEND_API_KEY)
+- [ ] **DEPL-04**: Supabase database webhook configured for signals INSERT events
+- [ ] **DEPL-05**: check-notification Edge Function deployed to Supabase
+- [ ] **DEPL-06**: Verify RLS policies work correctly in production (users see only own data)
+
+### Observability
+
+- [ ] **OBSV-01**: Sentry SDK integrated in Next.js frontend
+- [ ] **OBSV-02**: Sentry SDK integrated in Python worker
+- [ ] **OBSV-03**: Worker health check endpoint accessible
+- [ ] **OBSV-04**: Alert configured for worker failures
+
+### LinkedIn Scraping
+
+- [ ] **LNKD-01**: Bright Data Web Scraper API credentials configured
+- [ ] **LNKD-02**: LinkedIn Jobs scraper fetches job posts from Bright Data
+- [ ] **LNKD-03**: Scraper extracts company name, job title, location, and posting URL
+- [ ] **LNKD-04**: LinkedIn signals deduplicated via pgvector before storage
+- [ ] **LNKD-05**: Random 2-5s delays between requests to prevent rate limiting
+- [ ] **LNKD-06**: Scraper runs on schedule with other scrapers
+
+### Notifications
+
+- [ ] **NOTF-01**: User can configure notification preferences in settings
+- [ ] **NOTF-02**: User receives email when high-priority signal matches criteria
+
+## v1.0 Requirements (Validated)
 
 ### Authentication
 
@@ -24,7 +56,6 @@
 - [x] **SCRP-01**: Python worker scrapes TechCrunch/news sites on schedule
 - [x] **SCRP-02**: Python worker scrapes company websites (press releases, careers)
 - [x] **SCRP-03**: Python worker scrapes public job boards (Indeed, Glassdoor)
-- [ ] **SCRP-04**: Python worker scrapes LinkedIn Jobs with proxy rotation
 - [x] **SCRP-05**: Signals deduplicated via pgvector similarity before storage
 - [x] **SCRP-06**: Signals classified by type (hiring, funding, expansion)
 - [x] **SCRP-07**: Signals scored for buyer intent priority
@@ -35,7 +66,6 @@
 - [x] **AI-02**: Classification model determines signal type and priority
 - [x] **AI-03**: Anthropic Claude generates personalized outreach email per signal
 - [x] **AI-04**: Email generation triggered on-demand when user requests
-- [~] **AI-05**: LLM usage tracked with budget caps and alerts (tracking implemented, budget caps deferred)
 
 ### Dashboard
 
@@ -48,11 +78,6 @@
 - [x] **DASH-07**: User can copy email to clipboard with one click
 - [x] **DASH-08**: Dashboard shows stats (total signals, by type, by priority)
 - [x] **DASH-09**: Dashboard updates in real-time when new signals arrive
-
-### Notifications
-
-- [ ] **NOTF-01**: User can configure notification preferences
-- [ ] **NOTF-02**: User receives email when high-priority signals match criteria
 
 ## v2 Requirements
 
@@ -72,6 +97,7 @@
 - **ADV-01**: User can define custom signal criteria (keywords, industries)
 - **ADV-02**: User can save and name filter presets
 - **ADV-03**: User can customize email brand voice and templates
+- **AI-05**: LLM usage tracked with budget caps and alerts
 
 ## Out of Scope
 
@@ -84,48 +110,36 @@
 | Contact enrichment database | Use third-party APIs, don't build own database |
 | Direct email sending | Copy to clipboard for v1, avoid deliverability complexity |
 | Real-time chat support | Not core to signal delivery |
+| Slack notifications | Defer to v2, email notifications first |
 
 ## Traceability
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| AUTH-01 | Phase 1 | Complete |
-| AUTH-02 | Phase 1 | Complete |
-| AUTH-03 | Phase 1 | Complete |
-| AUTH-04 | Phase 1 | Complete |
-| DATA-01 | Phase 1 | Complete |
-| DATA-02 | Phase 1 | Complete |
-| DATA-03 | Phase 1 | Complete |
-| DATA-04 | Phase 1 | Complete |
-| SCRP-01 | Phase 2 | Complete |
-| SCRP-02 | Phase 2 | Complete |
-| SCRP-03 | Phase 2 | Complete |
-| SCRP-04 | Phase 4 | Pending |
-| SCRP-05 | Phase 2 | Complete |
-| SCRP-06 | Phase 2 | Complete |
-| SCRP-07 | Phase 2 | Complete |
-| AI-01 | Phase 2 | Complete |
-| AI-02 | Phase 2 | Complete |
-| AI-03 | Phase 3 | Complete |
-| AI-04 | Phase 3 | Complete |
-| AI-05 | Phase 3 | Partial |
-| DASH-01 | Phase 3 | Complete |
-| DASH-02 | Phase 3 | Complete |
-| DASH-03 | Phase 3 | Complete |
-| DASH-04 | Phase 3 | Complete |
-| DASH-05 | Phase 3 | Complete |
-| DASH-06 | Phase 3 | Complete |
-| DASH-07 | Phase 3 | Complete |
-| DASH-08 | Phase 3 | Complete |
-| DASH-09 | Phase 3 | Complete |
-| NOTF-01 | Phase 4 | Pending |
-| NOTF-02 | Phase 4 | Pending |
+| DEPL-01 | Phase 6 | Pending |
+| DEPL-02 | Phase 6 | Pending |
+| DEPL-03 | Phase 6 | Pending |
+| DEPL-04 | Phase 6 | Pending |
+| DEPL-05 | Phase 6 | Pending |
+| DEPL-06 | Phase 6 | Pending |
+| OBSV-01 | Phase 7 | Pending |
+| OBSV-02 | Phase 7 | Pending |
+| OBSV-03 | Phase 7 | Pending |
+| OBSV-04 | Phase 7 | Pending |
+| LNKD-01 | Phase 8 | Pending |
+| LNKD-02 | Phase 8 | Pending |
+| LNKD-03 | Phase 8 | Pending |
+| LNKD-04 | Phase 8 | Pending |
+| LNKD-05 | Phase 8 | Pending |
+| LNKD-06 | Phase 8 | Pending |
+| NOTF-01 | Phase 9 | Pending |
+| NOTF-02 | Phase 9 | Pending |
 
 **Coverage:**
-- v1 requirements: 31 total
-- Mapped to phases: 31
-- Unmapped: 0
+- v1.1 requirements: 18 total
+- Mapped to phases: 18
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-01-30*
-*Last updated: 2026-01-30 — Phase 3 requirements complete*
+*Last updated: 2026-01-30 — Milestone v1.1 requirements*

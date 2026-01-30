@@ -2,124 +2,107 @@
 
 ## Overview
 
-5 phases | 31 requirements | 3 weeks estimated
+9 phases | 49 requirements total | v1.1: 4 phases, 18 requirements
 
-Axidex transforms from a shell with empty states into a full signal intelligence platform. We build foundation first (database + auth), then scrapers with AI classification, then the dashboard with email generation, automation with LinkedIn, and finally UI polish to complete the experience.
+Milestone v1.1 takes Axidex from dev environment to production. Deploy infrastructure (migrations, worker, functions), add observability for reliability, complete LinkedIn scraping with Bright Data, and finalize notification system.
 
 ## Phases
 
 **Phase Numbering:**
-- Integer phases (1, 2, 3, 4): Planned milestone work
-- Decimal phases (e.g., 2.1): Urgent insertions (marked with INSERTED)
+- Integer phases (1-5): Milestone v1.0 (Complete)
+- Integer phases (6-9): Milestone v1.1 (Current)
 
+### Milestone v1.0 (Complete)
 - [x] **Phase 1: Foundation** - Database schema, RLS policies, and authentication
 - [x] **Phase 2: Signal Ingestion** - Scrapers for news/jobs + AI classification
 - [x] **Phase 3: Dashboard & Emails** - Live signal feed with AI email generation
 - [x] **Phase 4: Automation & Hardening** - LinkedIn scraping, scheduling, notifications
 - [x] **Phase 5: UI Polish** - Pagination, search, priority filters for production-ready UX
 
+### Milestone v1.1 (Current)
+- [ ] **Phase 6: Production Deployment** - Migrations, worker, Edge Function, environment variables
+- [ ] **Phase 7: Observability** - Sentry integration, health checks, alerting
+- [ ] **Phase 8: LinkedIn Scraping** - Bright Data integration for LinkedIn Jobs
+- [ ] **Phase 9: Notifications** - Preferences UI and email alerts
+
 ## Phase Details
 
-### Phase 1: Foundation
-**Goal:** Users can create accounts and the database is ready to receive signals
-**Depends on:** Nothing (first phase)
-**Requirements:** AUTH-01, AUTH-02, AUTH-03, AUTH-04, DATA-01, DATA-02, DATA-03, DATA-04
-**Plans:** 2 plans (Wave 1: parallel)
+### Phase 6: Production Deployment
+**Goal:** Application runs in production with all infrastructure deployed and verified
+**Depends on:** Phase 5 (v1.0 complete)
+**Requirements:** DEPL-01, DEPL-02, DEPL-03, DEPL-04, DEPL-05, DEPL-06
+**Plans:** 2 plans
 
 **Success Criteria** (what must be TRUE):
-1. User can sign up with email/password and land on dashboard
-2. User can log in, close browser, return next day still logged in
-3. User can log out from any page in the dashboard
-4. User can request password reset and receive email with working link
-5. Database tables exist with proper RLS (users see only their own data)
+1. All 9 database migrations applied to production Supabase project
+2. Worker running on Railway, processing signals on schedule
+3. Edge Function deployed and triggering on signals INSERT
+4. RLS verified: users cannot access other users' data
 
 Plans:
-- [x] 01-01-PLAN.md — Database schema (profiles, signals, emails) and RLS policies
-- [x] 01-02-PLAN.md — Supabase Auth integration (login, signup, logout, password reset)
+- [ ] 06-01-PLAN.md - Database migrations and Vercel environment setup
+- [ ] 06-02-PLAN.md - Railway worker deployment and Supabase webhook/Edge Function
 
-### Phase 2: Signal Ingestion
-**Goal:** Signals flow automatically from news/job sources into the database, classified and scored
-**Depends on:** Phase 1 (needs database tables)
-**Requirements:** SCRP-01, SCRP-02, SCRP-03, SCRP-05, SCRP-06, SCRP-07, AI-01, AI-02
-**Plans:** 3 plans (Wave 1: 02-01, 02-02 parallel | Wave 2: 02-03)
+### Phase 7: Observability
+**Goal:** Errors are captured, worker health is monitored, and failures trigger alerts
+**Depends on:** Phase 6 (production must be running)
+**Requirements:** OBSV-01, OBSV-02, OBSV-03, OBSV-04
+**Plans:** 2 plans
 
 **Success Criteria** (what must be TRUE):
-1. Python worker on Railway scrapes TechCrunch and stores raw data
-2. Python worker scrapes company career pages and press releases
-3. Python worker scrapes Indeed/Glassdoor job postings
-4. Duplicate signals are detected and not stored twice
-5. Each signal has a type (hiring/funding/expansion) and priority score
+1. Frontend errors appear in Sentry dashboard with stack traces
+2. Worker exceptions appear in Sentry with context
+3. Health check endpoint returns 200 OK when worker is healthy
+4. Alert fires when worker health check fails for 5+ minutes
 
 Plans:
-- [x] 02-01-PLAN.md — Python worker setup + TechCrunch news scraper
-- [x] 02-02-PLAN.md — Job board and company website scrapers with deduplication
-- [x] 02-03-PLAN.md — AI entity extraction and signal classification
+- [ ] 07-01-PLAN.md - Sentry SDK integration (Next.js + Python worker)
+- [ ] 07-02-PLAN.md - Worker health endpoint and failure alerting
 
-### Phase 3: Dashboard & Emails
-**Goal:** Users see live signals and can generate personalized outreach emails
-**Depends on:** Phase 2 (needs signals in database)
-**Requirements:** DASH-01, DASH-02, DASH-03, DASH-04, DASH-05, DASH-06, DASH-07, DASH-08, DASH-09, AI-03, AI-04, AI-05
-**Plans:** 3 plans (Wave 1: 03-01 | Wave 2: 03-02, 03-03 parallel)
+### Phase 8: LinkedIn Scraping
+**Goal:** LinkedIn job signals flow into the database via Bright Data
+**Depends on:** Phase 6 (worker must be deployed)
+**Requirements:** LNKD-01, LNKD-02, LNKD-03, LNKD-04, LNKD-05, LNKD-06
+**Plans:** 2 plans
 
 **Success Criteria** (what must be TRUE):
-1. Dashboard shows real signals from database (not empty states)
-2. User can filter signals by type, date range, and priority
-3. User can click any signal to view full details and context
-4. User can generate a personalized email for any signal with one click
-5. User can copy generated email to clipboard
-6. Dashboard stats show accurate counts (total, by type, by priority)
-7. New signals appear in dashboard without page refresh (real-time)
+1. LinkedIn Jobs scraper fetches data from Bright Data API
+2. Each signal includes company, title, location, and source URL
+3. Duplicate LinkedIn signals detected and not stored
+4. Scraper runs on schedule without rate limiting
 
 Plans:
-- [x] 03-01-PLAN.md — Signals API, list page with filters (type, priority, date)
-- [x] 03-02-PLAN.md — Signal detail view with Claude-powered email generation
-- [x] 03-03-PLAN.md — Dashboard stats and Supabase realtime updates
+- [ ] 08-01-PLAN.md - Bright Data API integration and LinkedIn Jobs scraper
+- [ ] 08-02-PLAN.md - Deduplication, rate limiting, and scheduler integration
 
-### Phase 4: Automation & Hardening
-**Goal:** LinkedIn signals flow in, notifications alert users to high-priority signals
-**Depends on:** Phase 3 (core flow must work first)
-**Requirements:** SCRP-04, NOTF-01, NOTF-02
-**Plans:** 2 plans (Wave 1: parallel)
+### Phase 9: Notifications
+**Goal:** Users receive email alerts for high-priority signals matching their criteria
+**Depends on:** Phase 6 (Edge Function must be deployed)
+**Requirements:** NOTF-01, NOTF-02
+**Plans:** 1 plan
 
 **Success Criteria** (what must be TRUE):
-1. LinkedIn Jobs scraped with proxy rotation (no rate limit bans)
-2. User can configure notification preferences in settings
-3. User receives email notification when high-priority signal matches their criteria
+1. User can access notification preferences in settings page
+2. User can toggle email notifications on/off
+3. User can set priority threshold for notifications (e.g., "high only")
+4. User receives email within 5 minutes of matching signal insertion
 
 Plans:
-- [x] 04-01-PLAN.md — LinkedIn Jobs scraper with Bright Data proxy rotation
-- [x] 04-02-PLAN.md — Notification preferences UI and email alerts via Resend
-
-### Phase 5: UI Polish
-**Goal:** Signals list has pagination, search, and priority filters for a production-ready experience
-**Depends on:** Phase 3 (builds on existing signals page)
-**Requirements:** None (tech debt closure from audit)
-**Gap Closure:** Closes UI tech debt from v1.0 audit
-**Plans:** 2 plans (Wave 1: 05-01 | Wave 2: 05-02)
-
-**Success Criteria** (what must be TRUE):
-1. Signals list shows pagination controls when more than 20 signals exist
-2. User can search signals by company name or title keyword
-3. User can filter signals by priority level (high, medium, low)
-4. All filters work together and persist in URL for sharing
-
-Plans:
-- [x] 05-01-PLAN.md — Pagination controls for signals list
-- [x] 05-02-PLAN.md — Search input and priority filter controls
+- [ ] 09-01-PLAN.md - Notification preferences UI and email delivery flow
 
 ## Progress
 
-**Execution Order:** Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
+**Execution Order:** Phases execute in numeric order: 6 -> 7 -> 8 -> 9
 
-| Phase | Plans Complete | Status | Completed |
-|-------|----------------|--------|-----------|
-| 1. Foundation | 2/2 | ✓ Complete | 2026-01-30 |
-| 2. Signal Ingestion | 3/3 | ✓ Complete | 2026-01-30 |
-| 3. Dashboard & Emails | 3/3 | ✓ Complete | 2026-01-30 |
-| 4. Automation & Hardening | 2/2 | ✓ Complete | 2026-01-30 |
-| 5. UI Polish | 2/2 | ✓ Complete | 2026-01-30 |
+| Phase | Plans Complete | Status |
+|-------|----------------|--------|
+| 6. Production Deployment | 0/2 | Pending |
+| 7. Observability | 0/2 | Pending |
+| 8. LinkedIn Scraping | 0/2 | Pending |
+| 9. Notifications | 0/1 | Pending |
 
 ---
 *Roadmap created: 2026-01-30*
-*Depth: quick (3-5 phases)*
-*Coverage: 31/31 requirements mapped*
+*Milestone: v1.1 Production Launch + LinkedIn*
+*Depth: quick (4 phases)*
+*Coverage: 18/18 v1.1 requirements mapped*
