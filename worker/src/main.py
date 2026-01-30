@@ -4,6 +4,8 @@ import time
 import structlog
 from .config import get_settings
 from .scrapers.news import TechCrunchScraper
+from .scrapers.jobs import JobBoardScraper
+from .scrapers.company import CompanyWebsiteScraper
 from .db.supabase import insert_signal
 
 structlog.configure(
@@ -24,17 +26,22 @@ async def run_scrapers():
 
     scrapers = [
         TechCrunchScraper(),
+        JobBoardScraper(),
+        CompanyWebsiteScraper(),
     ]
 
+    total_signals = 0
     for scraper in scrapers:
         try:
             signals = await scraper.scrape()
             for signal in signals:
-                insert_signal(signal, DEMO_USER_ID)
+                result = insert_signal(signal, DEMO_USER_ID)
+                if result:
+                    total_signals += 1
         except Exception as e:
             log.error("scraper_failed", scraper=scraper.name, error=str(e))
 
-    log.info("scrape_cycle_complete")
+    log.info("scrape_cycle_complete", total_signals=total_signals)
 
 
 def job():
