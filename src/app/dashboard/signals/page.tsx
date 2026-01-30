@@ -290,7 +290,9 @@ function SignalsPageContent() {
           className="flex items-center gap-3 p-3 bg-[var(--bg-secondary)] rounded-lg border border-[var(--border-subtle)]"
         >
           <span className="text-xs text-[var(--text-tertiary)]">Showing</span>
-          <Badge variant="default">{signals.length} signals</Badge>
+          <Badge variant="default">
+            {totalPages > 1 ? `${signals.length} of ${totalCount}` : `${signals.length}`} signals
+          </Badge>
           <span className="text-[var(--border-default)]">·</span>
           <Badge variant="danger">{highPriorityCount} high priority</Badge>
           <Badge variant="accent">{newSignalsCount} new</Badge>
