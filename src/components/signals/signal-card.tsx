@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { cn, formatRelativeTime } from "@/lib/utils";
 import type { Signal } from "@/types";
 import { motion } from "motion/react";
+import Link from "next/link";
 
 interface SignalCardProps {
   signal: Signal;
@@ -14,18 +15,19 @@ interface SignalCardProps {
 
 export function SignalCard({ signal, onGenerateEmail, index = 0 }: SignalCardProps) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35, delay: index * 0.03 }}
-      className={cn(
-        "group bg-[var(--bg-primary)] rounded-xl p-5 border border-[var(--border-subtle)]",
-        "hover:border-[var(--border-default)] transition-all duration-200",
-        signal.status === "new" && "border-l-2 border-l-[var(--accent)]"
-      )}
-    >
-      {/* Main content */}
-      <div className="space-y-3">
+    <Link href={`/dashboard/signals/${signal.id}`}>
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35, delay: index * 0.03 }}
+        className={cn(
+          "group bg-[var(--bg-primary)] rounded-xl p-5 border border-[var(--border-subtle)]",
+          "hover:border-[var(--border-default)] transition-all duration-200 cursor-pointer",
+          signal.status === "new" && "border-l-2 border-l-[var(--accent)]"
+        )}
+      >
+        {/* Main content */}
+        <div className="space-y-3">
         {/* Header row */}
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
@@ -85,5 +87,6 @@ export function SignalCard({ signal, onGenerateEmail, index = 0 }: SignalCardPro
         </div>
       </div>
     </motion.div>
+    </Link>
   );
 }
