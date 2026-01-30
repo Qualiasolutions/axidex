@@ -15,7 +15,7 @@ Axidex transforms from a shell with empty states into a full signal intelligence
 - [x] **Phase 1: Foundation** - Database schema, RLS policies, and authentication
 - [x] **Phase 2: Signal Ingestion** - Scrapers for news/jobs + AI classification
 - [x] **Phase 3: Dashboard & Emails** - Live signal feed with AI email generation
-- [ ] **Phase 4: Automation & Hardening** - LinkedIn scraping, scheduling, notifications
+- [x] **Phase 4: Automation & Hardening** - LinkedIn scraping, scheduling, notifications
 
 ## Phase Details
 
@@ -86,8 +86,8 @@ Plans:
 3. User receives email notification when high-priority signal matches their criteria
 
 Plans:
-- [ ] 04-01-PLAN.md — LinkedIn Jobs scraper with Bright Data proxy rotation
-- [ ] 04-02-PLAN.md — Notification preferences UI and email alerts via Resend
+- [x] 04-01-PLAN.md — LinkedIn Jobs scraper with Bright Data proxy rotation
+- [x] 04-02-PLAN.md — Notification preferences UI and email alerts via Resend
 
 ## Progress
 
@@ -98,7 +98,7 @@ Plans:
 | 1. Foundation | 2/2 | ✓ Complete | 2026-01-30 |
 | 2. Signal Ingestion | 3/3 | ✓ Complete | 2026-01-30 |
 | 3. Dashboard & Emails | 3/3 | ✓ Complete | 2026-01-30 |
-| 4. Automation & Hardening | 0/2 | Not started | - |
+| 4. Automation & Hardening | 2/2 | ✓ Complete | 2026-01-30 |
 
 ---
 *Roadmap created: 2026-01-30*
