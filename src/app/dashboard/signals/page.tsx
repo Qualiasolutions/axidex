@@ -491,12 +491,12 @@ function SignalsPageContent() {
               No signals detected
             </h3>
             <p className="text-sm text-[var(--text-tertiary)] max-w-md mb-8 leading-relaxed">
-              {activeTypes.length > 0 || from
-                ? "No signals match your current filters. Try adjusting your filters or clearing them to see all signals."
+              {activeTypes.length > 0 || activePriorities.length > 0 || searchQuery || from
+                ? "No signals match your current filters or search. Try adjusting your filters or clearing them to see all signals."
                 : "Axidex will automatically detect buying signals when you configure your signal sources. Add news feeds, job board scrapers, and funding announcement monitors to get started."}
             </p>
             <div className="flex flex-col sm:flex-row items-center gap-3">
-              {(activeTypes.length > 0 || from) && (
+              {(activeTypes.length > 0 || activePriorities.length > 0 || searchQuery || from) && (
                 <Button
                   variant="default"
                   onClick={() => {
@@ -506,7 +506,7 @@ function SignalsPageContent() {
                   Clear Filters
                 </Button>
               )}
-              <Button variant={activeTypes.length > 0 || from ? "secondary" : "default"}>
+              <Button variant={activeTypes.length > 0 || activePriorities.length > 0 || searchQuery || from ? "secondary" : "default"}>
                 Configure Signal Sources
               </Button>
             </div>
