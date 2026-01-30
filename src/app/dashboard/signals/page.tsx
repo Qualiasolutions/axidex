@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { SignalCard } from "@/components/signals/signal-card";
 import { motion } from "motion/react";
-import type { Signal, SignalType } from "@/types";
+import type { Signal, SignalType, SignalPriority } from "@/types";
 import {
   startOfDay,
   endOfDay,
@@ -52,6 +52,9 @@ function SignalsPageContent() {
   const from = searchParams.get("from") || "";
   const to = searchParams.get("to") || "";
 
+  // Local state for search input (for debounce)
+  const [searchInput, setSearchInput] = useState(searchQuery);
+
   // Pagination
   const ITEMS_PER_PAGE = 20;
   const currentPage = parseInt(searchParams.get("page") || "1");
@@ -59,6 +62,31 @@ function SignalsPageContent() {
   const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
   const hasNextPage = currentPage < totalPages;
   const hasPrevPage = currentPage > 1;
+
+  // Sync searchInput from URL on mount
+  useEffect(() => {
+    setSearchInput(searchQuery);
+  }, [searchQuery]);
+
+  // Debounce search input to URL (300ms delay)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const params = new URLSearchParams(searchParams.toString());
+      if (searchInput) {
+        params.set("search", searchInput);
+      } else {
+        params.delete("search");
+      }
+      params.delete("page"); // Reset to page 1 when search changes
+
+      // Only update if different from current URL
+      if (params.toString() !== searchParams.toString()) {
+        router.push(`/dashboard/signals?${params.toString()}`);
+      }
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [searchInput]);
 
   // Fetch signals when filters change
   useEffect(() => {
@@ -260,6 +288,29 @@ function SignalsPageContent() {
               <Button variant="default" size="sm">
                 Add Source
               </Button>
+            </div>
+          </div>
+
+          {/* Search input */}
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-[var(--text-tertiary)] mr-1">Search:</span>
+            <div className="relative">
+              <input
+                type="text"
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                placeholder="Company name or title..."
+                className="w-48 px-3 py-1.5 text-xs rounded-md border border-[var(--border-default)] bg-[var(--bg-primary)] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
+              />
+              {searchInput && (
+                <button
+                  onClick={() => setSearchInput("")}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
+                  aria-label="Clear search"
+                >
+                  ×
+                </button>
+              )}
             </div>
           </div>
 
