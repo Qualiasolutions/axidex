@@ -27,6 +27,12 @@ const signalFilters: { type: SignalType; label: string }[] = [
   { type: "leadership_change", label: "Leadership" },
 ];
 
+const priorityFilters: { priority: SignalPriority; label: string }[] = [
+  { priority: "high", label: "High" },
+  { priority: "medium", label: "Medium" },
+  { priority: "low", label: "Low" },
+];
+
 type DatePreset = "today" | "week" | "month" | "all";
 
 const datePresets: { value: DatePreset; label: string }[] = [
@@ -139,6 +145,26 @@ function SignalsPageContent() {
       params.set("types", Array.from(current).join(","));
     } else {
       params.delete("types");
+    }
+    params.delete("page"); // Reset to page 1 when filters change
+
+    router.push(`/dashboard/signals?${params.toString()}`);
+  };
+
+  // Toggle priority filter
+  const togglePriorityFilter = (priority: SignalPriority) => {
+    const current = new Set(activePriorities);
+    if (current.has(priority)) {
+      current.delete(priority);
+    } else {
+      current.add(priority);
+    }
+
+    const params = new URLSearchParams(searchParams.toString());
+    if (current.size > 0) {
+      params.set("priorities", Array.from(current).join(","));
+    } else {
+      params.delete("priorities");
     }
     params.delete("page"); // Reset to page 1 when filters change
 
@@ -288,6 +314,41 @@ function SignalsPageContent() {
               <Button variant="default" size="sm">
                 Add Source
               </Button>
+            </div>
+          </div>
+
+          {/* Priority filters */}
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-xs text-[var(--text-tertiary)] mr-1">Priority:</span>
+            <Button
+              variant={activePriorities.length === 0 ? "default" : "secondary"}
+              size="sm"
+              onClick={() => {
+                const params = new URLSearchParams(searchParams.toString());
+                params.delete("priorities");
+                params.delete("page");
+                router.push(`/dashboard/signals?${params.toString()}`);
+              }}
+            >
+              All Priorities
+            </Button>
+            <div className="flex items-center gap-1">
+              {priorityFilters.map((filter) => {
+                const isActive = activePriorities.includes(filter.priority);
+                return (
+                  <button
+                    key={filter.priority}
+                    onClick={() => togglePriorityFilter(filter.priority)}
+                    className={`px-2.5 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                      isActive
+                        ? "bg-[var(--accent)] text-white"
+                        : "text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-secondary)]"
+                    }`}
+                  >
+                    {filter.label}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
