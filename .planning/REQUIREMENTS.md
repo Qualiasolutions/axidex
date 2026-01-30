@@ -21,18 +21,18 @@
 
 ### Signal Ingestion
 
-- [ ] **SCRP-01**: Python worker scrapes TechCrunch/news sites on schedule
-- [ ] **SCRP-02**: Python worker scrapes company websites (press releases, careers)
-- [ ] **SCRP-03**: Python worker scrapes public job boards (Indeed, Glassdoor)
+- [x] **SCRP-01**: Python worker scrapes TechCrunch/news sites on schedule
+- [x] **SCRP-02**: Python worker scrapes company websites (press releases, careers)
+- [x] **SCRP-03**: Python worker scrapes public job boards (Indeed, Glassdoor)
 - [ ] **SCRP-04**: Python worker scrapes LinkedIn Jobs with proxy rotation
-- [ ] **SCRP-05**: Signals deduplicated via pgvector similarity before storage
-- [ ] **SCRP-06**: Signals classified by type (hiring, funding, expansion)
-- [ ] **SCRP-07**: Signals scored for buyer intent priority
+- [x] **SCRP-05**: Signals deduplicated via pgvector similarity before storage
+- [x] **SCRP-06**: Signals classified by type (hiring, funding, expansion)
+- [x] **SCRP-07**: Signals scored for buyer intent priority
 
 ### AI Pipeline
 
-- [ ] **AI-01**: OpenAI GPT-4o extracts entities (company, role, funding amount) from raw content
-- [ ] **AI-02**: Classification model determines signal type and priority
+- [x] **AI-01**: OpenAI GPT-4o extracts entities (company, role, funding amount) from raw content
+- [x] **AI-02**: Classification model determines signal type and priority
 - [ ] **AI-03**: Anthropic Claude generates personalized outreach email per signal
 - [ ] **AI-04**: Email generation triggered on-demand when user requests
 - [ ] **AI-05**: LLM usage tracked with budget caps and alerts
@@ -97,15 +97,15 @@
 | DATA-02 | Phase 1 | Complete |
 | DATA-03 | Phase 1 | Complete |
 | DATA-04 | Phase 1 | Complete |
-| SCRP-01 | Phase 2 | Pending |
-| SCRP-02 | Phase 2 | Pending |
-| SCRP-03 | Phase 2 | Pending |
+| SCRP-01 | Phase 2 | Complete |
+| SCRP-02 | Phase 2 | Complete |
+| SCRP-03 | Phase 2 | Complete |
 | SCRP-04 | Phase 4 | Pending |
-| SCRP-05 | Phase 2 | Pending |
-| SCRP-06 | Phase 2 | Pending |
-| SCRP-07 | Phase 2 | Pending |
-| AI-01 | Phase 2 | Pending |
-| AI-02 | Phase 2 | Pending |
+| SCRP-05 | Phase 2 | Complete |
+| SCRP-06 | Phase 2 | Complete |
+| SCRP-07 | Phase 2 | Complete |
+| AI-01 | Phase 2 | Complete |
+| AI-02 | Phase 2 | Complete |
 | AI-03 | Phase 3 | Pending |
 | AI-04 | Phase 3 | Pending |
 | AI-05 | Phase 3 | Pending |
@@ -128,4 +128,4 @@
 
 ---
 *Requirements defined: 2026-01-30*
-*Last updated: 2026-01-30 — Phase 1 requirements complete*
+*Last updated: 2026-01-30 — Phase 2 requirements complete*

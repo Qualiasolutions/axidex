@@ -13,7 +13,7 @@ Axidex transforms from a shell with empty states into a full signal intelligence
 - Decimal phases (e.g., 2.1): Urgent insertions (marked with INSERTED)
 
 - [x] **Phase 1: Foundation** - Database schema, RLS policies, and authentication
-- [ ] **Phase 2: Signal Ingestion** - Scrapers for news/jobs + AI classification
+- [x] **Phase 2: Signal Ingestion** - Scrapers for news/jobs + AI classification
 - [ ] **Phase 3: Dashboard & Emails** - Live signal feed with AI email generation
 - [ ] **Phase 4: Automation & Hardening** - LinkedIn scraping, scheduling, notifications
 
@@ -50,9 +50,9 @@ Plans:
 5. Each signal has a type (hiring/funding/expansion) and priority score
 
 Plans:
-- [ ] 02-01-PLAN.md — Python worker setup + TechCrunch news scraper
-- [ ] 02-02-PLAN.md — Job board and company website scrapers with deduplication
-- [ ] 02-03-PLAN.md — AI entity extraction and signal classification
+- [x] 02-01-PLAN.md — Python worker setup + TechCrunch news scraper
+- [x] 02-02-PLAN.md — Job board and company website scrapers with deduplication
+- [x] 02-03-PLAN.md — AI entity extraction and signal classification
 
 ### Phase 3: Dashboard & Emails
 **Goal:** Users see live signals and can generate personalized outreach emails
@@ -98,7 +98,7 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 2/2 | ✓ Complete | 2026-01-30 |
-| 2. Signal Ingestion | 0/3 | Not started | - |
+| 2. Signal Ingestion | 3/3 | ✓ Complete | 2026-01-30 |
 | 3. Dashboard & Emails | 0/3 | Not started | - |
 | 4. Automation & Hardening | 0/2 | Not started | - |
 
