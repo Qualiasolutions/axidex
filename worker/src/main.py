@@ -21,8 +21,9 @@ DEMO_USER_ID = "00000000-0000-0000-0000-000000000000"
 
 
 async def run_scrapers():
-    """Run all scrapers and store results."""
-    log.info("scrape_cycle_start")
+    """Run all scrapers, enrich with AI, and store results."""
+    settings = get_settings()
+    log.info("scrape_cycle_start", ai_enabled=settings.ai_enabled)
 
     scrapers = [
         TechCrunchScraper(),
@@ -31,17 +32,31 @@ async def run_scrapers():
     ]
 
     total_signals = 0
+    enriched_signals = 0
+
     for scraper in scrapers:
         try:
             signals = await scraper.scrape()
+
             for signal in signals:
-                result = insert_signal(signal, DEMO_USER_ID)
+                # Enrich with AI before inserting
+                enriched_signal = scraper.enrich_signal(signal)
+
+                if enriched_signal.metadata.get('ai_enriched'):
+                    enriched_signals += 1
+
+                result = insert_signal(enriched_signal, DEMO_USER_ID)
                 if result:
                     total_signals += 1
+
         except Exception as e:
             log.error("scraper_failed", scraper=scraper.name, error=str(e))
 
-    log.info("scrape_cycle_complete", total_signals=total_signals)
+    log.info(
+        "scrape_cycle_complete",
+        total_signals=total_signals,
+        ai_enriched=enriched_signals
+    )
 
 
 def job():
@@ -51,7 +66,12 @@ def job():
 
 def main():
     settings = get_settings()
-    log.info("worker_starting", interval=settings.scrape_interval_minutes)
+    log.info(
+        "worker_starting",
+        interval=settings.scrape_interval_minutes,
+        ai_enabled=settings.ai_enabled,
+        model=settings.openai_model
+    )
 
     # Run immediately on start
     job()
