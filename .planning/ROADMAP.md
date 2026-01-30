@@ -2,9 +2,9 @@
 
 ## Overview
 
-4 phases | 31 requirements | 3 weeks estimated
+5 phases | 31 requirements | 3 weeks estimated
 
-Axidex transforms from a shell with empty states into a full signal intelligence platform. We build foundation first (database + auth), then scrapers with AI classification, then the dashboard with email generation, and finally automation with LinkedIn (hardest source, saved for last).
+Axidex transforms from a shell with empty states into a full signal intelligence platform. We build foundation first (database + auth), then scrapers with AI classification, then the dashboard with email generation, automation with LinkedIn, and finally UI polish to complete the experience.
 
 ## Phases
 
@@ -16,6 +16,7 @@ Axidex transforms from a shell with empty states into a full signal intelligence
 - [x] **Phase 2: Signal Ingestion** - Scrapers for news/jobs + AI classification
 - [x] **Phase 3: Dashboard & Emails** - Live signal feed with AI email generation
 - [x] **Phase 4: Automation & Hardening** - LinkedIn scraping, scheduling, notifications
+- [ ] **Phase 5: UI Polish** - Pagination, search, priority filters for production-ready UX
 
 ## Phase Details
 
@@ -89,6 +90,23 @@ Plans:
 - [x] 04-01-PLAN.md — LinkedIn Jobs scraper with Bright Data proxy rotation
 - [x] 04-02-PLAN.md — Notification preferences UI and email alerts via Resend
 
+### Phase 5: UI Polish
+**Goal:** Signals list has pagination, search, and priority filters for a production-ready experience
+**Depends on:** Phase 3 (builds on existing signals page)
+**Requirements:** None (tech debt closure from audit)
+**Gap Closure:** Closes UI tech debt from v1.0 audit
+**Plans:** 2 plans (Wave 1: parallel)
+
+**Success Criteria** (what must be TRUE):
+1. Signals list shows pagination controls when more than 20 signals exist
+2. User can search signals by company name or title keyword
+3. User can filter signals by priority level (high, medium, low)
+4. All filters work together and persist in URL for sharing
+
+Plans:
+- [ ] 05-01-PLAN.md — Pagination component and infinite scroll for signals list
+- [ ] 05-02-PLAN.md — Search input and priority filter controls
+
 ## Progress
 
 **Execution Order:** Phases execute in numeric order: 1 -> 2 -> 3 -> 4
@@ -99,6 +117,7 @@ Plans:
 | 2. Signal Ingestion | 3/3 | ✓ Complete | 2026-01-30 |
 | 3. Dashboard & Emails | 3/3 | ✓ Complete | 2026-01-30 |
 | 4. Automation & Hardening | 2/2 | ✓ Complete | 2026-01-30 |
+| 5. UI Polish | 0/2 | Not started | - |
 
 ---
 *Roadmap created: 2026-01-30*
