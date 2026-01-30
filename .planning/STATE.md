@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-01-30)
 
 **Core value:** Sales teams get actionable signals with ready-to-send emails — no manual research.
-**Current focus:** Phase 3 Dashboard & Emails complete - Ready for Phase 4
+**Current focus:** Phase 4 Automation & Hardening - LinkedIn scraper complete
 
 ## Current Position
 
-Phase: 3 of 4 (Dashboard & Emails)
-Plan: 3 of 3 in current phase (COMPLETE)
-Status: Phase complete
-Last activity: 2026-01-30 — Completed Phase 3 (Dashboard & Emails)
+Phase: 4 of 4 (Automation & Hardening)
+Plan: 1 of 2 in current phase
+Status: In progress
+Last activity: 2026-01-30 — Completed 04-01-PLAN.md (LinkedIn Scraper)
 
-Progress: [███████░░░] 75%
+Progress: [█████████░] 90%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 8
-- Average duration: 3min 20s
-- Total execution time: 0.44 hours
+- Total plans completed: 9
+- Average duration: 3min 17s
+- Total execution time: 0.49 hours
 
 **By Phase:**
 
@@ -30,11 +30,11 @@ Progress: [███████░░░] 75%
 | 1. Foundation | 2/2 | 4min 24s | 2min 12s |
 | 2. Signal Ingestion | 3/3 | 12min 35s | 4min 12s |
 | 3. Dashboard & Emails | 3/3 | 11min 21s | 3min 47s |
-| 4. Automation & Hardening | 0/2 | - | - |
+| 4. Automation & Hardening | 1/2 | 2min 51s | 2min 51s |
 
 **Recent Trend:**
-- Last 5 plans: 02-03 (180s), 03-01 (202s), 03-02 (287s), 03-03 (192s)
-- Trend: Steady - averaging 3-4 min per plan
+- Last 5 plans: 03-01 (202s), 03-02 (287s), 03-03 (192s), 04-01 (171s)
+- Trend: Steady - averaging 3 min per plan
 
 *Updated after each plan completion*
 
@@ -61,15 +61,17 @@ Recent decisions affecting current work:
 | D012 | Client-side filtering with URL state | 03-01 | Enables filter sharing, browser back/forward, refresh persistence |
 | D013 | Calculate stats in application layer vs RPC | 03-03 | Simpler for current scale, easier to modify |
 | D014 | Supabase Realtime for live signal updates | 03-03 | More efficient than polling, instant updates |
+| D015 | Use Bright Data Web Scraper API for LinkedIn | 04-01 | Legal protection; handles anti-bot, CAPTCHA, retries |
+| D016 | Random 2-5s delays between LinkedIn requests | 04-01 | Prevents rate limiting without predictable patterns |
 
 ### Pending Todos
 
 - Apply migrations to Supabase project (001, 002, 003) via dashboard or `supabase db push`
 - Configure Supabase Auth (enable email provider, set site URL)
 - Deploy worker to Railway (requires SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
-- Optional: Configure Bright Data proxy for job board scraping
 - Add OPENAI_API_KEY to worker environment for AI enrichment
 - **Add ANTHROPIC_API_KEY to .env.local for email generation** (required for 03-02)
+- **Add BRIGHT_DATA_API_TOKEN to worker environment for LinkedIn scraping** (required for 04-01)
 
 ### Blockers/Concerns
 
@@ -78,10 +80,10 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-01-30 18:00 UTC
-Stopped at: Completed Phase 3 (Dashboard & Emails)
+Last session: 2026-01-30 16:33 UTC
+Stopped at: Completed 04-01-PLAN.md (LinkedIn Scraper)
 Resume file: None
 
 ---
 *State initialized: 2026-01-30*
-*Next: Phase 4 - Automation & Hardening*
+*Next: 04-02 Notification Preferences & Email Alerts*
