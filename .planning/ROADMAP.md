@@ -95,7 +95,7 @@ Plans:
 **Depends on:** Phase 3 (builds on existing signals page)
 **Requirements:** None (tech debt closure from audit)
 **Gap Closure:** Closes UI tech debt from v1.0 audit
-**Plans:** 2 plans (Wave 1: parallel)
+**Plans:** 2 plans (Wave 1: 05-01 | Wave 2: 05-02)
 
 **Success Criteria** (what must be TRUE):
 1. Signals list shows pagination controls when more than 20 signals exist
@@ -104,12 +104,12 @@ Plans:
 4. All filters work together and persist in URL for sharing
 
 Plans:
-- [ ] 05-01-PLAN.md — Pagination component and infinite scroll for signals list
+- [ ] 05-01-PLAN.md — Pagination controls for signals list
 - [ ] 05-02-PLAN.md — Search input and priority filter controls
 
 ## Progress
 
-**Execution Order:** Phases execute in numeric order: 1 -> 2 -> 3 -> 4
+**Execution Order:** Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
