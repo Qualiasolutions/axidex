@@ -40,6 +40,7 @@ Plans:
 **Goal:** Signals flow automatically from news/job sources into the database, classified and scored
 **Depends on:** Phase 1 (needs database tables)
 **Requirements:** SCRP-01, SCRP-02, SCRP-03, SCRP-05, SCRP-06, SCRP-07, AI-01, AI-02
+**Plans:** 3 plans (Wave 1: 02-01, 02-02 parallel | Wave 2: 02-03)
 
 **Success Criteria** (what must be TRUE):
 1. Python worker on Railway scrapes TechCrunch and stores raw data
@@ -48,12 +49,10 @@ Plans:
 4. Duplicate signals are detected and not stored twice
 5. Each signal has a type (hiring/funding/expansion) and priority score
 
-**Plans:** TBD
-
 Plans:
-- [ ] 02-01: Railway Python worker setup + news scraper
-- [ ] 02-02: Job board and company website scrapers
-- [ ] 02-03: AI entity extraction and classification
+- [ ] 02-01-PLAN.md — Python worker setup + TechCrunch news scraper
+- [ ] 02-02-PLAN.md — Job board and company website scrapers with deduplication
+- [ ] 02-03-PLAN.md — AI entity extraction and signal classification
 
 ### Phase 3: Dashboard & Emails
 **Goal:** Users see live signals and can generate personalized outreach emails
