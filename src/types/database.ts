@@ -16,6 +16,7 @@ export type Database = {
           full_name: string | null
           avatar_url: string | null
           company_name: string | null
+          notification_preferences: Json | null
           created_at: string
           updated_at: string
         }
@@ -25,6 +26,7 @@ export type Database = {
           full_name?: string | null
           avatar_url?: string | null
           company_name?: string | null
+          notification_preferences?: Json | null
           created_at?: string
           updated_at?: string
         }
@@ -34,6 +36,7 @@ export type Database = {
           full_name?: string | null
           avatar_url?: string | null
           company_name?: string | null
+          notification_preferences?: Json | null
           created_at?: string
           updated_at?: string
         }
