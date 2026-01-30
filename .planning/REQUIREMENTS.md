@@ -7,17 +7,17 @@
 
 ### Authentication
 
-- [ ] **AUTH-01**: User can sign up with email and password
-- [ ] **AUTH-02**: User can log in and stay logged in across sessions
-- [ ] **AUTH-03**: User can log out from any page
-- [ ] **AUTH-04**: User can reset password via email link
+- [x] **AUTH-01**: User can sign up with email and password
+- [x] **AUTH-02**: User can log in and stay logged in across sessions
+- [x] **AUTH-03**: User can log out from any page
+- [x] **AUTH-04**: User can reset password via email link
 
 ### Database
 
-- [ ] **DATA-01**: Signals table stores scraped signals with type, company, content, priority
-- [ ] **DATA-02**: Emails table stores generated emails linked to signals
-- [ ] **DATA-03**: Users table stores profiles and preferences
-- [ ] **DATA-04**: RLS policies restrict users to their own data
+- [x] **DATA-01**: Signals table stores scraped signals with type, company, content, priority
+- [x] **DATA-02**: Emails table stores generated emails linked to signals
+- [x] **DATA-03**: Users table stores profiles and preferences
+- [x] **DATA-04**: RLS policies restrict users to their own data
 
 ### Signal Ingestion
 
@@ -89,14 +89,14 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| AUTH-01 | Phase 1 | Pending |
-| AUTH-02 | Phase 1 | Pending |
-| AUTH-03 | Phase 1 | Pending |
-| AUTH-04 | Phase 1 | Pending |
-| DATA-01 | Phase 1 | Pending |
-| DATA-02 | Phase 1 | Pending |
-| DATA-03 | Phase 1 | Pending |
-| DATA-04 | Phase 1 | Pending |
+| AUTH-01 | Phase 1 | Complete |
+| AUTH-02 | Phase 1 | Complete |
+| AUTH-03 | Phase 1 | Complete |
+| AUTH-04 | Phase 1 | Complete |
+| DATA-01 | Phase 1 | Complete |
+| DATA-02 | Phase 1 | Complete |
+| DATA-03 | Phase 1 | Complete |
+| DATA-04 | Phase 1 | Complete |
 | SCRP-01 | Phase 2 | Pending |
 | SCRP-02 | Phase 2 | Pending |
 | SCRP-03 | Phase 2 | Pending |
@@ -128,4 +128,4 @@
 
 ---
 *Requirements defined: 2026-01-30*
-*Last updated: 2026-01-30 — Phase mappings added*
+*Last updated: 2026-01-30 — Phase 1 requirements complete*

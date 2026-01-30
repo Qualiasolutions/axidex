@@ -12,7 +12,7 @@ Axidex transforms from a shell with empty states into a full signal intelligence
 - Integer phases (1, 2, 3, 4): Planned milestone work
 - Decimal phases (e.g., 2.1): Urgent insertions (marked with INSERTED)
 
-- [ ] **Phase 1: Foundation** - Database schema, RLS policies, and authentication
+- [x] **Phase 1: Foundation** - Database schema, RLS policies, and authentication
 - [ ] **Phase 2: Signal Ingestion** - Scrapers for news/jobs + AI classification
 - [ ] **Phase 3: Dashboard & Emails** - Live signal feed with AI email generation
 - [ ] **Phase 4: Automation & Hardening** - LinkedIn scraping, scheduling, notifications
@@ -33,8 +33,8 @@ Axidex transforms from a shell with empty states into a full signal intelligence
 5. Database tables exist with proper RLS (users see only their own data)
 
 Plans:
-- [ ] 01-01-PLAN.md — Database schema (profiles, signals, emails) and RLS policies
-- [ ] 01-02-PLAN.md — Supabase Auth integration (login, signup, logout, password reset)
+- [x] 01-01-PLAN.md — Database schema (profiles, signals, emails) and RLS policies
+- [x] 01-02-PLAN.md — Supabase Auth integration (login, signup, logout, password reset)
 
 ### Phase 2: Signal Ingestion
 **Goal:** Signals flow automatically from news/job sources into the database, classified and scored
@@ -98,7 +98,7 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/2 | Planned | - |
+| 1. Foundation | 2/2 | ✓ Complete | 2026-01-30 |
 | 2. Signal Ingestion | 0/3 | Not started | - |
 | 3. Dashboard & Emails | 0/3 | Not started | - |
 | 4. Automation & Hardening | 0/2 | Not started | - |
