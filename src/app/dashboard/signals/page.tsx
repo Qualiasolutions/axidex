@@ -52,6 +52,14 @@ function SignalsPageContent() {
   const from = searchParams.get("from") || "";
   const to = searchParams.get("to") || "";
 
+  // Pagination
+  const ITEMS_PER_PAGE = 20;
+  const currentPage = parseInt(searchParams.get("page") || "1");
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+  const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
+  const hasNextPage = currentPage < totalPages;
+  const hasPrevPage = currentPage > 1;
+
   // Fetch signals when filters change
   useEffect(() => {
     async function fetchSignals() {
@@ -65,6 +73,8 @@ function SignalsPageContent() {
         if (searchQuery) params.set("search", searchQuery);
         if (from) params.set("from", from);
         if (to) params.set("to", to);
+        params.set("limit", ITEMS_PER_PAGE.toString());
+        params.set("offset", offset.toString());
 
         const response = await fetch(`/api/signals?${params.toString()}`);
 
@@ -85,7 +95,7 @@ function SignalsPageContent() {
     }
 
     fetchSignals();
-  }, [activeTypes.join(","), activePriorities.join(","), searchQuery, from, to]);
+  }, [activeTypes.join(","), activePriorities.join(","), searchQuery, from, to, currentPage]);
 
   // Toggle type filter
   const toggleTypeFilter = (type: SignalType) => {
@@ -102,6 +112,7 @@ function SignalsPageContent() {
     } else {
       params.delete("types");
     }
+    params.delete("page"); // Reset to page 1 when filters change
 
     router.push(`/dashboard/signals?${params.toString()}`);
   };
@@ -139,6 +150,7 @@ function SignalsPageContent() {
       params.set("from", formatISO(fromDate));
       params.set("to", formatISO(toDate));
     }
+    params.delete("page"); // Reset to page 1 when filters change
 
     router.push(`/dashboard/signals?${params.toString()}`);
   };
@@ -173,6 +185,17 @@ function SignalsPageContent() {
 
   const activeDatePreset = getActiveDatePreset();
 
+  // Navigate to a specific page
+  const goToPage = (page: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (page === 1) {
+      params.delete("page");
+    } else {
+      params.set("page", page.toString());
+    }
+    router.push(`/dashboard/signals?${params.toString()}`);
+  };
+
   // Calculate stats
   const highPriorityCount = signals.filter((s) => s.priority === "high").length;
   const newSignalsCount = signals.filter((s) => s.status === "new").length;
@@ -198,6 +221,7 @@ function SignalsPageContent() {
                 onClick={() => {
                   const params = new URLSearchParams(searchParams.toString());
                   params.delete("types");
+                  params.delete("page");
                   router.push(`/dashboard/signals?${params.toString()}`);
                 }}
               >
@@ -298,11 +322,47 @@ function SignalsPageContent() {
 
         {/* Signals list */}
         {!loading && !error && signals.length > 0 && (
-          <div className="space-y-4">
-            {signals.map((signal, index) => (
-              <SignalCard key={signal.id} signal={signal} index={index} />
-            ))}
-          </div>
+          <>
+            <div className="space-y-4">
+              {signals.map((signal, index) => (
+                <SignalCard key={signal.id} signal={signal} index={index} />
+              ))}
+            </div>
+
+            {/* Pagination controls */}
+            {totalPages > 1 && (
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: 0.1 }}
+                className="flex items-center justify-between px-4 py-3 bg-[var(--bg-secondary)] rounded-lg border border-[var(--border-subtle)]"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-[var(--text-tertiary)]">
+                    Page {currentPage} of {totalPages}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => goToPage(currentPage - 1)}
+                    disabled={!hasPrevPage}
+                  >
+                    Previous
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => goToPage(currentPage + 1)}
+                    disabled={!hasNextPage}
+                  >
+                    Next
+                  </Button>
+                </div>
+              </motion.div>
+            )}
+          </>
         )}
 
         {/* Empty state */}
