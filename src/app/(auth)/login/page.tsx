@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { motion } from "motion/react";
@@ -8,7 +8,7 @@ import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirect") || "/dashboard";
@@ -135,5 +135,33 @@ export default function LoginPage() {
         </Link>
       </div>
     </motion.div>
+  );
+}
+
+function LoginFormFallback() {
+  return (
+    <div className="bg-background rounded-lg border border-border p-8 shadow-sm">
+      <div className="text-center mb-6">
+        <h1 className="text-xl font-semibold text-foreground">
+          Sign in to Axidex
+        </h1>
+        <p className="text-sm text-muted-foreground mt-1">
+          Welcome back. Enter your credentials to continue.
+        </p>
+      </div>
+      <div className="space-y-4">
+        <div className="h-10 bg-secondary rounded-md animate-pulse" />
+        <div className="h-10 bg-secondary rounded-md animate-pulse" />
+        <div className="h-9 bg-primary/50 rounded-md animate-pulse" />
+      </div>
+    </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<LoginFormFallback />}>
+      <LoginForm />
+    </Suspense>
   );
 }
