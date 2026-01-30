@@ -8,6 +8,15 @@ import { Badge } from "@/components/ui/badge";
 import { SignalCard } from "@/components/signals/signal-card";
 import { motion } from "motion/react";
 import type { Signal, SignalType } from "@/types";
+import {
+  startOfDay,
+  endOfDay,
+  startOfWeek,
+  endOfWeek,
+  startOfMonth,
+  endOfMonth,
+  formatISO,
+} from "date-fns";
 
 const signalFilters: { type: SignalType; label: string }[] = [
   { type: "hiring", label: "Hiring" },
@@ -16,6 +25,15 @@ const signalFilters: { type: SignalType; label: string }[] = [
   { type: "partnership", label: "Partnership" },
   { type: "product_launch", label: "Launch" },
   { type: "leadership_change", label: "Leadership" },
+];
+
+type DatePreset = "today" | "week" | "month" | "all";
+
+const datePresets: { value: DatePreset; label: string }[] = [
+  { value: "today", label: "Today" },
+  { value: "week", label: "This Week" },
+  { value: "month", label: "This Month" },
+  { value: "all", label: "All Time" },
 ];
 
 function SignalsPageContent() {
@@ -88,6 +106,73 @@ function SignalsPageContent() {
     router.push(`/dashboard/signals?${params.toString()}`);
   };
 
+  // Set date range filter
+  const setDatePreset = (preset: DatePreset) => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (preset === "all") {
+      params.delete("from");
+      params.delete("to");
+    } else {
+      const now = new Date();
+      let fromDate: Date;
+      let toDate: Date;
+
+      switch (preset) {
+        case "today":
+          fromDate = startOfDay(now);
+          toDate = endOfDay(now);
+          break;
+        case "week":
+          fromDate = startOfWeek(now);
+          toDate = endOfWeek(now);
+          break;
+        case "month":
+          fromDate = startOfMonth(now);
+          toDate = endOfMonth(now);
+          break;
+        default:
+          fromDate = startOfDay(now);
+          toDate = endOfDay(now);
+      }
+
+      params.set("from", formatISO(fromDate));
+      params.set("to", formatISO(toDate));
+    }
+
+    router.push(`/dashboard/signals?${params.toString()}`);
+  };
+
+  // Determine active date preset
+  const getActiveDatePreset = (): DatePreset => {
+    if (!from && !to) return "all";
+
+    const now = new Date();
+
+    // Check if matches today
+    const todayFrom = formatISO(startOfDay(now));
+    const todayTo = formatISO(endOfDay(now));
+    if (from.startsWith(todayFrom.split("T")[0]) && to.startsWith(todayTo.split("T")[0])) {
+      return "today";
+    }
+
+    // Check if matches this week (approximate)
+    const weekFrom = formatISO(startOfWeek(now));
+    if (from.startsWith(weekFrom.split("T")[0])) {
+      return "week";
+    }
+
+    // Check if matches this month (approximate)
+    const monthFrom = formatISO(startOfMonth(now));
+    if (from.startsWith(monthFrom.split("T")[0])) {
+      return "month";
+    }
+
+    return "all";
+  };
+
+  const activeDatePreset = getActiveDatePreset();
+
   // Calculate stats
   const highPriorityCount = signals.filter((s) => s.priority === "high").length;
   const newSignalsCount = signals.filter((s) => s.status === "new").length;
@@ -101,53 +186,75 @@ function SignalsPageContent() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
-          className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+          className="space-y-4"
         >
-          <div className="flex items-center gap-2 flex-wrap">
-            <Button
-              variant={activeTypes.length === 0 ? "default" : "secondary"}
-              size="sm"
-              onClick={() => {
-                const params = new URLSearchParams(searchParams.toString());
-                params.delete("types");
-                router.push(`/dashboard/signals?${params.toString()}`);
-              }}
-            >
-              All Types
-            </Button>
-            <div className="flex items-center gap-1">
-              {signalFilters.map((filter) => {
-                const isActive = activeTypes.includes(filter.type);
-                return (
-                  <button
-                    key={filter.type}
-                    onClick={() => toggleTypeFilter(filter.type)}
-                    className={`px-2.5 py-1.5 text-xs font-medium rounded-md transition-colors ${
-                      isActive
-                        ? "bg-[var(--accent)] text-white"
-                        : "text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-secondary)]"
-                    }`}
-                  >
-                    {filter.label}
-                  </button>
-                );
-              })}
+          {/* Type filters */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-xs text-[var(--text-tertiary)] mr-1">Type:</span>
+              <Button
+                variant={activeTypes.length === 0 ? "default" : "secondary"}
+                size="sm"
+                onClick={() => {
+                  const params = new URLSearchParams(searchParams.toString());
+                  params.delete("types");
+                  router.push(`/dashboard/signals?${params.toString()}`);
+                }}
+              >
+                All Types
+              </Button>
+              <div className="flex items-center gap-1">
+                {signalFilters.map((filter) => {
+                  const isActive = activeTypes.includes(filter.type);
+                  return (
+                    <button
+                      key={filter.type}
+                      onClick={() => toggleTypeFilter(filter.type)}
+                      className={`px-2.5 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                        isActive
+                          ? "bg-[var(--accent)] text-white"
+                          : "text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-secondary)]"
+                      }`}
+                    >
+                      {filter.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  const params = new URLSearchParams(searchParams.toString());
+                  router.push(`/dashboard/signals?${params.toString()}`);
+                }}
+              >
+                Refresh
+              </Button>
+              <Button variant="default" size="sm">
+                Add Source
+              </Button>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => {
-                const params = new URLSearchParams(searchParams.toString());
-                router.push(`/dashboard/signals?${params.toString()}`);
-              }}
-            >
-              Refresh
-            </Button>
-            <Button variant="default" size="sm">
-              Add Source
-            </Button>
+
+          {/* Date filters */}
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-xs text-[var(--text-tertiary)] mr-1">Time:</span>
+            {datePresets.map((preset) => (
+              <button
+                key={preset.value}
+                onClick={() => setDatePreset(preset.value)}
+                className={`px-2.5 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                  activeDatePreset === preset.value
+                    ? "bg-[var(--accent)] text-white"
+                    : "text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-secondary)]"
+                }`}
+              >
+                {preset.label}
+              </button>
+            ))}
           </div>
         </motion.div>
 
