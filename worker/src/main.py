@@ -6,6 +6,7 @@ from .config import get_settings
 from .scrapers.news import TechCrunchScraper
 from .scrapers.jobs import JobBoardScraper
 from .scrapers.company import CompanyWebsiteScraper
+from .scrapers.linkedin import LinkedInScraper
 from .db.supabase import insert_signal
 
 structlog.configure(
@@ -29,14 +30,17 @@ async def run_scrapers():
         TechCrunchScraper(),
         JobBoardScraper(),
         CompanyWebsiteScraper(),
+        LinkedInScraper(),
     ]
 
     total_signals = 0
     enriched_signals = 0
+    signals_by_source: dict[str, int] = {}
 
     for scraper in scrapers:
         try:
             signals = await scraper.scrape()
+            scraper_count = 0
 
             for signal in signals:
                 # Enrich with AI before inserting
@@ -48,14 +52,19 @@ async def run_scrapers():
                 result = insert_signal(enriched_signal, DEMO_USER_ID)
                 if result:
                     total_signals += 1
+                    scraper_count += 1
+
+            signals_by_source[scraper.name] = scraper_count
 
         except Exception as e:
             log.error("scraper_failed", scraper=scraper.name, error=str(e))
+            signals_by_source[scraper.name] = 0
 
     log.info(
         "scrape_cycle_complete",
         total_signals=total_signals,
-        ai_enriched=enriched_signals
+        ai_enriched=enriched_signals,
+        by_source=signals_by_source
     )
 
 
@@ -66,11 +75,13 @@ def job():
 
 def main():
     settings = get_settings()
+    linkedin_enabled = bool(settings.bright_data_api_token)
     log.info(
         "worker_starting",
         interval=settings.scrape_interval_minutes,
         ai_enabled=settings.ai_enabled,
-        model=settings.openai_model
+        model=settings.openai_model,
+        linkedin_enabled=linkedin_enabled
     )
 
     # Run immediately on start
