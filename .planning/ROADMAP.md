@@ -23,6 +23,7 @@ Axidex transforms from a shell with empty states into a full signal intelligence
 **Goal:** Users can create accounts and the database is ready to receive signals
 **Depends on:** Nothing (first phase)
 **Requirements:** AUTH-01, AUTH-02, AUTH-03, AUTH-04, DATA-01, DATA-02, DATA-03, DATA-04
+**Plans:** 2 plans (Wave 1: parallel)
 
 **Success Criteria** (what must be TRUE):
 1. User can sign up with email/password and land on dashboard
@@ -31,11 +32,9 @@ Axidex transforms from a shell with empty states into a full signal intelligence
 4. User can request password reset and receive email with working link
 5. Database tables exist with proper RLS (users see only their own data)
 
-**Plans:** TBD
-
 Plans:
-- [ ] 01-01: Database schema and RLS policies
-- [ ] 01-02: Supabase Auth integration
+- [ ] 01-01-PLAN.md — Database schema (profiles, signals, emails) and RLS policies
+- [ ] 01-02-PLAN.md — Supabase Auth integration (login, signup, logout, password reset)
 
 ### Phase 2: Signal Ingestion
 **Goal:** Signals flow automatically from news/job sources into the database, classified and scored
@@ -99,7 +98,7 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/2 | Not started | - |
+| 1. Foundation | 0/2 | Planned | - |
 | 2. Signal Ingestion | 0/3 | Not started | - |
 | 3. Dashboard & Emails | 0/3 | Not started | - |
 | 4. Automation & Hardening | 0/2 | Not started | - |
