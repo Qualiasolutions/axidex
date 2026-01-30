@@ -1,4 +1,4 @@
-import Anthropic from "@anthropic-ai/sdk";
+import OpenAI from "openai";
 import type { Signal } from "@/types";
 
 export type EmailTone = "professional" | "casual" | "enthusiastic";
@@ -9,22 +9,27 @@ export interface GeneratedEmailContent {
 }
 
 /**
- * Generate a personalized outreach email based on a buying signal using Claude.
+ * Generate a personalized outreach email based on a buying signal using OpenRouter.
  */
 export async function generateEmail(
   signal: Signal,
   tone: EmailTone = "professional"
 ): Promise<GeneratedEmailContent> {
-  const apiKey = process.env.ANTHROPIC_API_KEY;
+  const apiKey = process.env.OPENROUTER_API_KEY;
 
   if (!apiKey) {
     throw new Error(
-      "ANTHROPIC_API_KEY environment variable is not set. Please add it to your .env.local file."
+      "OPENROUTER_API_KEY environment variable is not set. Please add it to your .env.local file."
     );
   }
 
-  const anthropic = new Anthropic({
+  const openrouter = new OpenAI({
     apiKey,
+    baseURL: "https://openrouter.ai/api/v1",
+    defaultHeaders: {
+      "HTTP-Referer": "https://axidex.vercel.app",
+      "X-Title": "Axidex",
+    },
   });
 
   // Build context-rich prompt
@@ -81,11 +86,14 @@ Source: ${signal.source_name}
 Generate an email that references this specific signal and offers relevant value.`;
 
   try {
-    const message = await anthropic.messages.create({
-      model: "claude-3-5-sonnet-20241022",
+    const completion = await openrouter.chat.completions.create({
+      model: "google/gemini-2.5-flash-preview-05-20",
       max_tokens: 500,
-      system: systemPrompt,
       messages: [
+        {
+          role: "system",
+          content: systemPrompt,
+        },
         {
           role: "user",
           content: userPrompt,
@@ -94,17 +102,17 @@ Generate an email that references this specific signal and offers relevant value
     });
 
     // Extract text content from response
-    const textContent = message.content.find((c) => c.type === "text");
-    if (!textContent || textContent.type !== "text") {
-      throw new Error("No text content in Claude response");
+    const responseText = completion.choices[0]?.message?.content;
+    if (!responseText) {
+      throw new Error("No text content in OpenRouter response");
     }
 
     // Parse JSON response
-    const responseText = textContent.text.trim();
+    const trimmedText = responseText.trim();
 
     // Try to extract JSON from potential markdown code blocks
-    let jsonText = responseText;
-    const jsonMatch = responseText.match(/```(?:json)?\s*(\{[\s\S]*\})\s*```/);
+    let jsonText = trimmedText;
+    const jsonMatch = trimmedText.match(/```(?:json)?\s*(\{[\s\S]*\})\s*```/);
     if (jsonMatch) {
       jsonText = jsonMatch[1];
     }
@@ -125,7 +133,7 @@ Generate an email that references this specific signal and offers relevant value
     if (error instanceof Error) {
       if (error.message.includes("authentication") || error.message.includes("API key")) {
         throw new Error(
-          "Anthropic API authentication failed. Please check your ANTHROPIC_API_KEY."
+          "OpenRouter API authentication failed. Please check your OPENROUTER_API_KEY."
         );
       }
       throw new Error(`Failed to generate email: ${error.message}`);
