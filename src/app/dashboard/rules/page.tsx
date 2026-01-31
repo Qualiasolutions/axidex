@@ -114,6 +114,19 @@ function RulesPageContent() {
   };
 
   const handleToggleRule = async (rule: AutomationRule, isActive: boolean) => {
+    // Store current state for rollback
+    const previousRules = rules;
+    const previousCount = totalCount;
+
+    // Optimistic update
+    mutate(
+      {
+        rules: rules.map((r) => (r.id === rule.id ? { ...r, is_active: isActive } : r)),
+        count: totalCount,
+      },
+      { revalidate: false }
+    );
+
     try {
       const response = await fetch(`/api/rules/${rule.id}`, {
         method: "PATCH",
@@ -125,10 +138,15 @@ function RulesPageContent() {
         throw new Error("Failed to update rule");
       }
 
-      // Optimistically update SWR cache
+      // Revalidate to confirm
       mutate();
     } catch (err) {
       console.error("Error toggling rule:", err);
+      // Rollback on error
+      mutate(
+        { rules: previousRules, count: previousCount },
+        { revalidate: false }
+      );
     }
   };
 
@@ -136,6 +154,19 @@ function RulesPageContent() {
     if (!confirm(`Delete "${rule.name}"? This action cannot be undone.`)) {
       return;
     }
+
+    // Store current state for rollback
+    const previousRules = rules;
+    const previousCount = totalCount;
+
+    // Optimistically remove rule from list
+    mutate(
+      {
+        rules: rules.filter((r) => r.id !== rule.id),
+        count: totalCount - 1,
+      },
+      { revalidate: false }
+    );
 
     try {
       const response = await fetch(`/api/rules/${rule.id}`, {
@@ -146,10 +177,15 @@ function RulesPageContent() {
         throw new Error("Failed to delete rule");
       }
 
-      // Optimistically update SWR cache
+      // Revalidate to confirm
       mutate();
     } catch (err) {
       console.error("Error deleting rule:", err);
+      // Rollback on error
+      mutate(
+        { rules: previousRules, count: previousCount },
+        { revalidate: false }
+      );
     }
   };
 
