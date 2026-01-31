@@ -146,6 +146,10 @@ Plans:
 3. Empty states guide users to next action
 4. Toast notifications for all user feedback
 
+Plans:
+- [ ] 12-01-PLAN.md — Toast notifications and reusable EmptyState component
+- [ ] 12-02-PLAN.md — Apply EmptyState across pages and add remaining toasts
+
 ### Phase 13: Slack Integration
 **Goal:** Users receive signal notifications in Slack
 **Depends on:** None (parallel track)
