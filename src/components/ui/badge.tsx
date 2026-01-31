@@ -62,5 +62,19 @@ const statusConfig: Record<SignalStatus, { label: string; variant: BadgeProps["v
 
 export function StatusBadge({ status }: { status: SignalStatus }) {
   const config = statusConfig[status];
-  return <Badge variant={config.variant}>{config.label}</Badge>;
+  const isNew = status === "new";
+  return (
+    <Badge
+      variant={config.variant}
+      className={cn(isNew && "badge-new")}
+    >
+      {isNew && (
+        <span className="relative flex size-1.5 mr-1.5">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-current opacity-75" />
+          <span className="relative inline-flex rounded-full size-1.5 bg-current" />
+        </span>
+      )}
+      {config.label}
+    </Badge>
+  );
 }

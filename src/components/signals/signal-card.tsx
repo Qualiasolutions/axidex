@@ -28,13 +28,13 @@ export const SignalCard = memo(function SignalCard({ signal, index = 0 }: Signal
         animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
         transition={{ duration: 0.45, delay: index * 0.04, ease: easeOutExpo }}
         whileHover={{
-          y: -2,
-          boxShadow: "0 12px 28px -8px rgba(0,0,0,0.06), 0 4px 10px -4px rgba(0,0,0,0.04)"
+          y: -3,
+          boxShadow: "0 20px 40px -12px rgba(0,0,0,0.08), 0 8px 16px -8px rgba(0,0,0,0.04)"
         }}
         className={cn(
           "group bg-[var(--bg-primary)] rounded-2xl p-6 border border-[var(--border-subtle)]",
-          "hover:border-[var(--border-default)] transition-all duration-300 cursor-pointer",
-          signal.status === "new" && "border-l-[3px] border-l-[var(--accent)]"
+          "hover:border-[var(--accent)]/30 transition-all duration-300 cursor-pointer",
+          signal.status === "new" && "border-l-[3px] border-l-[var(--accent)] bg-gradient-to-r from-[var(--accent)]/[0.02] to-transparent"
         )}
       >
         {/* Main content */}

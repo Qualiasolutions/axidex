@@ -30,6 +30,43 @@ import { cn } from "@/lib/utils";
 
 const easeOutExpo: Easing = [0.16, 1, 0.3, 1];
 
+// Animated number counter component
+function AnimatedNumber({ value, duration = 1000 }: { value: number; duration?: number }) {
+  const [displayValue, setDisplayValue] = useState(0);
+
+  useEffect(() => {
+    const startTime = Date.now();
+    const startValue = displayValue;
+    const diff = value - startValue;
+
+    const animate = () => {
+      const elapsed = Date.now() - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      // Ease out cubic
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setDisplayValue(Math.round(startValue + diff * eased));
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      }
+    };
+
+    requestAnimationFrame(animate);
+  }, [value]);
+
+  return <span className="tabular-nums">{displayValue.toLocaleString()}</span>;
+}
+
+// Live indicator component
+function LiveIndicator() {
+  return (
+    <span className="relative flex size-2">
+      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+      <span className="relative inline-flex rounded-full size-2 bg-emerald-500" />
+    </span>
+  );
+}
+
 interface StatCardProps {
   title: string;
   value: string | number;
@@ -70,7 +107,9 @@ function StatCard({ title, value, change, icon, gradient, index }: StatCardProps
         </div>
 
         <p className="text-sm font-medium text-muted-foreground mb-1">{title}</p>
-        <p className="text-3xl font-bold text-foreground tracking-tight">{value}</p>
+        <p className="text-3xl font-bold text-foreground tracking-tight">
+          {typeof value === "number" ? <AnimatedNumber value={value} /> : value}
+        </p>
       </div>
     </motion.div>
   );
@@ -307,7 +346,7 @@ export default function DashboardPage() {
               onClick={handleRunScraper}
               disabled={scraping}
               size="sm"
-              className="gap-2"
+              className="gap-2 hover-lift"
             >
               {scraping ? (
                 <>
@@ -326,15 +365,18 @@ export default function DashboardPage() {
               disabled={refreshing}
               size="sm"
               variant="outline"
-              className="gap-2"
+              className="gap-2 hover-lift"
             >
               <RefreshCw className={cn("w-4 h-4", refreshing && "animate-spin")} />
               Refresh
             </Button>
           </div>
-          <p className="text-xs text-muted-foreground">
-            Last updated: {new Date().toLocaleTimeString()}
-          </p>
+          <div className="flex items-center gap-2">
+            <LiveIndicator />
+            <p className="text-xs text-muted-foreground">
+              Live · {new Date().toLocaleTimeString()}
+            </p>
+          </div>
         </div>
 
         {/* Stats Grid */}
@@ -459,13 +501,13 @@ export default function DashboardPage() {
             >
               <h3 className="text-sm font-semibold text-foreground mb-4">Quick Actions</h3>
               <div className="grid grid-cols-2 gap-3">
-                {quickActions.map((action, index) => (
+                {quickActions.map((action) => (
                   <Link
                     key={action.label}
                     href={action.href}
-                    className="group flex flex-col items-center gap-2 p-4 rounded-xl bg-secondary/50 hover:bg-secondary transition-colors"
+                    className="group flex flex-col items-center gap-2 p-4 rounded-xl bg-secondary/50 hover:bg-secondary hover-lift transition-all"
                   >
-                    <div className={cn("size-10 rounded-xl bg-gradient-to-br flex items-center justify-center", action.color)}>
+                    <div className={cn("size-10 rounded-xl bg-gradient-to-br flex items-center justify-center shadow-lg", action.color)}>
                       <action.icon className="size-5 text-white" />
                     </div>
                     <span className="text-xs font-medium text-foreground group-hover:text-accent transition-colors">
