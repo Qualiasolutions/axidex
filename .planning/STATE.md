@@ -9,19 +9,19 @@ See: .planning/PROJECT.md (updated 2026-01-30)
 
 ## Current Position
 
-Phase: 8 - LinkedIn Scraping (in progress)
-Plan: 08-01 ✓ Complete
-Status: Plan 08-01 complete, ready for Plan 08-02
-Last activity: 2026-01-31 — Bright Data LinkedIn integration verified
+Phase: 8 - LinkedIn Scraping (complete)
+Plan: 08-02 ✓ Complete
+Status: Phase 8 complete, ready for Phase 9
+Last activity: 2026-01-31 — Deduplication verified, requirements complete
 
-Progress: [██████░░░░] 54% (17/31 plans)
+Progress: [██████░░░░] 58% (18/31 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 16 (12 v1.0 + 4 v1.1)
-- Average duration: 3min 54s
-- Total execution time: 1.04 hours
+- Total plans completed: 18 (12 v1.0 + 6 v1.1)
+- Average duration: 3min 42s
+- Total execution time: 1.11 hours
 
 **By Phase (v1.0):**
 
@@ -39,7 +39,7 @@ Progress: [██████░░░░] 54% (17/31 plans)
 |-------|-------|-------|----------|
 | 6. Production Deployment | 2/2 ✓ | 35min | 17min 30s |
 | 7. Observability | 2/2 ✓ | 8min 20s | 4min 10s |
-| 8. LinkedIn Scraping | 1/2 ✓ | 5min 30s | - |
+| 8. LinkedIn Scraping | 2/2 ✓ | 7min 30s | 3min 45s |
 | 9. Notifications | 0/1 | - | - |
 
 *Updated after each plan completion*
@@ -64,6 +64,7 @@ Recent decisions affecting current work:
 | D023 | Session replay 10%/100% sampling | 07-01 | Always capture error context, limit normal sessions |
 | D024 | LoggingIntegration for Python worker | 07-01 | Integrates with structlog; captures relevant levels |
 | D025 | Health server on port 8080 with daemon thread | 07-02 | Railway default, non-blocking |
+| D026 | Content hash over pgvector for dedup | 08-02 | More efficient for exact/near-duplicate detection |
 
 ### Pending Todos
 
@@ -77,10 +78,15 @@ Recent decisions affecting current work:
 - ~~Integrate Sentry SDK for Python worker~~ ✓
 - ~~Add health check endpoint to worker~~ ✓
 
+**Completed in Phase 8:**
+- ~~LinkedIn scraper with Bright Data integration~~ ✓
+- ~~Deduplication logic verified with unit tests~~ ✓
+- ~~All LNKD-* requirements marked complete~~ ✓
+
 **Still Pending:**
 - Configure Supabase database webhook for signals INSERT - Manual step
 - Add RESEND_API_KEY to Vercel environment - Phase 9
-- Add BRIGHT_DATA_API_TOKEN to worker environment - Phase 8
+- Add BRIGHT_DATA_API_TOKEN to worker environment - Manual setup
 - Add SENTRY_DSN environment variables (Next.js and worker) - Manual setup
 - Configure Railway health check in Dashboard - Manual setup
 - (Optional) Set up UptimeRobot or Sentry Crons for alerting - Manual setup
@@ -93,13 +99,13 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-01-31
-Stopped at: Plan 08-01 complete (Task 3 checkpoint deferred)
+Stopped at: Phase 8 complete
 Resume file: None
-Next step: Plan 08-02 or continue Phase 8 execution
+Next step: Phase 9 (Notifications) - final phase of v1.1
 
 ---
 *State initialized: 2026-01-30*
 *Milestone v1.1 started*
 *Phase 6 completed: 2026-01-31*
 *Phase 7 completed: 2026-01-31*
-*Plan 08-01 completed: 2026-01-31*
+*Phase 8 completed: 2026-01-31*
