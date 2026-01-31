@@ -188,12 +188,16 @@ Plans:
 **Goal:** New users understand the product and get value quickly
 **Depends on:** Phase 10, 12 (UX must be polished)
 **Requirements:** ONBR-01, ONBR-02, ONBR-03
-**Plans:** 1 plan
+**Plans:** 2 plans
 
 **Success Criteria:**
 1. New users see welcome screen after signup
 2. Guided tour highlights key features
 3. Setup wizard configures initial preferences
+
+Plans:
+- [ ] 15-01-PLAN.md — Welcome modal, feature tour components, database migration
+- [ ] 15-02-PLAN.md — Setup wizard, dashboard integration, settings restart option
 
 ## Progress
 
@@ -210,7 +214,7 @@ Plans:
 | 12. Design Polish | 2/2 | Complete |
 | 13. Slack Integration | 1/1 | Complete |
 | 14. Billing | 3/3 | Complete |
-| 15. Onboarding | 0/1 | Pending |
+| 15. Onboarding | 0/2 | Pending |
 
 ---
 *Roadmap created: 2026-01-30*
