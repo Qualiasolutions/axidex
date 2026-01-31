@@ -324,7 +324,7 @@ export function ScraperConfigSection() {
               </span>
               {(latestRun.ai_enriched_count ?? 0) > 0 && (
                 <span className="text-muted-foreground">
-                  {latestRun.ai_enriched_count} AI-enriched
+                  {latestRun.ai_enriched_count ?? 0} AI-enriched
                 </span>
               )}
             </div>
@@ -365,7 +365,7 @@ export function ScraperConfigSection() {
         <div className="space-y-2">
           <label className="text-sm font-medium text-foreground">Scrape Interval</label>
           <select
-            value={config.scrape_interval_minutes}
+            value={config.scrape_interval_minutes ?? 30}
             onChange={(e) =>
               setConfig({ ...config, scrape_interval_minutes: parseInt(e.target.value) })
             }
@@ -394,17 +394,17 @@ export function ScraperConfigSection() {
               setConfig({
                 ...config,
                 target_companies:
-                  config.target_companies.length === 0 ? DEFAULT_COMPANIES : [],
+                  (config.target_companies ?? []).length === 0 ? DEFAULT_COMPANIES : [],
               })
             }
             className="text-xs text-primary hover:text-primary/80"
           >
-            {config.target_companies.length === 0 ? "Add defaults" : "Clear all"}
+            {(config.target_companies ?? []).length === 0 ? "Add defaults" : "Clear all"}
           </button>
         </div>
 
         <div className="flex flex-wrap gap-2">
-          {config.target_companies.map((company) => (
+          {(config.target_companies ?? []).map((company) => (
             <span
               key={company}
               className="inline-flex items-center gap-1 px-3 py-1 bg-primary/10 text-primary rounded-full text-sm"
