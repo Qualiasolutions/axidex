@@ -212,7 +212,7 @@ function RulesPageContent() {
         throw new Error("Failed to duplicate rule");
       }
 
-      const data = await response.json();
+      await response.json();
       // Optimistically update SWR cache
       mutate();
       toast.success("Rule duplicated");
@@ -245,7 +245,7 @@ function RulesPageContent() {
         throw new Error("Failed to create rule");
       }
 
-      const data = await response.json();
+      await response.json();
       // Optimistically update SWR cache
       mutate();
       setShowTemplates(false);
