@@ -92,6 +92,20 @@ const DEFAULT_COMPANIES = [
   "Twilio",
 ];
 
+// Popular companies for suggestions
+const SUGGESTED_COMPANIES = [
+  "Stripe", "Shopify", "HubSpot", "Salesforce", "Twilio",
+  "Slack", "Zoom", "Notion", "Figma", "Canva",
+  "Airbnb", "DoorDash", "Instacart", "Uber", "Lyft",
+  "Snowflake", "Datadog", "MongoDB", "Elastic", "Confluent",
+  "Plaid", "Brex", "Ramp", "Mercury", "Carta",
+  "Vercel", "Supabase", "PlanetScale", "Neon", "Railway",
+  "OpenAI", "Anthropic", "Cohere", "Hugging Face", "Scale AI",
+  "Airtable", "Monday.com", "Asana", "ClickUp", "Linear",
+  "Rippling", "Deel", "Remote", "Gusto", "Lattice",
+  "Gong", "Clari", "Outreach", "Salesloft", "Apollo",
+];
+
 const INTERVAL_OPTIONS = [
   { value: 15, label: "15 min", description: "Real-time" },
   { value: 30, label: "30 min", description: "Recommended", recommended: true },
@@ -435,12 +449,39 @@ export default function ScrapingPage() {
 
   const [newCompany, setNewCompany] = useState("");
   const [triggering, setTriggering] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const suggestionsRef = useRef<HTMLDivElement>(null);
 
   // Tab state
   const [activeTab, setActiveTab] = useState<"overview" | "config" | "history">(
     "overview"
   );
+
+  // Filter suggestions based on input
+  const filteredSuggestions = newCompany.length >= 1
+    ? SUGGESTED_COMPANIES.filter(
+        (company) =>
+          company.toLowerCase().includes(newCompany.toLowerCase()) &&
+          !(config?.target_companies ?? []).includes(company)
+      ).slice(0, 6)
+    : [];
+
+  // Close suggestions when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        suggestionsRef.current &&
+        !suggestionsRef.current.contains(event.target as Node) &&
+        inputRef.current &&
+        !inputRef.current.contains(event.target as Node)
+      ) {
+        setShowSuggestions(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const loadStatus = useCallback(async () => {
     try {
@@ -535,16 +576,17 @@ export default function ScrapingPage() {
     setTriggering(false);
   };
 
-  const addCompany = () => {
-    if (!config || !newCompany.trim()) return;
+  const addCompany = (companyName?: string) => {
+    const nameToAdd = companyName || newCompany.trim();
+    if (!config || !nameToAdd) return;
     const companies = config.target_companies ?? [];
-    if (companies.includes(newCompany.trim())) {
+    if (companies.includes(nameToAdd)) {
       setNewCompany("");
       return;
     }
     setConfig({
       ...config,
-      target_companies: [...companies, newCompany.trim()],
+      target_companies: [...companies, nameToAdd],
     });
     setNewCompany("");
     inputRef.current?.focus();
@@ -939,7 +981,7 @@ export default function ScrapingPage() {
                     />
                     <ChevronRight className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   </div>
-                  <Button variant="outline" onClick={addCompany}>
+                  <Button variant="outline" onClick={() => addCompany()}>
                     <Plus className="w-4 h-4" />
                   </Button>
                 </div>
@@ -1302,14 +1344,55 @@ export default function ScrapingPage() {
                       ref={inputRef}
                       type="text"
                       value={newCompany}
-                      onChange={(e) => setNewCompany(e.target.value)}
-                      onKeyDown={(e) => e.key === "Enter" && addCompany()}
-                      placeholder="Add a company to monitor..."
+                      onChange={(e) => {
+                        setNewCompany(e.target.value);
+                        setShowSuggestions(true);
+                      }}
+                      onFocus={() => setShowSuggestions(true)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          addCompany();
+                          setShowSuggestions(false);
+                        }
+                        if (e.key === "Escape") {
+                          setShowSuggestions(false);
+                        }
+                      }}
+                      placeholder="Search companies (e.g., Stripe, HubSpot)..."
                       className="w-full px-4 py-3 border border-border rounded-xl bg-background focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary text-sm transition-all"
                     />
                     <ArrowRight className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+
+                    {/* Autocomplete suggestions */}
+                    <AnimatePresence>
+                      {showSuggestions && filteredSuggestions.length > 0 && (
+                        <motion.div
+                          ref={suggestionsRef}
+                          initial={{ opacity: 0, y: -10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -10 }}
+                          className="absolute z-50 top-full left-0 right-0 mt-2 py-2 bg-card border border-border rounded-xl shadow-lg max-h-64 overflow-y-auto"
+                        >
+                          {filteredSuggestions.map((suggestion) => (
+                            <button
+                              key={suggestion}
+                              type="button"
+                              onClick={() => {
+                                setNewCompany(suggestion);
+                                addCompany(suggestion);
+                                setShowSuggestions(false);
+                              }}
+                              className="w-full text-left px-4 py-2.5 text-sm hover:bg-primary/5 transition-colors flex items-center gap-3"
+                            >
+                              <Building2 className="w-4 h-4 text-muted-foreground" />
+                              <span>{suggestion}</span>
+                            </button>
+                          ))}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
-                  <Button onClick={addCompany} className="px-5">
+                  <Button onClick={() => { addCompany(); setShowSuggestions(false); }} className="px-5">
                     <Plus className="w-4 h-4 mr-2" />
                     Add
                   </Button>

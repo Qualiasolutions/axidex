@@ -2,13 +2,13 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import type { ScraperProgress } from "@/types/scraper";
 
-// Simulate scraping a source with delays
+// Simulate scraping a source with realistic delays and progress updates
 async function simulateScrapeSource(
   supabase: Awaited<ReturnType<typeof createClient>>,
   runId: string,
   source: string,
   progress: ScraperProgress,
-  delayMs: number
+  companies: string[]
 ): Promise<number> {
   // Mark source as running
   progress[source] = { status: "running", signals: 0 };
@@ -17,20 +17,45 @@ async function simulateScrapeSource(
     .update({ progress })
     .eq("id", runId);
 
-  // Simulate scraping delay
-  await new Promise((resolve) => setTimeout(resolve, delayMs));
+  // Simulate initial connection delay (1-2 seconds)
+  await new Promise((resolve) => setTimeout(resolve, 1000 + Math.random() * 1000));
 
-  // Generate random signals (1-8 per source)
-  const signals = Math.floor(Math.random() * 8) + 1;
+  // Simulate scraping each company (adds realism)
+  let totalSignals = 0;
+  for (let i = 0; i < companies.length; i++) {
+    // Simulate per-company scrape (0.5-1.5 seconds each)
+    await new Promise((resolve) => setTimeout(resolve, 500 + Math.random() * 1000));
+
+    // Random chance to find signals per company (40% chance)
+    if (Math.random() > 0.6) {
+      const companySignals = Math.floor(Math.random() * 3) + 1;
+      totalSignals += companySignals;
+
+      // Update progress mid-scrape
+      progress[source] = { status: "running", signals: totalSignals };
+      await supabase
+        .from("scrape_runs")
+        .update({ progress })
+        .eq("id", runId);
+    }
+  }
+
+  // Final processing delay (1-2 seconds)
+  await new Promise((resolve) => setTimeout(resolve, 1000 + Math.random() * 1000));
+
+  // Ensure at least 1 signal per source for demo
+  if (totalSignals === 0) {
+    totalSignals = Math.floor(Math.random() * 2) + 1;
+  }
 
   // Mark source as completed
-  progress[source] = { status: "completed", signals };
+  progress[source] = { status: "completed", signals: totalSignals };
   await supabase
     .from("scrape_runs")
     .update({ progress })
     .eq("id", runId);
 
-  return signals;
+  return totalSignals;
 }
 
 // Run the scrape simulation in the background
@@ -83,8 +108,11 @@ async function runScrapingSimulation(runId: string, userId: string) {
     progress[source.name] = { status: "pending", signals: 0 };
   }
 
-  // Update run to running status
-  const estimatedDuration = sources.length * 3; // ~3 seconds per source
+  // Get target companies
+  const companies = config.target_companies || ["Stripe", "Shopify", "HubSpot", "Salesforce", "Twilio"];
+
+  // Calculate estimated duration based on sources and companies
+  const estimatedDuration = sources.length * (companies.length * 1.5 + 3); // More realistic timing
   await supabase
     .from("scrape_runs")
     .update({
@@ -95,7 +123,7 @@ async function runScrapingSimulation(runId: string, userId: string) {
     })
     .eq("id", runId);
 
-  // Scrape each source sequentially with delays
+  // Scrape each source sequentially with realistic timing
   let totalSignals = 0;
 
   for (const source of sources) {
@@ -105,7 +133,7 @@ async function runScrapingSimulation(runId: string, userId: string) {
         runId,
         source.name,
         progress,
-        2000 + Math.random() * 2000 // 2-4 seconds per source
+        companies
       );
       signalsBySource[source.name] = signals;
       totalSignals += signals;
@@ -134,7 +162,6 @@ async function runScrapingSimulation(runId: string, userId: string) {
   // Create some mock signals in the signals table
   const signalTypes = ["hiring", "funding", "expansion", "partnership", "product_launch"];
   const priorities = ["high", "medium", "low"];
-  const companies = config.target_companies || ["Stripe", "Shopify", "HubSpot"];
 
   const mockSignals = [];
   for (let i = 0; i < Math.min(totalSignals, 10); i++) {

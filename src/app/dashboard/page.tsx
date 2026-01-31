@@ -14,9 +14,11 @@ import {
   Sparkles,
   Radio,
   Bell,
-  Settings,
   BarChart3,
   ArrowUpRight,
+  RefreshCw,
+  Play,
+  Loader2,
 } from "lucide-react";
 import { motion } from "motion/react";
 import type { Easing } from "motion/react";
@@ -110,43 +112,95 @@ export default function DashboardPage() {
   const [recentSignals, setRecentSignals] = useState<Signal[]>([]);
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
+  const [scraping, setScraping] = useState(false);
+  const [scrapeMessage, setScrapeMessage] = useState<string | null>(null);
+
+  const fetchData = useCallback(async (showRefresh = false) => {
+    try {
+      if (showRefresh) setRefreshing(true);
+
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+
+      if (!user) {
+        setLoading(false);
+        setRefreshing(false);
+        return;
+      }
+
+      setUserId(user.id);
+
+      const [statsRes, signalsRes] = await Promise.all([
+        fetch("/api/stats"),
+        fetch("/api/signals?limit=8")
+      ]);
+
+      if (statsRes.ok) {
+        const statsData = await statsRes.json();
+        setStats(statsData);
+      }
+
+      if (signalsRes.ok) {
+        const signalsData = await signalsRes.json();
+        setRecentSignals(signalsData.signals || []);
+      }
+    } catch (error) {
+      console.error("Error fetching dashboard data:", error);
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  }, []);
 
   useEffect(() => {
-    async function fetchData() {
-      try {
-        const supabase = createClient();
-        const { data: { user } } = await supabase.auth.getUser();
-
-        if (!user) {
-          setLoading(false);
-          return;
-        }
-
-        setUserId(user.id);
-
-        const [statsRes, signalsRes] = await Promise.all([
-          fetch("/api/stats"),
-          fetch("/api/signals?limit=8")
-        ]);
-
-        if (statsRes.ok) {
-          const statsData = await statsRes.json();
-          setStats(statsData);
-        }
-
-        if (signalsRes.ok) {
-          const signalsData = await signalsRes.json();
-          setRecentSignals(signalsData.signals || []);
-        }
-      } catch (error) {
-        console.error("Error fetching dashboard data:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-
     fetchData();
-  }, []);
+  }, [fetchData]);
+
+  const handleRunScraper = async () => {
+    setScraping(true);
+    setScrapeMessage(null);
+
+    try {
+      const response = await fetch("/api/scraper/trigger", { method: "POST" });
+      const data = await response.json();
+
+      if (data.error) {
+        setScrapeMessage(data.error);
+        setScraping(false);
+        return;
+      }
+
+      setScrapeMessage("Scraping started! Refreshing data...");
+
+      // Poll for completion
+      const pollInterval = setInterval(async () => {
+        const statusRes = await fetch("/api/scraper/status");
+        const statusData = await statusRes.json();
+
+        if (!statusData.isRunning) {
+          clearInterval(pollInterval);
+          setScraping(false);
+          setScrapeMessage(`Scrape complete! Found ${statusData.latestRun?.total_signals || 0} signals.`);
+          // Refresh dashboard data
+          fetchData(true);
+          // Clear message after 5 seconds
+          setTimeout(() => setScrapeMessage(null), 5000);
+        }
+      }, 2000);
+
+      // Timeout after 60 seconds
+      setTimeout(() => {
+        clearInterval(pollInterval);
+        setScraping(false);
+      }, 60000);
+
+    } catch (error) {
+      console.error("Error triggering scrape:", error);
+      setScrapeMessage("Failed to start scraper");
+      setScraping(false);
+    }
+  };
 
   const handleNewSignal = useCallback((newSignal: Signal) => {
     setRecentSignals(prev => [newSignal, ...prev].slice(0, 8));
@@ -203,16 +257,86 @@ export default function DashboardPage() {
   }
 
   const quickActions = [
+    { icon: RefreshCw, label: "Scraping", href: "/dashboard/scraping", color: "from-orange-500 to-red-500" },
     { icon: Radio, label: "Signals", href: "/dashboard/signals", color: "from-blue-500 to-blue-600" },
     { icon: Mail, label: "Emails", href: "/dashboard/emails", color: "from-emerald-500 to-emerald-600" },
     { icon: BarChart3, label: "Analytics", href: "/dashboard/analytics", color: "from-purple-500 to-purple-600" },
-    { icon: Settings, label: "Settings", href: "/dashboard/settings", color: "from-gray-500 to-gray-600" },
   ];
 
   return (
     <>
       <Header title="Overview" subtitle="Your signal intelligence at a glance" />
       <main className="p-6 lg:p-8 space-y-8">
+        {/* Scraper Status Banner */}
+        {(scraping || scrapeMessage) && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className={cn(
+              "flex items-center justify-between p-4 rounded-xl border",
+              scraping
+                ? "bg-primary/5 border-primary/20"
+                : "bg-emerald-500/5 border-emerald-500/20"
+            )}
+          >
+            <div className="flex items-center gap-3">
+              {scraping ? (
+                <Loader2 className="w-5 h-5 text-primary animate-spin" />
+              ) : (
+                <Sparkles className="w-5 h-5 text-emerald-600" />
+              )}
+              <span className={cn("text-sm font-medium", scraping ? "text-primary" : "text-emerald-600")}>
+                {scrapeMessage || "Scraping in progress..."}
+              </span>
+            </div>
+            {!scraping && (
+              <button
+                onClick={() => setScrapeMessage(null)}
+                className="text-muted-foreground hover:text-foreground transition-colors"
+              >
+                ×
+              </button>
+            )}
+          </motion.div>
+        )}
+
+        {/* Action Row */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Button
+              onClick={handleRunScraper}
+              disabled={scraping}
+              size="sm"
+              className="gap-2"
+            >
+              {scraping ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Scraping...
+                </>
+              ) : (
+                <>
+                  <Play className="w-4 h-4" />
+                  Run Scraper
+                </>
+              )}
+            </Button>
+            <Button
+              onClick={() => fetchData(true)}
+              disabled={refreshing}
+              size="sm"
+              variant="outline"
+              className="gap-2"
+            >
+              <RefreshCw className={cn("w-4 h-4", refreshing && "animate-spin")} />
+              Refresh
+            </Button>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Last updated: {new Date().toLocaleTimeString()}
+          </p>
+        </div>
+
         {/* Stats Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
           <StatCard
