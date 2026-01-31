@@ -16,10 +16,10 @@
 
 ### Observability
 
-- [ ] **OBSV-01**: Sentry SDK integrated in Next.js frontend
-- [ ] **OBSV-02**: Sentry SDK integrated in Python worker
-- [ ] **OBSV-03**: Worker health check endpoint accessible
-- [ ] **OBSV-04**: Alert configured for worker failures
+- [x] **OBSV-01**: Sentry SDK integrated in Next.js frontend
+- [x] **OBSV-02**: Sentry SDK integrated in Python worker
+- [x] **OBSV-03**: Worker health check endpoint accessible
+- [x] **OBSV-04**: Alert configured for worker failures
 
 ### LinkedIn Scraping
 
@@ -122,10 +122,10 @@
 | DEPL-04 | Phase 6 | Pending |
 | DEPL-05 | Phase 6 | Pending |
 | DEPL-06 | Phase 6 | Pending |
-| OBSV-01 | Phase 7 | Pending |
-| OBSV-02 | Phase 7 | Pending |
-| OBSV-03 | Phase 7 | Pending |
-| OBSV-04 | Phase 7 | Pending |
+| OBSV-01 | Phase 7 | Complete |
+| OBSV-02 | Phase 7 | Complete |
+| OBSV-03 | Phase 7 | Complete |
+| OBSV-04 | Phase 7 | Complete |
 | LNKD-01 | Phase 8 | Pending |
 | LNKD-02 | Phase 8 | Pending |
 | LNKD-03 | Phase 8 | Pending |

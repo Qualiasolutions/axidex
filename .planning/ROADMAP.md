@@ -20,8 +20,8 @@ Milestone v1.1 takes Axidex from dev environment to production. Deploy infrastru
 - [x] **Phase 5: UI Polish** - Pagination, search, priority filters for production-ready UX
 
 ### Milestone v1.1 (Current)
-- [ ] **Phase 6: Production Deployment** - Migrations, worker, Edge Function, environment variables
-- [ ] **Phase 7: Observability** - Sentry integration, health checks, alerting
+- [x] **Phase 6: Production Deployment** - Migrations, worker, Edge Function, environment variables
+- [x] **Phase 7: Observability** - Sentry integration, health checks, alerting
 - [ ] **Phase 8: LinkedIn Scraping** - Bright Data integration for LinkedIn Jobs
 - [ ] **Phase 9: Notifications** - Preferences UI and email alerts
 
@@ -56,8 +56,8 @@ Plans:
 4. Alert fires when worker health check fails for 5+ minutes
 
 Plans:
-- [ ] 07-01-PLAN.md — Sentry SDK integration (Next.js + Python worker)
-- [ ] 07-02-PLAN.md — Worker health endpoint and failure alerting
+- [x] 07-01-PLAN.md — Sentry SDK integration (Next.js + Python worker)
+- [x] 07-02-PLAN.md — Worker health endpoint and failure alerting
 
 ### Phase 8: LinkedIn Scraping
 **Goal:** LinkedIn job signals flow into the database via Bright Data
@@ -97,7 +97,7 @@ Plans:
 | Phase | Plans Complete | Status |
 |-------|----------------|--------|
 | 6. Production Deployment | 2/2 | Complete |
-| 7. Observability | 0/2 | Planned |
+| 7. Observability | 2/2 | Complete |
 | 8. LinkedIn Scraping | 0/2 | Pending |
 | 9. Notifications | 0/1 | Pending |
 
