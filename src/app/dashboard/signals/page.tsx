@@ -7,6 +7,7 @@ import { Header } from "@/components/layout/header";
 import { Button } from "@/components/ui/button";
 import { SignalCard } from "@/components/signals/signal-card";
 import { SignalCardSkeleton } from "@/components/ui/skeleton";
+import { EmptyState } from "@/components/ui/empty-state";
 import { motion } from "motion/react";
 import type { Easing } from "motion/react";
 import type { SignalType, SignalPriority } from "@/types";
@@ -558,33 +559,25 @@ function SignalsPageContent() {
 
         {/* Empty State */}
         {!isLoading && !error && signals.length === 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1, ease: easeOutExpo }}
-            className="flex flex-col items-center justify-center py-20 px-6 text-center bg-background rounded-2xl border border-border/50"
-          >
-            <div className="size-16 rounded-2xl bg-gradient-to-br from-accent/20 to-orange-500/20 flex items-center justify-center mb-6">
-              <Radio className="size-7 text-accent" />
-            </div>
-            <h3 className="text-lg font-bold text-foreground mb-2">No signals detected</h3>
-            <p className="text-sm text-muted-foreground max-w-md mb-8 leading-relaxed">
-              {hasActiveFilters
+          <EmptyState
+            icon={Radio}
+            title="No signals detected"
+            description={
+              hasActiveFilters
                 ? "No signals match your current filters. Try adjusting or clearing your filters."
-                : "Axidex will automatically detect buying signals when you configure your signal sources."}
-            </p>
-            <div className="flex items-center gap-3">
-              {hasActiveFilters && (
-                <Button onClick={clearAllFilters}>Clear Filters</Button>
-              )}
-              <Link href="/dashboard/settings">
-                <Button variant={hasActiveFilters ? "outline" : "default"}>
-                  <Settings className="size-4 mr-1.5" />
-                  Configure Sources
-                </Button>
-              </Link>
-            </div>
-          </motion.div>
+                : "Axidex will automatically detect buying signals when you configure your signal sources."
+            }
+          >
+            {hasActiveFilters && (
+              <Button onClick={clearAllFilters}>Clear Filters</Button>
+            )}
+            <Link href="/dashboard/settings">
+              <Button variant={hasActiveFilters ? "outline" : "default"}>
+                <Settings className="size-4 mr-1.5" />
+                Configure Sources
+              </Button>
+            </Link>
+          </EmptyState>
         )}
       </main>
     </>
