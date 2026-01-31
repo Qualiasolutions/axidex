@@ -326,6 +326,11 @@ export type Database = {
           slack_workspace_id: string | null
           slack_workspace_name: string | null
           updated_at: string | null
+          subscription_status: string | null
+          subscription_tier: string | null
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          subscription_period_end: string | null
         }
         Insert: {
           avatar_url?: string | null
@@ -342,6 +347,11 @@ export type Database = {
           slack_workspace_id?: string | null
           slack_workspace_name?: string | null
           updated_at?: string | null
+          subscription_status?: string | null
+          subscription_tier?: string | null
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          subscription_period_end?: string | null
         }
         Update: {
           avatar_url?: string | null
@@ -358,6 +368,11 @@ export type Database = {
           slack_workspace_id?: string | null
           slack_workspace_name?: string | null
           updated_at?: string | null
+          subscription_status?: string | null
+          subscription_tier?: string | null
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          subscription_period_end?: string | null
         }
         Relationships: []
       }
@@ -465,6 +480,56 @@ export type Database = {
             foreignKeyName: "scraper_config_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      subscriptions: {
+        Row: {
+          id: string
+          user_id: string
+          stripe_subscription_id: string
+          stripe_customer_id: string
+          status: string
+          tier: string
+          current_period_start: string
+          current_period_end: string
+          cancel_at_period_end: boolean | null
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          stripe_subscription_id: string
+          stripe_customer_id: string
+          status: string
+          tier: string
+          current_period_start: string
+          current_period_end: string
+          cancel_at_period_end?: boolean | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          stripe_subscription_id?: string
+          stripe_customer_id?: string
+          status?: string
+          tier?: string
+          current_period_start?: string
+          current_period_end?: string
+          cancel_at_period_end?: boolean | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscriptions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
