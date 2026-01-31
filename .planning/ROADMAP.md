@@ -30,7 +30,7 @@ Milestone v1.2 focuses on UX polish and feature completion for launch readiness.
 - [x] **Phase 11: Performance** - Optimistic UI, caching, prefetching, skeletons
 - [x] **Phase 12: Design Polish** - Visual hierarchy, spacing, toasts, empty states
 - [x] **Phase 13: Slack Integration** - OAuth, channel selection, auto-posting
-- [ ] **Phase 14: Billing** - Stripe checkout, portal, webhooks, usage limits
+- [x] **Phase 14: Billing** - Stripe checkout, portal, webhooks, usage limits
 - [ ] **Phase 15: Onboarding** - Welcome screen, guided tour, setup wizard
 
 ## Phase Details
@@ -208,7 +208,7 @@ Plans:
 | 11. Performance | 2/2 | Complete |
 | 12. Design Polish | 2/2 | Complete |
 | 13. Slack Integration | 1/1 | Complete |
-| 14. Billing | 0/2 | Pending |
+| 14. Billing | 2/2 | Complete |
 | 15. Onboarding | 0/1 | Pending |
 
 ---

@@ -35,10 +35,10 @@
 
 ### Billing
 
-- [ ] **BILL-01**: Stripe checkout integration for subscription
-- [ ] **BILL-02**: User billing portal for managing subscription
-- [ ] **BILL-03**: Stripe webhook handling for subscription events
-- [ ] **BILL-04**: Usage limits enforced based on plan tier
+- [x] **BILL-01**: Stripe checkout integration for subscription
+- [x] **BILL-02**: User billing portal for managing subscription
+- [x] **BILL-03**: Stripe webhook handling for subscription events
+- [x] **BILL-04**: Usage limits enforced based on plan tier
 
 ### Onboarding
 
