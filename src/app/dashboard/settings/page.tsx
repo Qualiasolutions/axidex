@@ -514,7 +514,7 @@ function SettingsContent() {
   }
 
   return (
-    <main className="p-6 lg:p-8 space-y-6 max-w-3xl">
+    <main className="page-container section-gap max-w-3xl">
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}

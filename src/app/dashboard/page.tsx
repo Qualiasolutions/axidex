@@ -82,30 +82,40 @@ interface StatCardProps {
 function StatCard({ title, value, change, icon, gradient, index }: StatCardProps) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 24, scale: 0.95 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
+      initial={{ opacity: 0, y: 24, filter: "blur(8px)" }}
+      animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
       transition={{ duration: 0.5, delay: index * 0.08, ease: easeOutExpo }}
-      className="group relative overflow-hidden rounded-2xl border border-border/50 bg-background p-6 hover:border-border transition-all duration-300"
+      whileHover={{ y: -4, transition: { duration: 0.25, ease: easeOutExpo } }}
+      className="group relative overflow-hidden rounded-2xl border border-border/50 bg-background p-6 hover:border-border/80 hover:shadow-[var(--shadow-card-hover)] transition-all duration-[var(--duration-normal)] ease-[var(--ease-out-expo)]"
     >
       {/* Gradient background */}
-      <div className={cn("absolute inset-0 opacity-[0.03] group-hover:opacity-[0.06] transition-opacity", gradient)} />
+      <div className={cn("absolute inset-0 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity duration-[var(--duration-normal)]", gradient)} />
 
       {/* Glow effect on hover */}
-      <div className="absolute -inset-px rounded-2xl bg-gradient-to-r from-accent/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity blur-xl" />
+      <div className="absolute -inset-px rounded-2xl bg-gradient-to-r from-accent/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-[var(--duration-normal)] blur-xl" />
 
       <div className="relative">
         <div className="flex items-start justify-between mb-4">
-          <div className={cn("p-2.5 rounded-xl", gradient.replace("bg-gradient", "bg-gradient").replace("to-r", "to-br"))}>
+          <motion.div
+            whileHover={{ scale: 1.05, rotate: 3 }}
+            transition={{ type: "spring", stiffness: 400, damping: 17 }}
+            className={cn("p-2.5 rounded-xl shadow-lg", gradient.replace("bg-gradient", "bg-gradient").replace("to-r", "to-br"))}
+          >
             <div className="text-white">{icon}</div>
-          </div>
+          </motion.div>
           {change && (
-            <div className={cn(
-              "flex items-center gap-1 text-xs font-semibold px-2 py-1 rounded-full",
-              change.trend === "up" ? "bg-emerald-50 text-emerald-600" : "bg-red-50 text-red-600"
-            )}>
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.4, delay: index * 0.08 + 0.2, ease: easeOutExpo }}
+              className={cn(
+                "flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full",
+                change.trend === "up" ? "bg-emerald-50 text-emerald-600" : "bg-red-50 text-red-600"
+              )}
+            >
               {change.trend === "up" ? <TrendingUp className="size-3" /> : <TrendingDown className="size-3" />}
               {change.value}%
-            </div>
+            </motion.div>
           )}
         </div>
 
@@ -130,19 +140,20 @@ function ActivityItem({ signal, index }: { signal: Signal; index: number }) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, x: -16 }}
-      animate={{ opacity: 1, x: 0 }}
+      initial={{ opacity: 0, x: -16, filter: "blur(4px)" }}
+      animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
       transition={{ duration: 0.4, delay: 0.3 + index * 0.06, ease: easeOutExpo }}
-      className="flex items-start gap-3 p-3 rounded-xl hover:bg-secondary/50 transition-colors group cursor-pointer"
+      whileHover={{ x: 4, backgroundColor: "var(--secondary)" }}
+      className="flex items-start gap-3 p-3 rounded-xl transition-colors duration-[var(--duration-fast)] group cursor-pointer"
     >
-      <div className={cn("size-2 rounded-full mt-2 shrink-0", typeColors[signal.signal_type] || "bg-gray-400")} />
+      <div className={cn("size-2 rounded-full mt-2 shrink-0 ring-2 ring-white shadow-sm", typeColors[signal.signal_type] || "bg-gray-400")} />
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-foreground truncate group-hover:text-accent transition-colors">
+        <p className="text-sm font-medium text-foreground truncate group-hover:text-accent transition-colors duration-[var(--duration-fast)]">
           {signal.company_name}
         </p>
         <p className="text-xs text-muted-foreground truncate">{signal.title}</p>
       </div>
-      <span className="text-[10px] text-muted-foreground/60 shrink-0">
+      <span className="text-[10px] text-muted-foreground/60 shrink-0 tabular-nums">
         {new Date(signal.detected_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
       </span>
     </motion.div>
@@ -253,7 +264,7 @@ export default function DashboardPage() {
     return (
       <>
         <Header title="Overview" subtitle="Your signal intelligence at a glance" />
-        <main className="p-6 lg:p-8 space-y-8">
+        <main className="page-container section-gap">
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
             {[...Array(4)].map((_, i) => (
               <StatCardSkeleton key={i} />
@@ -273,17 +284,23 @@ export default function DashboardPage() {
     return (
       <>
         <Header title="Overview" subtitle="Your signal intelligence at a glance" />
-        <main className="p-6 lg:p-8">
-          <div className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="size-16 rounded-2xl bg-gradient-to-br from-accent to-orange-500 flex items-center justify-center mb-6">
-              <Zap className="size-8 text-white" />
+        <main className="page-container">
+          <motion.div
+            initial={{ opacity: 0, y: 24, filter: "blur(8px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            transition={{ duration: 0.5, ease: easeOutExpo }}
+            className="flex flex-col items-center justify-center py-20 text-center"
+          >
+            <div className="relative size-16 rounded-2xl bg-gradient-to-br from-accent to-orange-500 flex items-center justify-center mb-6">
+              <div className="absolute inset-0 rounded-2xl bg-accent/30 blur-xl" />
+              <Zap className="relative size-8 text-white" />
             </div>
             <h2 className="text-xl font-bold text-foreground mb-2">Welcome to Axidex</h2>
             <p className="text-muted-foreground mb-6">Please log in to view your dashboard.</p>
             <Link href="/login">
               <Button>Sign In</Button>
             </Link>
-          </div>
+          </motion.div>
         </main>
       </>
     );
@@ -299,7 +316,7 @@ export default function DashboardPage() {
   return (
     <>
       <Header title="Overview" subtitle="Your signal intelligence at a glance" />
-      <main className="p-6 lg:p-8 space-y-8">
+      <main className="page-container section-gap">
         {/* Scraper Status Banner */}
         {(scraping || scrapeMessage) && (
           <motion.div

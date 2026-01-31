@@ -15,7 +15,7 @@ export default function DashboardLayout({
         <MobileNav />
         {/* Main content area - responsive margin for sidebar, top padding for mobile header */}
         <OnboardingProvider>
-          <div className="lg:ml-60 min-h-screen transition-all duration-300 pt-14 lg:pt-0">
+          <div className="lg:ml-60 min-h-screen transition-[margin] duration-300 ease-[var(--ease-out-expo)] pt-14 lg:pt-0">
             {children}
           </div>
         </OnboardingProvider>

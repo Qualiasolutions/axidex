@@ -212,7 +212,7 @@ function EmailsPageContent() {
   return (
     <>
       <Header title="Emails" subtitle="AI-generated outreach emails from your signals" />
-      <main className="p-6 lg:p-8 space-y-6">
+      <main className="page-container section-gap">
         {/* Filters */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}

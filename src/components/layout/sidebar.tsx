@@ -109,10 +109,10 @@ export function Sidebar() {
     <motion.aside
       initial={{ x: -20, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
-      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
       className={cn(
         "fixed inset-y-0 left-0 z-50 flex flex-col bg-background border-r border-border/60",
-        "transition-all duration-300 ease-out",
+        "transition-[width] duration-300 ease-[var(--ease-out-expo)]",
         collapsed ? "w-[72px]" : "w-60",
         "hidden lg:flex"
       )}
@@ -129,9 +129,13 @@ export function Sidebar() {
             collapsed && "justify-center"
           )}
         >
-          <div className="size-9 rounded-xl bg-gradient-to-br from-primary to-orange-500 flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-primary/20 group-hover:shadow-xl group-hover:shadow-primary/30 transition-shadow">
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="size-9 rounded-xl bg-gradient-to-br from-primary to-orange-500 flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-primary/20 group-hover:shadow-xl group-hover:shadow-primary/30 transition-shadow duration-[var(--duration-normal)]"
+          >
             A
-          </div>
+          </motion.div>
           {!collapsed && (
             <span className="text-lg font-bold tracking-tight text-foreground">
               Axidex
@@ -141,13 +145,15 @@ export function Sidebar() {
       </div>
 
       {/* Toggle */}
-      <button
+      <motion.button
         onClick={() => setCollapsed(!collapsed)}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
         className={cn(
           "absolute -right-3 top-20 z-50 flex items-center justify-center",
-          "size-6 rounded-full bg-background border border-border/60 shadow-sm",
-          "text-muted-foreground hover:text-foreground hover:border-border",
-          "transition-all duration-200 hover:scale-110"
+          "size-6 rounded-full bg-background border border-border/60 shadow-md",
+          "text-muted-foreground hover:text-foreground hover:border-border hover:shadow-lg",
+          "transition-all duration-[var(--duration-fast)]"
         )}
       >
         {collapsed ? (
@@ -155,10 +161,10 @@ export function Sidebar() {
         ) : (
           <ChevronLeft className="size-3.5" />
         )}
-      </button>
+      </motion.button>
 
       {/* Navigation */}
-      <nav className="flex-1 py-6 overflow-y-auto">
+      <nav className="flex-1 py-6 overflow-y-auto scrollbar-hidden">
         <ul className={cn("space-y-1", collapsed ? "px-3" : "px-4")}>
           {navigation.map((item) => {
             const isActive = pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href));
@@ -173,7 +179,7 @@ export function Sidebar() {
                   prefetch={true}
                   onMouseEnter={() => handlePrefetch(item.href)}
                   className={cn(
-                    "flex items-center gap-3 rounded-xl text-sm font-medium transition-all duration-200",
+                    "group flex items-center gap-3 rounded-xl text-sm font-medium transition-all duration-[var(--duration-fast)] ease-[var(--ease-out-expo)]",
                     collapsed ? "justify-center p-3" : "px-4 py-2.5",
                     isActive
                       ? "bg-primary text-primary-foreground shadow-md shadow-primary/20"
@@ -181,7 +187,10 @@ export function Sidebar() {
                   )}
                   title={collapsed ? item.name : undefined}
                 >
-                  <Icon className="w-[18px] h-[18px] shrink-0" />
+                  <Icon className={cn(
+                    "w-[18px] h-[18px] shrink-0 transition-transform duration-[var(--duration-fast)]",
+                    !isActive && "group-hover:scale-110"
+                  )} />
                   {!collapsed && <span>{item.name}</span>}
                 </Link>
               </li>

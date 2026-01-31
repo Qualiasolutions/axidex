@@ -286,7 +286,7 @@ function SignalsPageContent() {
   return (
     <>
       <Header title="Signals" subtitle="Real-time buying signals from your target accounts" />
-      <main className="p-6 lg:p-8 space-y-6">
+      <main className="page-container section-gap">
         {/* Filter Bar */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}

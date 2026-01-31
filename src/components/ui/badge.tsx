@@ -4,19 +4,21 @@ import type { SignalType, SignalPriority, SignalStatus } from "@/types";
 interface BadgeProps {
   children: React.ReactNode;
   variant?: "default" | "success" | "warning" | "danger" | "accent";
+  size?: "sm" | "default";
   className?: string;
 }
 
-export function Badge({ children, variant = "default", className }: BadgeProps) {
+export function Badge({ children, variant = "default", size = "default", className }: BadgeProps) {
   return (
     <span
       className={cn(
-        "inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold tracking-wide transition-colors",
+        "inline-flex items-center font-semibold tracking-wide transition-all duration-[var(--duration-fast)]",
+        size === "sm" ? "px-2 py-0.5 rounded-md text-[10px]" : "px-2.5 py-1 rounded-full text-[11px]",
         {
           "bg-[var(--bg-tertiary)] text-[var(--text-secondary)]": variant === "default",
-          "bg-emerald-50 text-emerald-700 border border-emerald-100": variant === "success",
-          "bg-amber-50 text-amber-700 border border-amber-100": variant === "warning",
-          "bg-red-50 text-red-700 border border-red-100": variant === "danger",
+          "bg-emerald-50 text-emerald-700 border border-emerald-100/80": variant === "success",
+          "bg-amber-50 text-amber-700 border border-amber-100/80": variant === "warning",
+          "bg-red-50 text-red-700 border border-red-100/80": variant === "danger",
           "bg-[var(--accent-muted)] text-[var(--accent)] border border-[var(--accent)]/10": variant === "accent",
         },
         className

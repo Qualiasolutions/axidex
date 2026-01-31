@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { motion, AnimatePresence } from "motion/react";
 import {
   LogOut,
   Loader2,
@@ -96,13 +97,18 @@ export function MobileNav() {
   return (
     <>
       {/* Mobile header bar */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 z-40 h-14 bg-background border-b border-border flex items-center justify-between px-4">
-        <Link href="/" className="text-base font-semibold tracking-tight text-primary">
-          Axidex
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-40 h-14 bg-background/95 backdrop-blur-xl border-b border-border flex items-center justify-between px-4 safe-area-inset-top">
+        <Link href="/" className="flex items-center gap-2">
+          <div className="size-8 rounded-lg bg-gradient-to-br from-primary to-orange-500 flex items-center justify-center text-white font-bold text-sm shadow-md shadow-primary/20">
+            A
+          </div>
+          <span className="text-base font-bold tracking-tight text-foreground">
+            Axidex
+          </span>
         </Link>
         <button
           onClick={() => setIsOpen(true)}
-          className="p-2 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-lg transition-colors"
+          className="p-2.5 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-xl transition-all duration-[var(--duration-fast)] touch-target active:scale-95"
           aria-label="Open menu"
         >
           <Menu className="w-5 h-5" />
@@ -110,27 +116,33 @@ export function MobileNav() {
       </div>
 
       {/* Backdrop */}
-      {isOpen && (
-        <div
-          className="lg:hidden fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
-          onClick={() => setIsOpen(false)}
-        />
-      )}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="lg:hidden fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
+            onClick={() => setIsOpen(false)}
+          />
+        )}
+      </AnimatePresence>
 
       {/* Drawer */}
       <aside
         className={cn(
-          "lg:hidden fixed inset-y-0 right-0 z-50 w-72 bg-background border-l border-border",
-          "transform transition-transform duration-200 ease-out",
+          "lg:hidden fixed inset-y-0 right-0 z-50 w-[280px] bg-background border-l border-border shadow-2xl safe-area-inset-right",
+          "transform transition-transform duration-300 ease-[var(--ease-out-expo)]",
           isOpen ? "translate-x-0" : "translate-x-full"
         )}
       >
         {/* Drawer header */}
         <div className="h-14 flex items-center justify-between px-4 border-b border-border">
-          <span className="text-sm font-medium text-foreground">Menu</span>
+          <span className="text-sm font-semibold text-foreground">Menu</span>
           <button
             onClick={() => setIsOpen(false)}
-            className="p-2 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-lg transition-colors"
+            className="p-2 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-xl transition-all duration-[var(--duration-fast)] active:scale-95"
             aria-label="Close menu"
           >
             <X className="w-5 h-5" />
@@ -138,9 +150,9 @@ export function MobileNav() {
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 py-4 overflow-y-auto">
+        <nav className="flex-1 py-4 overflow-y-auto scrollbar-hidden">
           <ul className="space-y-1 px-3">
-            {navigation.map((item) => {
+            {navigation.map((item, index) => {
               const isActive = pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href));
               const Icon = item.icon;
               return (
@@ -148,13 +160,14 @@ export function MobileNav() {
                   <Link
                     href={item.href}
                     className={cn(
-                      "flex items-center gap-3 rounded-lg text-sm px-3 py-2.5 transition-colors",
+                      "flex items-center gap-3 rounded-xl text-sm font-medium px-4 py-3 transition-all duration-[var(--duration-fast)] touch-target active:scale-[0.98]",
                       isActive
-                        ? "bg-primary text-primary-foreground"
+                        ? "bg-primary text-primary-foreground shadow-md shadow-primary/20"
                         : "text-muted-foreground hover:text-foreground hover:bg-secondary"
                     )}
+                    style={{ transitionDelay: isOpen ? `${index * 30}ms` : "0ms" }}
                   >
-                    <Icon className="w-4 h-4 shrink-0" />
+                    <Icon className="w-[18px] h-[18px] shrink-0" />
                     <span>{item.name}</span>
                   </Link>
                 </li>
@@ -162,7 +175,7 @@ export function MobileNav() {
             })}
           </ul>
 
-          <div className="my-4 mx-3 border-t border-border" />
+          <div className="my-4 mx-4 border-t border-border/60" />
 
           <ul className="space-y-1 px-3">
             {bottomNavigation.map((item) => {
@@ -173,13 +186,13 @@ export function MobileNav() {
                   <Link
                     href={item.href}
                     className={cn(
-                      "flex items-center gap-3 rounded-lg text-sm px-3 py-2.5 transition-colors",
+                      "flex items-center gap-3 rounded-xl text-sm font-medium px-4 py-3 transition-all duration-[var(--duration-fast)] touch-target active:scale-[0.98]",
                       isActive
-                        ? "bg-primary text-primary-foreground"
+                        ? "bg-primary text-primary-foreground shadow-md shadow-primary/20"
                         : "text-muted-foreground hover:text-foreground hover:bg-secondary"
                     )}
                   >
-                    <Icon className="w-4 h-4 shrink-0" />
+                    <Icon className="w-[18px] h-[18px] shrink-0" />
                     <span>{item.name}</span>
                   </Link>
                 </li>
@@ -189,13 +202,13 @@ export function MobileNav() {
         </nav>
 
         {/* User section */}
-        <div className="p-4 border-t border-border">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-medium shrink-0">
+        <div className="p-4 border-t border-border/60 safe-area-inset-bottom">
+          <div className="flex items-center gap-3 mb-4 p-3 rounded-xl bg-secondary/50">
+            <div className="size-10 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 text-primary flex items-center justify-center text-sm font-semibold shrink-0 border border-primary/10">
               {getUserInitials()}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-foreground truncate">
+              <p className="text-sm font-semibold text-foreground truncate">
                 {user?.user_metadata?.full_name || user?.email || "Loading..."}
               </p>
               {user?.email && user.user_metadata?.full_name && (
@@ -210,8 +223,8 @@ export function MobileNav() {
             onClick={handleLogout}
             disabled={loggingOut}
             className={cn(
-              "w-full flex items-center gap-2 rounded-lg text-sm px-3 py-2.5 transition-colors",
-              "text-muted-foreground hover:text-destructive hover:bg-destructive/10",
+              "w-full flex items-center justify-center gap-2 rounded-xl text-sm font-medium px-4 py-3 transition-all duration-[var(--duration-fast)] touch-target active:scale-[0.98]",
+              "text-muted-foreground hover:text-destructive hover:bg-destructive/10 border border-border",
               loggingOut && "opacity-50 cursor-not-allowed"
             )}
           >

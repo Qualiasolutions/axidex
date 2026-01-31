@@ -4,12 +4,12 @@ interface SkeletonProps {
   className?: string;
 }
 
-// Base Skeleton component
+// Base Skeleton component - uses premium shimmer animation
 export function Skeleton({ className }: SkeletonProps) {
   return (
     <div
       className={cn(
-        "bg-muted animate-pulse rounded",
+        "skeleton-premium",
         className
       )}
     />
@@ -166,9 +166,12 @@ export function RuleCardSkeleton() {
 export function StatCardSkeleton() {
   return (
     <div className="bg-[var(--bg-primary)] rounded-2xl p-6 border border-[var(--border-subtle)]">
-      <Skeleton className="h-3 w-24 mb-3" />
-      <Skeleton className="h-10 w-16 mb-3" />
-      <Skeleton className="h-3 w-32" />
+      <div className="flex items-start justify-between mb-4">
+        <Skeleton className="size-10 rounded-xl" />
+        <Skeleton className="h-6 w-14 rounded-full" />
+      </div>
+      <Skeleton className="h-3.5 w-24 mb-2" />
+      <Skeleton className="h-8 w-20" />
     </div>
   );
 }
