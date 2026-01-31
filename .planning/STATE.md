@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-01-31)
 
 ## Current Position
 
-Phase: 10 - Navigation & UX ✓ Complete
-Plan: All plans complete
-Status: Phase verified and complete
-Last activity: 2026-01-31 — Phase 10 verified
+Phase: 11 - Performance
+Plan: 1 of 2 (SWR Caching & Skeleton Loading)
+Status: In progress
+Last activity: 2026-01-31 — Completed 11-01-PLAN.md
 
-Progress: [██████░░░░] 68% (21/31 plans)
+Progress: [██████░░░░] 71% (22/31 plans)
 
 ## Performance Metrics
 
@@ -47,6 +47,7 @@ Progress: [██████░░░░] 68% (21/31 plans)
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 10. Navigation & UX | 2/2 ✓ | 4min 17s | 2min 09s |
+| 11. Performance | 1/2 | 13min 12s | 13min 12s |
 
 *Updated after each plan completion*
 
@@ -77,6 +78,10 @@ Recent decisions affecting current work:
 | D030 | Truncate email subjects in breadcrumbs at 40 chars | 10-02 | Prevents overflow on narrow viewports |
 | D031 | Include breadcrumbs in loading/error states | 10-02 | Consistent UI context regardless of page state |
 | D032 | Keep "Back to" buttons alongside breadcrumbs | 10-02 | Mobile-friendly option, desktop hierarchy |
+| D033 | SWR over React Query | 11-01 | Lighter weight, simpler API, better for Next.js SSR |
+| D034 | 5-second deduplication window | 11-01 | Balance between performance and data freshness |
+| D035 | No revalidation on tab focus | 11-01 | Prevents unnecessary requests when users switch tabs |
+| D036 | Stats refresh interval 30s | 11-01 | Dashboard metrics change slowly, reduce server load |
 
 ### Pending Todos
 
@@ -114,9 +119,9 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-01-31
-Stopped at: Phase 10 complete and verified
-Resume file: .planning/phases/10-navigation-ux/10-navigation-ux-VERIFICATION.md
-Next step: Plan Phase 11 (Performance)
+Stopped at: Completed 11-01-PLAN.md
+Resume file: .planning/phases/11-performance/11-01-SUMMARY.md
+Next step: Execute 11-02 (Optimistic Updates)
 
 ---
 *State initialized: 2026-01-30*
