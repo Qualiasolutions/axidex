@@ -29,7 +29,7 @@ Milestone v1.2 focuses on UX polish and feature completion for launch readiness.
 - [x] **Phase 10: Navigation & UX** - Icons, mobile nav, keyboard shortcuts, breadcrumbs
 - [x] **Phase 11: Performance** - Optimistic UI, caching, prefetching, skeletons
 - [x] **Phase 12: Design Polish** - Visual hierarchy, spacing, toasts, empty states
-- [ ] **Phase 13: Slack Integration** - OAuth, channel selection, auto-posting
+- [x] **Phase 13: Slack Integration** - OAuth, channel selection, auto-posting
 - [ ] **Phase 14: Billing** - Stripe checkout, portal, webhooks, usage limits
 - [ ] **Phase 15: Onboarding** - Welcome screen, guided tour, setup wizard
 
@@ -165,7 +165,7 @@ Plans:
 **Note:** SLCK-01, SLCK-02, SLCK-04 were already implemented in prior work. This phase completes SLCK-03 by adding auto-posting to the Edge Function.
 
 Plans:
-- [ ] 13-01-PLAN.md — Add Slack auto-posting to Edge Function
+- [x] 13-01-PLAN.md — Add Slack auto-posting to Edge Function
 
 ### Phase 14: Billing
 **Goal:** Users can subscribe and manage their plan
@@ -207,7 +207,7 @@ Plans:
 | 10. Navigation & UX | 2/2 | Complete |
 | 11. Performance | 2/2 | Complete |
 | 12. Design Polish | 2/2 | Complete |
-| 13. Slack Integration | 0/1 | Pending |
+| 13. Slack Integration | 1/1 | Complete |
 | 14. Billing | 0/2 | Pending |
 | 15. Onboarding | 0/1 | Pending |
 

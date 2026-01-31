@@ -28,10 +28,10 @@
 
 ### Slack Integration
 
-- [ ] **SLCK-01**: User can connect Slack workspace via OAuth
-- [ ] **SLCK-02**: User can select channel for notifications
-- [ ] **SLCK-03**: High-priority signals posted to Slack automatically
-- [ ] **SLCK-04**: Slack messages include signal details and action links
+- [x] **SLCK-01**: User can connect Slack workspace via OAuth
+- [x] **SLCK-02**: User can select channel for notifications
+- [x] **SLCK-03**: High-priority signals posted to Slack automatically
+- [x] **SLCK-04**: Slack messages include signal details and action links
 
 ### Billing
 
