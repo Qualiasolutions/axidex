@@ -9,19 +9,19 @@ See: .planning/PROJECT.md (updated 2026-01-31)
 
 ## Current Position
 
-Phase: 14 - Billing
-Plan: 1 of 2 (In progress)
-Status: In progress
-Last activity: 2026-01-31 — Completed 14-01-PLAN.md
+Phase: 14 - Billing (Complete)
+Plan: 2 of 2 (Complete)
+Status: Phase complete
+Last activity: 2026-01-31 — Completed 14-02-PLAN.md
 
-Progress: [█████████░] 93% (29/31 plans)
+Progress: [██████████] 97% (30/31 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 29 (12 v1.0 + 17 v1.2)
-- Average duration: 3min 33s
-- Total execution time: 1.71 hours
+- Total plans completed: 30 (12 v1.0 + 18 v1.2)
+- Average duration: 3min 28s
+- Total execution time: 1.76 hours
 
 **By Phase (v1.0):**
 
@@ -50,9 +50,9 @@ Progress: [█████████░] 93% (29/31 plans)
 | 11. Performance | 2/2 ✓ | 16min 49s | 8min 25s |
 | 12. Design Polish | 2/2 ✓ | 5min 38s | 2min 49s |
 | 13. Slack Integration | 1/1 ✓ | 2min 8s | 2min 8s |
-| 14. Billing | 1/2 | 5min 57s | - |
+| 14. Billing | 2/2 ✓ | 8min 36s | 4min 18s |
 
-**Total v1.2:** 8 plans, 37min 49s
+**Total v1.2:** 9 plans, 40min 28s
 
 *Updated after each plan completion*
 
@@ -101,6 +101,8 @@ Recent decisions affecting current work:
 | D048 | Lazy-initialize Stripe client | 14-01 | Avoids build errors when env vars not set |
 | D049 | Use service role client for webhooks | 14-01 | Bypass RLS for server-side subscription updates |
 | D050 | Store subscription history in separate table | 14-01 | Audit trail and period tracking independent of current status |
+| D051 | Enforce limits at API route level | 14-02 | More flexible than middleware, allows custom error responses |
+| D052 | Use -1 for unlimited tier limits | 14-02 | Clear sentinel value for enterprise tier unlimited resources |
 
 ### Pending Todos
 
@@ -118,6 +120,12 @@ Recent decisions affecting current work:
 - ~~LinkedIn scraper with Bright Data integration~~ ✓
 - ~~Deduplication logic verified with unit tests~~ ✓
 - ~~All LNKD-* requirements marked complete~~ ✓
+
+**Completed in Phase 14:**
+- ~~Stripe checkout flow~~ ✓
+- ~~Webhook handler for subscription events~~ ✓
+- ~~Billing portal access~~ ✓
+- ~~Usage limits enforcement~~ ✓
 
 **Phase 9 Manual Steps (deferred):**
 - Add RESEND_API_KEY to Vercel environment
@@ -148,9 +156,9 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-01-31
-Stopped at: Completed 14-01-PLAN.md
+Stopped at: Completed 14-02-PLAN.md
 Resume file: None
-Next step: Phase 14-02 (Billing Portal)
+Next step: Phase 14 complete - v1.2 milestone near completion (Phase 9 pending manual steps)
 
 ---
 *State initialized: 2026-01-30*
@@ -163,4 +171,4 @@ Next step: Phase 14-02 (Billing Portal)
 *Phase 11 completed: 2026-01-31*
 *Phase 12 completed: 2026-01-31*
 *Phase 13 completed: 2026-01-31*
-*Phase 14-01 completed: 2026-01-31*
+*Phase 14 completed: 2026-01-31*
