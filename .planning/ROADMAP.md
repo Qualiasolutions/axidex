@@ -96,8 +96,8 @@ Plans:
 
 | Phase | Plans Complete | Status |
 |-------|----------------|--------|
-| 6. Production Deployment | 0/2 | Planned |
-| 7. Observability | 0/2 | Pending |
+| 6. Production Deployment | 2/2 | Complete |
+| 7. Observability | 0/2 | Planned |
 | 8. LinkedIn Scraping | 0/2 | Pending |
 | 9. Notifications | 0/1 | Pending |
 
