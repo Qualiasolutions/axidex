@@ -19,7 +19,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { Signal, TrendingUp, AlertTriangle, Send, FileText } from "lucide-react";
+import { Signal, TrendingUp, AlertTriangle, Send, FileText, MessageSquare, Loader2, Check } from "lucide-react";
 
 type Period = "today" | "week" | "month" | "quarter";
 
@@ -66,6 +66,9 @@ function AnalyticsPageContent() {
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [sendingToSlack, setSendingToSlack] = useState(false);
+  const [slackSuccess, setSlackSuccess] = useState(false);
+  const [slackError, setSlackError] = useState<string | null>(null);
 
   const period = (searchParams.get("period") as Period) || "month";
 
@@ -101,6 +104,32 @@ function AnalyticsPageContent() {
       params.set("period", value);
     }
     router.push(`/dashboard/analytics?${params.toString()}`);
+  };
+
+  const sendToSlack = async () => {
+    setSendingToSlack(true);
+    setSlackError(null);
+    setSlackSuccess(false);
+
+    try {
+      const response = await fetch("/api/slack/analytics", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ period }),
+      });
+      const result = await response.json();
+
+      if (result.error) {
+        setSlackError(result.error);
+      } else {
+        setSlackSuccess(true);
+        setTimeout(() => setSlackSuccess(false), 3000);
+      }
+    } catch {
+      setSlackError("Failed to send to Slack");
+    }
+
+    setSendingToSlack(false);
   };
 
   // Transform data for charts
@@ -149,17 +178,53 @@ function AnalyticsPageContent() {
               </button>
             ))}
           </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => {
-              const params = new URLSearchParams(searchParams.toString());
-              router.push(`/dashboard/analytics?${params.toString()}`);
-            }}
-          >
-            Refresh
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                const params = new URLSearchParams(searchParams.toString());
+                router.push(`/dashboard/analytics?${params.toString()}`);
+              }}
+            >
+              Refresh
+            </Button>
+            <Button
+              variant="default"
+              size="sm"
+              onClick={sendToSlack}
+              disabled={sendingToSlack || !data}
+            >
+              {sendingToSlack ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin mr-1" />
+                  Sending...
+                </>
+              ) : slackSuccess ? (
+                <>
+                  <Check className="w-4 h-4 mr-1" />
+                  Sent!
+                </>
+              ) : (
+                <>
+                  <MessageSquare className="w-4 h-4 mr-1" />
+                  Send to Slack
+                </>
+              )}
+            </Button>
+          </div>
         </motion.div>
+
+        {/* Slack error message */}
+        {slackError && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600"
+          >
+            {slackError}
+          </motion.div>
+        )}
 
         {/* Loading state */}
         {loading && (
