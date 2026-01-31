@@ -8,6 +8,8 @@ import type { Account } from "@/types";
 import { motion } from "motion/react";
 import Link from "next/link";
 import { Building2 } from "lucide-react";
+import { preload } from "swr";
+import { fetcher } from "@/lib/swr";
 
 interface AccountCardProps {
   account: Account;
@@ -15,8 +17,16 @@ interface AccountCardProps {
 }
 
 export const AccountCard = memo(function AccountCard({ account, index = 0 }: AccountCardProps) {
+  const handlePrefetch = () => {
+    const identifier = account.company_domain || account.company_name;
+    preload(`/api/accounts/${encodeURIComponent(identifier)}`, fetcher);
+  };
+
   return (
-    <Link href={`/dashboard/accounts/${encodeURIComponent(account.company_domain || account.company_name)}`}>
+    <Link
+      href={`/dashboard/accounts/${encodeURIComponent(account.company_domain || account.company_name)}`}
+      onMouseEnter={handlePrefetch}
+    >
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}

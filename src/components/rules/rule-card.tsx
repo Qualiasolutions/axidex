@@ -23,6 +23,8 @@ import {
   Trash2,
   Pencil,
 } from "lucide-react";
+import { preload } from "swr";
+import { fetcher } from "@/lib/swr";
 
 interface RuleCardProps {
   rule: AutomationRule;
@@ -145,8 +147,12 @@ export const RuleCard = memo(function RuleCard({
     });
   }
 
+  const handlePrefetch = () => {
+    preload(`/api/rules/${rule.id}`, fetcher);
+  };
+
   return (
-    <Link href={`/dashboard/rules/${rule.id}`}>
+    <Link href={`/dashboard/rules/${rule.id}`} onMouseEnter={handlePrefetch}>
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}

@@ -10,6 +10,8 @@ import { motion } from "motion/react";
 import type { Easing } from "motion/react";
 import Link from "next/link";
 import { ExternalLink, Mail } from "lucide-react";
+import { preload } from "swr";
+import { fetcher } from "@/lib/swr";
 
 const easeOutExpo: Easing = [0.16, 1, 0.3, 1];
 
@@ -21,8 +23,12 @@ interface SignalCardProps {
 export const SignalCard = memo(function SignalCard({ signal, index = 0 }: SignalCardProps) {
   const router = useRouter();
 
+  const handlePrefetch = () => {
+    preload(`/api/signals/${signal.id}`, fetcher);
+  };
+
   return (
-    <Link href={`/dashboard/signals/${signal.id}`}>
+    <Link href={`/dashboard/signals/${signal.id}`} onMouseEnter={handlePrefetch}>
       <motion.div
         initial={{ opacity: 0, y: 16, filter: "blur(6px)" }}
         animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}

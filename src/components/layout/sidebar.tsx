@@ -6,6 +6,8 @@ import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { motion } from "motion/react";
+import { preload } from "swr";
+import { fetcher } from "@/lib/swr";
 import {
   LogOut,
   Loader2,
@@ -82,6 +84,27 @@ export function Sidebar() {
     return user.user_metadata?.full_name || user.email || "User";
   };
 
+  const handlePrefetch = (href: string) => {
+    // Prefetch data based on route
+    if (href === "/dashboard") {
+      preload("/api/dashboard/stats", fetcher);
+    } else if (href === "/dashboard/signals") {
+      preload("/api/signals?limit=20", fetcher);
+    } else if (href === "/dashboard/scraping") {
+      preload("/api/scraping/jobs?limit=20", fetcher);
+    } else if (href === "/dashboard/emails") {
+      preload("/api/emails?limit=20", fetcher);
+    } else if (href === "/dashboard/accounts") {
+      preload("/api/accounts?limit=20", fetcher);
+    } else if (href === "/dashboard/analytics") {
+      preload("/api/analytics", fetcher);
+    } else if (href === "/dashboard/rules") {
+      preload("/api/rules?limit=20", fetcher);
+    } else if (href === "/dashboard/settings") {
+      preload("/api/settings", fetcher);
+    }
+  };
+
   return (
     <motion.aside
       initial={{ x: -20, opacity: 0 }}
@@ -144,6 +167,8 @@ export function Sidebar() {
               <li key={item.name}>
                 <Link
                   href={item.href}
+                  prefetch={true}
+                  onMouseEnter={() => handlePrefetch(item.href)}
                   className={cn(
                     "flex items-center gap-3 rounded-xl text-sm font-medium transition-all duration-200",
                     collapsed ? "justify-center p-3" : "px-4 py-2.5",
@@ -175,6 +200,8 @@ export function Sidebar() {
               <li key={item.name}>
                 <Link
                   href={item.href}
+                  prefetch={true}
+                  onMouseEnter={() => handlePrefetch(item.href)}
                   className={cn(
                     "flex items-center gap-3 rounded-xl text-sm font-medium transition-all duration-200",
                     collapsed ? "justify-center p-3" : "px-4 py-2.5",

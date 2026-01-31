@@ -9,6 +9,8 @@ import { motion } from "motion/react";
 import Link from "next/link";
 import { Copy, Check } from "lucide-react";
 import { useState } from "react";
+import { preload } from "swr";
+import { fetcher } from "@/lib/swr";
 
 interface EmailCardProps {
   email: GeneratedEmail;
@@ -37,11 +39,15 @@ export const EmailCard = memo(function EmailCard({ email, index = 0 }: EmailCard
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const handlePrefetch = () => {
+    preload(`/api/emails/${email.id}`, fetcher);
+  };
+
   const toneStyle = toneConfig[email.tone];
   const statusStyle = statusConfig[email.status];
 
   return (
-    <Link href={`/dashboard/emails/${email.id}`}>
+    <Link href={`/dashboard/emails/${email.id}`} onMouseEnter={handlePrefetch}>
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
