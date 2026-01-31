@@ -1,10 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
 import { Header } from "@/components/layout/header";
 import { SignalTypeBadge, PriorityBadge, StatusBadge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { formatDate } from "@/lib/utils";
 import { motion } from "motion/react";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Signal, GeneratedEmail } from "@/types";
 import { EmailGenerator } from "@/components/signals/email-generator";
@@ -57,16 +55,15 @@ export default async function SignalDetailPage({ params }: SignalDetailPageProps
 
   return (
     <>
-      <Header title="Signal Details" subtitle={signal.company_name} />
+      <Header
+        title={signal.title}
+        subtitle={signal.company_name}
+        breadcrumbs={[
+          { label: "Signals", href: "/dashboard/signals" },
+          { label: signal.company_name },
+        ]}
+      />
       <main className="p-6 lg:p-8 space-y-6 max-w-5xl">
-        {/* Back button */}
-        <div>
-          <Link href="/dashboard/signals">
-            <Button variant="ghost" size="sm">
-              ← Back to Signals
-            </Button>
-          </Link>
-        </div>
 
         {/* Signal header */}
         <motion.div

@@ -2,19 +2,19 @@
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-01-30)
+See: .planning/PROJECT.md (updated 2026-01-31)
 
 **Core value:** Sales teams get actionable signals with ready-to-send emails — no manual research.
-**Current focus:** Milestone v1.1 Production Launch + LinkedIn
+**Current focus:** Milestone v1.2 UX Polish & Feature Completion
 
 ## Current Position
 
-Phase: 9 - Notifications (paused)
-Plan: 09-01 ◆ Code verified, manual steps pending
-Status: Notification infrastructure verified, awaiting manual configuration
-Last activity: 2026-01-31 — Code verification complete, user deferred manual setup
+Phase: 10 - Navigation & UX
+Plan: 10-01 ◆ Starting
+Status: Beginning UX improvements
+Last activity: 2026-01-31 — Milestone v1.2 initialized
 
-Progress: [██████░░░░] 58% (18/31 plans)
+Progress: [██████░░░░] 60% (19/31 plans)
 
 ## Performance Metrics
 

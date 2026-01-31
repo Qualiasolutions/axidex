@@ -2,9 +2,9 @@
 
 ## Overview
 
-9 phases | 49 requirements total | v1.1: 4 phases, 18 requirements
+15 phases | 69 requirements total | v1.2: 6 phases, 20 requirements
 
-Milestone v1.1 takes Axidex from dev environment to production. Deploy infrastructure (migrations, worker, functions), add observability for reliability, complete LinkedIn scraping with Bright Data, and finalize notification system.
+Milestone v1.2 focuses on UX polish and feature completion for launch readiness. Improves navigation, performance, and design while adding Slack notifications and Stripe billing.
 
 ## Phases
 
@@ -19,11 +19,19 @@ Milestone v1.1 takes Axidex from dev environment to production. Deploy infrastru
 - [x] **Phase 4: Automation & Hardening** - LinkedIn scraping, scheduling, notifications
 - [x] **Phase 5: UI Polish** - Pagination, search, priority filters for production-ready UX
 
-### Milestone v1.1 (Current)
+### Milestone v1.1 (Complete)
 - [x] **Phase 6: Production Deployment** - Migrations, worker, Edge Function, environment variables
 - [x] **Phase 7: Observability** - Sentry integration, health checks, alerting
 - [x] **Phase 8: LinkedIn Scraping** - Bright Data integration for LinkedIn Jobs
-- [ ] **Phase 9: Notifications** - Preferences UI and email alerts
+- [x] **Phase 9: Notifications** - Preferences UI and email alerts (code complete)
+
+### Milestone v1.2 (Current)
+- [ ] **Phase 10: Navigation & UX** - Icons, mobile nav, keyboard shortcuts, breadcrumbs
+- [ ] **Phase 11: Performance** - Optimistic UI, caching, prefetching, skeletons
+- [ ] **Phase 12: Design Polish** - Visual hierarchy, spacing, toasts, empty states
+- [ ] **Phase 13: Slack Integration** - OAuth, channel selection, auto-posting
+- [ ] **Phase 14: Billing** - Stripe checkout, portal, webhooks, usage limits
+- [ ] **Phase 15: Onboarding** - Welcome screen, guided tour, setup wizard
 
 ## Phase Details
 
@@ -90,19 +98,98 @@ Plans:
 Plans:
 - [ ] 09-01-PLAN.md — Verify notification system and complete manual configuration
 
+## Phase Details
+
+### Phase 10: Navigation & UX
+**Goal:** Clear, fast navigation with icons, mobile support, and keyboard shortcuts
+**Depends on:** None
+**Requirements:** NAV-01, NAV-02, NAV-03, NAV-04
+**Plans:** 2 plans
+
+**Success Criteria:**
+1. Sidebar shows recognizable icons for each section
+2. Mobile users can access all navigation via drawer
+3. Power users can navigate with keyboard (g+s, g+e, etc.)
+4. Detail pages show breadcrumb trail
+
+### Phase 11: Performance
+**Goal:** Snappy, responsive UI with instant feedback
+**Depends on:** Phase 10 (navigation must be solid)
+**Requirements:** PERF-01, PERF-02, PERF-03, PERF-04
+**Plans:** 2 plans
+
+**Success Criteria:**
+1. User actions update UI immediately, sync in background
+2. Repeated visits load from cache
+3. All pages have consistent skeleton states
+4. Links prefetch on hover
+
+### Phase 12: Design Polish
+**Goal:** Professional, cohesive visual design across all pages
+**Depends on:** Phase 10, 11
+**Requirements:** UI-01, UI-02, UI-03, UI-04
+**Plans:** 2 plans
+
+**Success Criteria:**
+1. Consistent 4px/8px spacing grid
+2. Clear visual hierarchy in all lists and cards
+3. Empty states guide users to next action
+4. Toast notifications for all user feedback
+
+### Phase 13: Slack Integration
+**Goal:** Users receive signal notifications in Slack
+**Depends on:** None (parallel track)
+**Requirements:** SLCK-01, SLCK-02, SLCK-03, SLCK-04
+**Plans:** 2 plans
+
+**Success Criteria:**
+1. User can connect Slack workspace
+2. User can choose notification channel
+3. High-priority signals appear in Slack within 5 minutes
+4. Slack messages have clickable links to dashboard
+
+### Phase 14: Billing
+**Goal:** Users can subscribe and manage their plan
+**Depends on:** None (parallel track)
+**Requirements:** BILL-01, BILL-02, BILL-03, BILL-04
+**Plans:** 2 plans
+
+**Success Criteria:**
+1. User can upgrade via Stripe checkout
+2. User can manage subscription via billing portal
+3. Subscription changes reflect in app immediately
+4. Free tier has enforced limits
+
+### Phase 15: Onboarding
+**Goal:** New users understand the product and get value quickly
+**Depends on:** Phase 10, 12 (UX must be polished)
+**Requirements:** ONBR-01, ONBR-02, ONBR-03
+**Plans:** 1 plan
+
+**Success Criteria:**
+1. New users see welcome screen after signup
+2. Guided tour highlights key features
+3. Setup wizard configures initial preferences
+
 ## Progress
 
-**Execution Order:** Phases execute in numeric order: 6 -> 7 -> 8 -> 9
+**Execution Order:** Phases 10-12 (UX track), Phases 13-14 (feature track - can parallel), Phase 15 (after UX)
 
 | Phase | Plans Complete | Status |
 |-------|----------------|--------|
 | 6. Production Deployment | 2/2 | Complete |
 | 7. Observability | 2/2 | Complete |
 | 8. LinkedIn Scraping | 2/2 | Complete |
-| 9. Notifications | 0/1 | Pending |
+| 9. Notifications | 1/1 | Complete |
+| 10. Navigation & UX | 0/2 | Pending |
+| 11. Performance | 0/2 | Pending |
+| 12. Design Polish | 0/2 | Pending |
+| 13. Slack Integration | 0/2 | Pending |
+| 14. Billing | 0/2 | Pending |
+| 15. Onboarding | 0/1 | Pending |
 
 ---
 *Roadmap created: 2026-01-30*
-*Milestone: v1.1 Production Launch + LinkedIn*
-*Depth: quick (4 phases)*
-*Coverage: 18/18 v1.1 requirements mapped*
+*Milestone v1.2 added: 2026-01-31*
+*Depth: quick*
+*Coverage: 20/20 v1.2 requirements mapped*

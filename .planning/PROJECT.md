@@ -107,15 +107,17 @@ Sales teams get actionable signals with ready-to-send emails — no manual resea
 | On-demand email generation | Avoids generating emails for signals user never views | — Pending |
 | Three signal sources for v1 | LinkedIn, news, company sites cover main buying signals | — Pending |
 
-## Current Milestone: v1.1 Production Launch + LinkedIn
+## Current Milestone: v1.2 UX Polish & Feature Completion
 
-**Goal:** Get v1.0 deployed to production for real customers, then add LinkedIn Jobs scraping via Bright Data.
+**Goal:** Comprehensive UX overhaul plus Slack notifications and billing integration for launch readiness.
 
 **Target features:**
-- Deploy all infrastructure (Supabase migrations, Railway worker, Vercel env vars)
-- Configure production monitoring and error tracking
-- Add LinkedIn Jobs scraper with Bright Data Web Scraper API
-- Complete notification system (NOTF-01, NOTF-02)
+- Navigation: Icons in sidebar, mobile navigation drawer, keyboard shortcuts
+- Performance: Optimistic UI, better caching, faster page loads
+- Design: Visual hierarchy improvements, spacing, typography
+- Slack: Webhook integration for signal notifications
+- Billing: Stripe subscription management
+- Onboarding: First-time user experience
 
 ---
-*Last updated: 2026-01-30 after milestone v1.1 initialization*
+*Last updated: 2026-01-31 after milestone v1.2 initialization*

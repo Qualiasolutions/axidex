@@ -5,20 +5,37 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { LogOut, Loader2 } from "lucide-react";
+import {
+  LogOut,
+  Loader2,
+  LayoutDashboard,
+  Radio,
+  Mail,
+  Building2,
+  BarChart3,
+  Workflow,
+  Settings,
+  type LucideIcon,
+} from "lucide-react";
 import type { User } from "@supabase/supabase-js";
 
-const navigation = [
-  { name: "Overview", href: "/dashboard" },
-  { name: "Signals", href: "/dashboard/signals" },
-  { name: "Emails", href: "/dashboard/emails" },
-  { name: "Accounts", href: "/dashboard/accounts" },
-  { name: "Analytics", href: "/dashboard/analytics" },
-  { name: "Rules", href: "/dashboard/rules" },
+interface NavItem {
+  name: string;
+  href: string;
+  icon: LucideIcon;
+}
+
+const navigation: NavItem[] = [
+  { name: "Overview", href: "/dashboard", icon: LayoutDashboard },
+  { name: "Signals", href: "/dashboard/signals", icon: Radio },
+  { name: "Emails", href: "/dashboard/emails", icon: Mail },
+  { name: "Accounts", href: "/dashboard/accounts", icon: Building2 },
+  { name: "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
+  { name: "Rules", href: "/dashboard/rules", icon: Workflow },
 ];
 
-const bottomNavigation = [
-  { name: "Settings", href: "/dashboard/settings" },
+const bottomNavigation: NavItem[] = [
+  { name: "Settings", href: "/dashboard/settings", icon: Settings },
 ];
 
 export function Sidebar() {
@@ -95,12 +112,13 @@ export function Sidebar() {
         <ul className={cn("space-y-0.5", collapsed ? "px-2" : "px-3")}>
           {navigation.map((item) => {
             const isActive = pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href));
+            const Icon = item.icon;
             return (
               <li key={item.name}>
                 <Link
                   href={item.href}
                   className={cn(
-                    "flex items-center rounded-lg text-sm transition-colors",
+                    "flex items-center gap-3 rounded-lg text-sm transition-colors",
                     collapsed ? "justify-center p-2.5" : "px-3 py-2",
                     isActive
                       ? "bg-primary text-primary-foreground"
@@ -108,7 +126,8 @@ export function Sidebar() {
                   )}
                   title={collapsed ? item.name : undefined}
                 >
-                  {collapsed ? item.name[0] : item.name}
+                  <Icon className="w-4 h-4 shrink-0" />
+                  {!collapsed && <span>{item.name}</span>}
                 </Link>
               </li>
             );
@@ -124,12 +143,13 @@ export function Sidebar() {
         <ul className="space-y-0.5">
           {bottomNavigation.map((item) => {
             const isActive = pathname === item.href;
+            const Icon = item.icon;
             return (
               <li key={item.name}>
                 <Link
                   href={item.href}
                   className={cn(
-                    "flex items-center rounded-lg text-sm transition-colors",
+                    "flex items-center gap-3 rounded-lg text-sm transition-colors",
                     collapsed ? "justify-center p-2.5" : "px-3 py-2",
                     isActive
                       ? "bg-primary text-primary-foreground"
@@ -137,7 +157,8 @@ export function Sidebar() {
                   )}
                   title={collapsed ? item.name : undefined}
                 >
-                  {collapsed ? item.name[0] : item.name}
+                  <Icon className="w-4 h-4 shrink-0" />
+                  {!collapsed && <span>{item.name}</span>}
                 </Link>
               </li>
             );

@@ -3,16 +3,59 @@
 **Defined:** 2026-01-30
 **Core Value:** Sales teams get actionable signals with ready-to-send emails — no manual research.
 
-## v1.1 Requirements
+## v1.2 Requirements
+
+### Navigation & UX
+
+- [ ] **NAV-01**: Sidebar displays icons alongside text labels
+- [ ] **NAV-02**: Mobile navigation drawer accessible on small screens
+- [ ] **NAV-03**: Keyboard shortcuts for common actions (j/k navigation, g+s for signals, etc.)
+- [ ] **NAV-04**: Breadcrumb navigation on detail pages
+
+### Performance
+
+- [ ] **PERF-01**: Optimistic UI updates for user actions (mark read, toggle, etc.)
+- [ ] **PERF-02**: Client-side caching with SWR or React Query
+- [ ] **PERF-03**: Skeleton loading states consistent across all pages
+- [ ] **PERF-04**: Prefetch linked pages on hover
+
+### Design Polish
+
+- [ ] **UI-01**: Consistent spacing and typography across all pages
+- [ ] **UI-02**: Improved visual hierarchy in cards and lists
+- [ ] **UI-03**: Empty states with helpful actions
+- [ ] **UI-04**: Toast notifications for user feedback
+
+### Slack Integration
+
+- [ ] **SLCK-01**: User can connect Slack workspace via OAuth
+- [ ] **SLCK-02**: User can select channel for notifications
+- [ ] **SLCK-03**: High-priority signals posted to Slack automatically
+- [ ] **SLCK-04**: Slack messages include signal details and action links
+
+### Billing
+
+- [ ] **BILL-01**: Stripe checkout integration for subscription
+- [ ] **BILL-02**: User billing portal for managing subscription
+- [ ] **BILL-03**: Stripe webhook handling for subscription events
+- [ ] **BILL-04**: Usage limits enforced based on plan tier
+
+### Onboarding
+
+- [ ] **ONBR-01**: Welcome screen for new users after signup
+- [ ] **ONBR-02**: Guided tour of key features
+- [ ] **ONBR-03**: Quick setup wizard for notification preferences
+
+## v1.1 Requirements (Complete)
 
 ### Deployment
 
-- [ ] **DEPL-01**: Supabase migrations (001-009) applied to production database
-- [ ] **DEPL-02**: Worker deployed to Railway with SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, OPENAI_API_KEY
-- [ ] **DEPL-03**: Vercel environment variables configured (ANTHROPIC_API_KEY, RESEND_API_KEY)
-- [ ] **DEPL-04**: Supabase database webhook configured for signals INSERT events
-- [ ] **DEPL-05**: check-notification Edge Function deployed to Supabase
-- [ ] **DEPL-06**: Verify RLS policies work correctly in production (users see only own data)
+- [x] **DEPL-01**: Supabase migrations (001-009) applied to production database
+- [x] **DEPL-02**: Worker deployed to Railway with SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, OPENAI_API_KEY
+- [x] **DEPL-03**: Vercel environment variables configured (ANTHROPIC_API_KEY, RESEND_API_KEY)
+- [x] **DEPL-04**: Supabase database webhook configured for signals INSERT events
+- [x] **DEPL-05**: check-notification Edge Function deployed to Supabase
+- [x] **DEPL-06**: Verify RLS policies work correctly in production (users see only own data)
 
 ### Observability
 

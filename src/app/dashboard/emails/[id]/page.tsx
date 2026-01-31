@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { motion } from "motion/react";
 import type { GeneratedEmail } from "@/types";
 import { formatRelativeTime } from "@/lib/utils";
-import { Copy, Check, ArrowLeft, ExternalLink } from "lucide-react";
+import { Copy, Check, ExternalLink } from "lucide-react";
 
 const toneConfig: Record<GeneratedEmail["tone"], { label: string; variant: "default" | "success" | "warning" | "danger" | "accent" }> = {
   professional: { label: "Professional", variant: "default" },
@@ -89,7 +89,11 @@ export default function EmailDetailPage({ params }: { params: Promise<{ id: stri
   if (loading) {
     return (
       <>
-        <Header title="Email" subtitle="Loading..." />
+        <Header
+          title="Email"
+          subtitle="Loading..."
+          breadcrumbs={[{ label: "Emails", href: "/dashboard/emails" }, { label: "Loading..." }]}
+        />
         <main className="p-6 lg:p-8">
           <div className="max-w-3xl mx-auto space-y-6">
             <div className="h-12 bg-[var(--bg-secondary)] rounded animate-pulse" />
@@ -103,7 +107,11 @@ export default function EmailDetailPage({ params }: { params: Promise<{ id: stri
   if (error || !email) {
     return (
       <>
-        <Header title="Email" subtitle="Not found" />
+        <Header
+          title="Email"
+          subtitle="Not found"
+          breadcrumbs={[{ label: "Emails", href: "/dashboard/emails" }, { label: "Not Found" }]}
+        />
         <main className="p-6 lg:p-8">
           <motion.div
             initial={{ opacity: 0, y: 12 }}
@@ -127,26 +135,12 @@ export default function EmailDetailPage({ params }: { params: Promise<{ id: stri
 
   return (
     <>
-      <Header title="Email" subtitle={email.subject} />
+      <Header
+        title={email.subject}
+        breadcrumbs={[{ label: "Emails", href: "/dashboard/emails" }, { label: email.subject }]}
+      />
       <main className="p-6 lg:p-8">
         <div className="max-w-3xl mx-auto space-y-6">
-          {/* Back button */}
-          <motion.div
-            initial={{ opacity: 0, x: -12 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => router.push("/dashboard/emails")}
-              className="gap-2"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Back to Emails
-            </Button>
-          </motion.div>
-
           {/* Email card */}
           <motion.div
             initial={{ opacity: 0, y: 12 }}
