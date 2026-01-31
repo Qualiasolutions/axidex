@@ -23,12 +23,13 @@
 
 ### LinkedIn Scraping
 
-- [ ] **LNKD-01**: Bright Data Web Scraper API credentials configured
-- [ ] **LNKD-02**: LinkedIn Jobs scraper fetches job posts from Bright Data
-- [ ] **LNKD-03**: Scraper extracts company name, job title, location, and posting URL
-- [ ] **LNKD-04**: LinkedIn signals deduplicated via pgvector before storage
-- [ ] **LNKD-05**: Random 2-5s delays between requests to prevent rate limiting
-- [ ] **LNKD-06**: Scraper runs on schedule with other scrapers
+- [x] **LNKD-01**: Bright Data Web Scraper API credentials configured
+- [x] **LNKD-02**: LinkedIn Jobs scraper fetches job posts from Bright Data
+- [x] **LNKD-03**: Scraper extracts company name, job title, location, and posting URL
+- [x] **LNKD-04**: LinkedIn signals deduplicated via content hash before storage
+  - *Note: Uses content hash + title prefix matching (more efficient than pgvector for exact/near-duplicate detection)*
+- [x] **LNKD-05**: Random 2-5s delays between requests to prevent rate limiting
+- [x] **LNKD-06**: Scraper runs on schedule with other scrapers
 
 ### Notifications
 
@@ -126,12 +127,12 @@
 | OBSV-02 | Phase 7 | Complete |
 | OBSV-03 | Phase 7 | Complete |
 | OBSV-04 | Phase 7 | Complete |
-| LNKD-01 | Phase 8 | Pending |
-| LNKD-02 | Phase 8 | Pending |
-| LNKD-03 | Phase 8 | Pending |
-| LNKD-04 | Phase 8 | Pending |
-| LNKD-05 | Phase 8 | Pending |
-| LNKD-06 | Phase 8 | Pending |
+| LNKD-01 | Phase 8 | Complete |
+| LNKD-02 | Phase 8 | Complete |
+| LNKD-03 | Phase 8 | Complete |
+| LNKD-04 | Phase 8 | Complete |
+| LNKD-05 | Phase 8 | Complete |
+| LNKD-06 | Phase 8 | Complete |
 | NOTF-01 | Phase 9 | Pending |
 | NOTF-02 | Phase 9 | Pending |
 
@@ -142,4 +143,4 @@
 
 ---
 *Requirements defined: 2026-01-30*
-*Last updated: 2026-01-30 — Milestone v1.1 requirements*
+*Last updated: 2026-01-31 — Phase 8 LinkedIn Scraping complete*
