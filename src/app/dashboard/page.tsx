@@ -3,7 +3,10 @@
 import { useEffect, useState, useCallback } from "react";
 import { Header } from "@/components/layout/header";
 import { SignalCard } from "@/components/signals/signal-card";
+import { SignalCardSkeleton, StatCardSkeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
+import { useStats } from "@/hooks/use-stats";
+import { useSignals } from "@/hooks/use-signals";
 import {
   ArrowRight,
   TrendingUp,
@@ -147,13 +150,16 @@ function ActivityItem({ signal, index }: { signal: Signal; index: number }) {
 }
 
 export default function DashboardPage() {
-  const [stats, setStats] = useState<DashboardStats | null>(null);
-  const [recentSignals, setRecentSignals] = useState<Signal[]>([]);
-  const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
   const [scraping, setScraping] = useState(false);
   const [scrapeMessage, setScrapeMessage] = useState<string | null>(null);
+
+  // Use SWR hooks for data fetching
+  const { stats, isLoading: statsLoading, mutate: mutateStats } = useStats();
+  const { signals: recentSignals, isLoading: signalsLoading, mutate: mutateSignals } = useSignals({ limit: 8 });
+
+  const loading = statsLoading || signalsLoading;
 
   const fetchData = useCallback(async (showRefresh = false) => {
     try {
@@ -163,38 +169,32 @@ export default function DashboardPage() {
       const { data: { user } } = await supabase.auth.getUser();
 
       if (!user) {
-        setLoading(false);
         setRefreshing(false);
         return;
       }
 
       setUserId(user.id);
 
-      const [statsRes, signalsRes] = await Promise.all([
-        fetch("/api/stats"),
-        fetch("/api/signals?limit=8")
+      // Revalidate SWR caches
+      await Promise.all([
+        mutateStats(),
+        mutateSignals()
       ]);
-
-      if (statsRes.ok) {
-        const statsData = await statsRes.json();
-        setStats(statsData);
-      }
-
-      if (signalsRes.ok) {
-        const signalsData = await signalsRes.json();
-        setRecentSignals(signalsData.signals || []);
-      }
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
     } finally {
-      setLoading(false);
       setRefreshing(false);
     }
-  }, []);
+  }, [mutateStats, mutateSignals]);
 
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    const initUser = async () => {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) setUserId(user.id);
+    };
+    initUser();
+  }, []);
 
   const handleRunScraper = async () => {
     setScraping(true);
@@ -242,17 +242,10 @@ export default function DashboardPage() {
   };
 
   const handleNewSignal = useCallback((newSignal: Signal) => {
-    setRecentSignals(prev => [newSignal, ...prev].slice(0, 8));
-    setStats(prev => {
-      if (!prev) return prev;
-      return {
-        ...prev,
-        total_signals: prev.total_signals + 1,
-        new_signals: prev.new_signals + 1,
-        high_priority: newSignal.priority === "high" ? prev.high_priority + 1 : prev.high_priority,
-      };
-    });
-  }, []);
+    // Optimistically update SWR caches
+    mutateSignals();
+    mutateStats();
+  }, [mutateSignals, mutateStats]);
 
   useRealtimeSignals(userId || "", handleNewSignal);
 
@@ -263,11 +256,12 @@ export default function DashboardPage() {
         <main className="p-6 lg:p-8 space-y-8">
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="bg-background rounded-2xl p-6 border border-border/50 animate-pulse">
-                <div className="size-10 bg-muted rounded-xl mb-4" />
-                <div className="h-4 bg-muted rounded w-20 mb-2" />
-                <div className="h-8 bg-muted rounded w-16" />
-              </div>
+              <StatCardSkeleton key={i} />
+            ))}
+          </div>
+          <div className="space-y-4">
+            {[...Array(4)].map((_, i) => (
+              <SignalCardSkeleton key={i} />
             ))}
           </div>
         </main>

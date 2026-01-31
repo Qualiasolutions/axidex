@@ -7,9 +7,11 @@ import { Header } from "@/components/layout/header";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { RuleCard } from "@/components/rules/rule-card";
+import { RuleCardSkeleton } from "@/components/ui/skeleton";
 import { motion, AnimatePresence } from "motion/react";
 import type { AutomationRule, SignalType, SignalPriority } from "@/types";
 import { cn } from "@/lib/utils";
+import { useRules } from "@/hooks/use-rules";
 import {
   Plus,
   Zap,
@@ -74,10 +76,6 @@ function RulesPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [rules, setRules] = useState<AutomationRule[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [totalCount, setTotalCount] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
   const [showTemplates, setShowTemplates] = useState(false);
   const [creatingFromTemplate, setCreatingFromTemplate] = useState<string | null>(null);
@@ -87,41 +85,22 @@ function RulesPageContent() {
   const ITEMS_PER_PAGE = 20;
   const currentPage = parseInt(searchParams.get("page") || "1");
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+
+  // Use SWR hook for data fetching
+  const { rules, count: totalCount, isLoading, error, mutate } = useRules({
+    active: showActiveOnly ? true : undefined,
+    limit: ITEMS_PER_PAGE,
+    offset,
+  });
+
   const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
   const hasNextPage = currentPage < totalPages;
   const hasPrevPage = currentPage > 1;
 
   const fetchRules = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      const params = new URLSearchParams();
-      if (showActiveOnly) params.set("active", "true");
-      params.set("limit", ITEMS_PER_PAGE.toString());
-      params.set("offset", offset.toString());
-
-      const response = await fetch(`/api/rules?${params.toString()}`);
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch rules");
-      }
-
-      const data = await response.json();
-      setRules(data.rules || []);
-      setTotalCount(data.count || 0);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to fetch rules");
-      setRules([]);
-      setTotalCount(0);
-    } finally {
-      setLoading(false);
-    }
-  }, [showActiveOnly, offset]);
-
-  useEffect(() => {
-    fetchRules();
-  }, [fetchRules]);
+    // Revalidate SWR cache
+    await mutate();
+  }, [mutate]);
 
   const toggleActiveFilter = () => {
     const params = new URLSearchParams(searchParams.toString());
@@ -146,9 +125,8 @@ function RulesPageContent() {
         throw new Error("Failed to update rule");
       }
 
-      setRules((prev) =>
-        prev.map((r) => (r.id === rule.id ? { ...r, is_active: isActive } : r))
-      );
+      // Optimistically update SWR cache
+      mutate();
     } catch (err) {
       console.error("Error toggling rule:", err);
     }
@@ -168,8 +146,8 @@ function RulesPageContent() {
         throw new Error("Failed to delete rule");
       }
 
-      setRules((prev) => prev.filter((r) => r.id !== rule.id));
-      setTotalCount((prev) => prev - 1);
+      // Optimistically update SWR cache
+      mutate();
     } catch (err) {
       console.error("Error deleting rule:", err);
     }
@@ -194,8 +172,8 @@ function RulesPageContent() {
       }
 
       const data = await response.json();
-      setRules((prev) => [data.rule, ...prev]);
-      setTotalCount((prev) => prev + 1);
+      // Optimistically update SWR cache
+      mutate();
     } catch (err) {
       console.error("Error duplicating rule:", err);
     }
@@ -225,8 +203,8 @@ function RulesPageContent() {
       }
 
       const data = await response.json();
-      setRules((prev) => [data.rule, ...prev]);
-      setTotalCount((prev) => prev + 1);
+      // Optimistically update SWR cache
+      mutate();
       setShowTemplates(false);
     } catch (err) {
       console.error("Error creating rule from template:", err);
@@ -259,7 +237,7 @@ function RulesPageContent() {
       <Header title="Rules" subtitle="Automate your signal workflow" />
       <main className="p-6 lg:p-8 space-y-6">
         {/* Hero section when no rules */}
-        {!loading && rules.length === 0 && !showActiveOnly && (
+        {!isLoading && rules.length === 0 && !showActiveOnly && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -451,19 +429,16 @@ function RulesPageContent() {
         )}
 
         {/* Loading state */}
-        {loading && (
+        {isLoading && (
           <div className="space-y-4">
             {[1, 2, 3].map((i) => (
-              <div
-                key={i}
-                className="h-32 bg-muted rounded-2xl animate-pulse"
-              />
+              <RuleCardSkeleton key={i} />
             ))}
           </div>
         )}
 
         {/* Error state */}
-        {error && !loading && (
+        {error && !isLoading && (
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
@@ -477,7 +452,7 @@ function RulesPageContent() {
         )}
 
         {/* Rules list */}
-        {!loading && !error && filteredRules.length > 0 && (
+        {!isLoading && !error && filteredRules.length > 0 && (
           <>
             <div className="space-y-4">
               {filteredRules.map((rule, index) => (
@@ -524,7 +499,7 @@ function RulesPageContent() {
         )}
 
         {/* Empty search results */}
-        {!loading && !error && rules.length > 0 && filteredRules.length === 0 && searchQuery && (
+        {!isLoading && !error && rules.length > 0 && filteredRules.length === 0 && searchQuery && (
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
@@ -542,7 +517,7 @@ function RulesPageContent() {
         )}
 
         {/* Empty state for active filter */}
-        {!loading && !error && rules.length === 0 && showActiveOnly && (
+        {!isLoading && !error && rules.length === 0 && showActiveOnly && (
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}

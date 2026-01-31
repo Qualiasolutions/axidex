@@ -6,8 +6,10 @@ import { Header } from "@/components/layout/header";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { EmailCard } from "@/components/emails/email-card";
+import { EmailCardSkeleton } from "@/components/ui/skeleton";
 import { motion } from "motion/react";
-import type { GeneratedEmail, EmailTone, EmailStatus } from "@/types";
+import type { EmailTone, EmailStatus } from "@/types";
+import { useEmails } from "@/hooks/use-emails";
 import {
   startOfDay,
   endOfDay,
@@ -42,13 +44,8 @@ function EmailsPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [emails, setEmails] = useState<GeneratedEmail[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [totalCount, setTotalCount] = useState(0);
-
-  const activeTones = searchParams.get("tones")?.split(",").filter(Boolean) || [];
-  const activeStatuses = searchParams.get("statuses")?.split(",").filter(Boolean) || [];
+  const activeTones = (searchParams.get("tones")?.split(",").filter(Boolean) || []) as EmailTone[];
+  const activeStatuses = (searchParams.get("statuses")?.split(",").filter(Boolean) || []) as EmailStatus[];
   const searchQuery = searchParams.get("search") || "";
   const from = searchParams.get("from") || "";
   const to = searchParams.get("to") || "";
@@ -58,6 +55,18 @@ function EmailsPageContent() {
   const ITEMS_PER_PAGE = 20;
   const currentPage = parseInt(searchParams.get("page") || "1");
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+
+  // Use SWR hook for data fetching
+  const { emails, count: totalCount, isLoading, error } = useEmails({
+    tones: activeTones.length > 0 ? activeTones : undefined,
+    statuses: activeStatuses.length > 0 ? activeStatuses : undefined,
+    search: searchQuery || undefined,
+    from: from || undefined,
+    to: to || undefined,
+    limit: ITEMS_PER_PAGE,
+    offset,
+  });
+
   const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
   const hasNextPage = currentPage < totalPages;
   const hasPrevPage = currentPage > 1;
@@ -82,43 +91,7 @@ function EmailsPageContent() {
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [searchInput]);
-
-  useEffect(() => {
-    async function fetchEmails() {
-      setLoading(true);
-      setError(null);
-
-      try {
-        const params = new URLSearchParams();
-        if (activeTones.length > 0) params.set("tones", activeTones.join(","));
-        if (activeStatuses.length > 0) params.set("statuses", activeStatuses.join(","));
-        if (searchQuery) params.set("search", searchQuery);
-        if (from) params.set("from", from);
-        if (to) params.set("to", to);
-        params.set("limit", ITEMS_PER_PAGE.toString());
-        params.set("offset", offset.toString());
-
-        const response = await fetch(`/api/emails?${params.toString()}`);
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch emails");
-        }
-
-        const data = await response.json();
-        setEmails(data.emails || []);
-        setTotalCount(data.count || 0);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to fetch emails");
-        setEmails([]);
-        setTotalCount(0);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchEmails();
-  }, [activeTones.join(","), activeStatuses.join(","), searchQuery, from, to, currentPage]);
+  }, [searchInput, router, searchParams]);
 
   const toggleToneFilter = (tone: EmailTone) => {
     const current = new Set(activeTones);
@@ -386,19 +359,16 @@ function EmailsPageContent() {
         </motion.div>
 
         {/* Loading state */}
-        {loading && (
+        {isLoading && (
           <div className="space-y-4">
             {[1, 2, 3].map((i) => (
-              <div
-                key={i}
-                className="h-32 bg-[var(--bg-secondary)] rounded-xl border border-[var(--border-subtle)] animate-pulse"
-              />
+              <EmailCardSkeleton key={i} />
             ))}
           </div>
         )}
 
         {/* Error state */}
-        {error && !loading && (
+        {error && !isLoading && (
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
@@ -410,7 +380,7 @@ function EmailsPageContent() {
         )}
 
         {/* Emails list */}
-        {!loading && !error && emails.length > 0 && (
+        {!isLoading && !error && emails.length > 0 && (
           <>
             <div className="space-y-4">
               {emails.map((email, index) => (
@@ -455,7 +425,7 @@ function EmailsPageContent() {
         )}
 
         {/* Empty state */}
-        {!loading && !error && emails.length === 0 && (
+        {!isLoading && !error && emails.length === 0 && (
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}

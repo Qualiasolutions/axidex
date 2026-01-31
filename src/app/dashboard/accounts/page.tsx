@@ -6,8 +6,9 @@ import { Header } from "@/components/layout/header";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { AccountCard } from "@/components/accounts/account-card";
+import { AccountCardSkeleton } from "@/components/ui/skeleton";
 import { motion } from "motion/react";
-import type { Account } from "@/types";
+import { useAccounts } from "@/hooks/use-accounts";
 
 type SortBy = "last_signal" | "signal_count" | "company_name";
 
@@ -21,11 +22,6 @@ function AccountsPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [accounts, setAccounts] = useState<Account[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [totalCount, setTotalCount] = useState(0);
-
   const searchQuery = searchParams.get("search") || "";
   const sortBy = (searchParams.get("sortBy") as SortBy) || "last_signal";
   const minSignals = parseInt(searchParams.get("minSignals") || "0");
@@ -35,6 +31,16 @@ function AccountsPageContent() {
   const ITEMS_PER_PAGE = 20;
   const currentPage = parseInt(searchParams.get("page") || "1");
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+
+  // Use SWR hook for data fetching
+  const { accounts, count: totalCount, isLoading, error } = useAccounts({
+    search: searchQuery || undefined,
+    sortBy: sortBy as "signals" | "priority" | "recent",
+    minSignals: minSignals > 0 ? minSignals : undefined,
+    limit: ITEMS_PER_PAGE,
+    offset,
+  });
+
   const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
   const hasNextPage = currentPage < totalPages;
   const hasPrevPage = currentPage > 1;
@@ -59,41 +65,7 @@ function AccountsPageContent() {
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [searchInput]);
-
-  useEffect(() => {
-    async function fetchAccountsData() {
-      setLoading(true);
-      setError(null);
-
-      try {
-        const params = new URLSearchParams();
-        if (searchQuery) params.set("search", searchQuery);
-        if (sortBy !== "last_signal") params.set("sortBy", sortBy);
-        if (minSignals > 0) params.set("minSignals", minSignals.toString());
-        params.set("limit", ITEMS_PER_PAGE.toString());
-        params.set("offset", offset.toString());
-
-        const response = await fetch(`/api/accounts?${params.toString()}`);
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch accounts");
-        }
-
-        const data = await response.json();
-        setAccounts(data.accounts || []);
-        setTotalCount(data.count || 0);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to fetch accounts");
-        setAccounts([]);
-        setTotalCount(0);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchAccountsData();
-  }, [searchQuery, sortBy, minSignals, currentPage]);
+  }, [searchInput, router, searchParams]);
 
   const setSortBy = (value: SortBy) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -230,19 +202,16 @@ function AccountsPageContent() {
         </motion.div>
 
         {/* Loading state */}
-        {loading && (
+        {isLoading && (
           <div className="space-y-4">
             {[1, 2, 3].map((i) => (
-              <div
-                key={i}
-                className="h-24 bg-[var(--bg-secondary)] rounded-xl border border-[var(--border-subtle)] animate-pulse"
-              />
+              <AccountCardSkeleton key={i} />
             ))}
           </div>
         )}
 
         {/* Error state */}
-        {error && !loading && (
+        {error && !isLoading && (
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
@@ -254,7 +223,7 @@ function AccountsPageContent() {
         )}
 
         {/* Accounts list */}
-        {!loading && !error && accounts.length > 0 && (
+        {!isLoading && !error && accounts.length > 0 && (
           <>
             <div className="space-y-4">
               {accounts.map((account, index) => (
@@ -299,7 +268,7 @@ function AccountsPageContent() {
         )}
 
         {/* Empty state */}
-        {!loading && !error && accounts.length === 0 && (
+        {!isLoading && !error && accounts.length === 0 && (
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}

@@ -6,10 +6,12 @@ import Link from "next/link";
 import { Header } from "@/components/layout/header";
 import { Button } from "@/components/ui/button";
 import { SignalCard } from "@/components/signals/signal-card";
+import { SignalCardSkeleton } from "@/components/ui/skeleton";
 import { motion } from "motion/react";
 import type { Easing } from "motion/react";
-import type { Signal, SignalType, SignalPriority } from "@/types";
+import type { SignalType, SignalPriority } from "@/types";
 import { cn } from "@/lib/utils";
+import { useSignals } from "@/hooks/use-signals";
 import {
   startOfDay,
   endOfDay,
@@ -63,14 +65,10 @@ function SignalsPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [signals, setSignals] = useState<Signal[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [totalCount, setTotalCount] = useState(0);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
-  const activeTypes = searchParams.get("types")?.split(",").filter(Boolean) || [];
-  const activePriorities = searchParams.get("priorities")?.split(",").filter(Boolean) || [];
+  const activeTypes = (searchParams.get("types")?.split(",").filter(Boolean) || []) as SignalType[];
+  const activePriorities = (searchParams.get("priorities")?.split(",").filter(Boolean) || []) as SignalPriority[];
   const searchQuery = searchParams.get("search") || "";
   const from = searchParams.get("from") || "";
   const to = searchParams.get("to") || "";
@@ -80,6 +78,18 @@ function SignalsPageContent() {
   const ITEMS_PER_PAGE = 20;
   const currentPage = parseInt(searchParams.get("page") || "1");
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+
+  // Use SWR hook for data fetching
+  const { signals, count: totalCount, isLoading, error } = useSignals({
+    types: activeTypes.length > 0 ? activeTypes : undefined,
+    priorities: activePriorities.length > 0 ? activePriorities : undefined,
+    search: searchQuery || undefined,
+    from: from || undefined,
+    to: to || undefined,
+    limit: ITEMS_PER_PAGE,
+    offset,
+  });
+
   const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
   const hasNextPage = currentPage < totalPages;
   const hasPrevPage = currentPage > 1;
@@ -104,44 +114,12 @@ function SignalsPageContent() {
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [searchInput]);
+  }, [searchInput, router, searchParams]);
 
+  // Reset selection when signals change
   useEffect(() => {
-    async function fetchSignals() {
-      setLoading(true);
-      setError(null);
-
-      try {
-        const params = new URLSearchParams();
-        if (activeTypes.length > 0) params.set("types", activeTypes.join(","));
-        if (activePriorities.length > 0) params.set("priorities", activePriorities.join(","));
-        if (searchQuery) params.set("search", searchQuery);
-        if (from) params.set("from", from);
-        if (to) params.set("to", to);
-        params.set("limit", ITEMS_PER_PAGE.toString());
-        params.set("offset", offset.toString());
-
-        const response = await fetch(`/api/signals?${params.toString()}`);
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch signals");
-        }
-
-        const data = await response.json();
-        setSignals(data.signals || []);
-        setTotalCount(data.count || 0);
-        setSelectedIndex(null); // Reset selection when signals change
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to fetch signals");
-        setSignals([]);
-        setTotalCount(0);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchSignals();
-  }, [activeTypes.join(","), activePriorities.join(","), searchQuery, from, to, currentPage]);
+    setSelectedIndex(null);
+  }, [signals]);
 
   // Keyboard navigation for signals list
   useEffect(() => {
@@ -470,24 +448,16 @@ function SignalsPageContent() {
         </motion.div>
 
         {/* Loading State */}
-        {loading && (
+        {isLoading && (
           <div className="space-y-4">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="bg-background rounded-2xl p-6 border border-border/50 animate-pulse">
-                <div className="flex items-start gap-4">
-                  <div className="size-12 bg-muted rounded-xl" />
-                  <div className="flex-1">
-                    <div className="h-4 bg-muted rounded w-1/3 mb-2" />
-                    <div className="h-3 bg-muted rounded w-1/2" />
-                  </div>
-                </div>
-              </div>
+              <SignalCardSkeleton key={i} />
             ))}
           </div>
         )}
 
         {/* Error State */}
-        {error && !loading && (
+        {error && !isLoading && (
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
@@ -499,7 +469,7 @@ function SignalsPageContent() {
             </div>
             <div>
               <p className="text-sm font-semibold text-red-700">Failed to load signals</p>
-              <p className="text-xs text-red-600">{error}</p>
+              <p className="text-xs text-red-600">{error instanceof Error ? error.message : "An error occurred"}</p>
             </div>
             <Button variant="ghost" size="sm" onClick={() => router.refresh()} className="ml-auto text-red-600">
               Retry
@@ -508,7 +478,7 @@ function SignalsPageContent() {
         )}
 
         {/* Signals List */}
-        {!loading && !error && signals.length > 0 && (
+        {!isLoading && !error && signals.length > 0 && (
           <>
             <div className="space-y-4">
               {signals.map((signal, index) => (
@@ -587,7 +557,7 @@ function SignalsPageContent() {
         )}
 
         {/* Empty State */}
-        {!loading && !error && signals.length === 0 && (
+        {!isLoading && !error && signals.length === 0 && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
