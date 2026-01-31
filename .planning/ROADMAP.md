@@ -107,10 +107,16 @@ Plans:
 **Plans:** 2 plans
 
 **Success Criteria:**
-1. Sidebar shows recognizable icons for each section
-2. Mobile users can access all navigation via drawer
-3. Power users can navigate with keyboard (g+s, g+e, etc.)
+1. Sidebar shows recognizable icons for each section (already complete)
+2. Mobile users can access all navigation via drawer (already complete)
+3. Power users can navigate with keyboard (g+s, g+e, j/k, ? help)
 4. Detail pages show breadcrumb trail
+
+**Note:** NAV-01 (icons) and NAV-02 (mobile nav) were already implemented. This phase adds keyboard shortcuts help modal, j/k list navigation, and breadcrumbs to remaining detail pages.
+
+Plans:
+- [ ] 10-01-PLAN.md — Keyboard shortcuts help modal and j/k list navigation
+- [ ] 10-02-PLAN.md — Add breadcrumbs to Rules, Accounts, and Emails detail pages
 
 ### Phase 11: Performance
 **Goal:** Snappy, responsive UI with instant feedback
