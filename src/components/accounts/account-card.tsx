@@ -1,6 +1,7 @@
 "use client";
 
 import { memo } from "react";
+import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { cn, formatRelativeTime } from "@/lib/utils";
 import type { Account } from "@/types";
@@ -28,12 +29,15 @@ export const AccountCard = memo(function AccountCard({ account, index = 0 }: Acc
       >
         <div className="flex items-center gap-4">
           {/* Logo */}
-          <div className="w-12 h-12 rounded-lg bg-[var(--bg-secondary)] flex items-center justify-center flex-shrink-0 overflow-hidden">
+          <div className="w-12 h-12 rounded-lg bg-[var(--bg-secondary)] flex items-center justify-center flex-shrink-0 overflow-hidden relative">
             {account.company_logo ? (
-              <img
+              <Image
                 src={account.company_logo}
                 alt={account.company_name}
-                className="w-full h-full object-cover"
+                fill
+                sizes="48px"
+                className="object-cover"
+                unoptimized={!account.company_logo.startsWith("https://")}
               />
             ) : (
               <Building2 className="w-6 h-6 text-[var(--text-tertiary)]" />
