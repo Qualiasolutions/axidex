@@ -163,9 +163,12 @@ export function Sidebar() {
           {navigation.map((item) => {
             const isActive = pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href));
             const Icon = item.icon;
+            // Add IDs for onboarding tour targets
+            const tourId = item.name === "Signals" ? "nav-signals" : item.name === "Emails" ? "nav-emails" : undefined;
             return (
               <li key={item.name}>
                 <Link
+                  id={tourId}
                   href={item.href}
                   prefetch={true}
                   onMouseEnter={() => handlePrefetch(item.href)}

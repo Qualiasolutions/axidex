@@ -1,6 +1,7 @@
 import { Sidebar } from "@/components/layout/sidebar";
 import { MobileNav } from "@/components/layout/mobile-nav";
 import { KeyboardShortcutsProvider } from "@/components/keyboard-shortcuts-provider";
+import { OnboardingProvider } from "@/components/onboarding/onboarding-provider";
 
 export default function DashboardLayout({
   children,
@@ -13,9 +14,11 @@ export default function DashboardLayout({
         <Sidebar />
         <MobileNav />
         {/* Main content area - responsive margin for sidebar, top padding for mobile header */}
-        <div className="lg:ml-60 min-h-screen transition-all duration-300 pt-14 lg:pt-0">
-          {children}
-        </div>
+        <OnboardingProvider>
+          <div className="lg:ml-60 min-h-screen transition-all duration-300 pt-14 lg:pt-0">
+            {children}
+          </div>
+        </OnboardingProvider>
       </div>
     </KeyboardShortcutsProvider>
   );

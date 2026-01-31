@@ -337,6 +337,7 @@ export default function DashboardPage() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Button
+              id="btn-run-scraper"
               onClick={handleRunScraper}
               disabled={scraping}
               size="sm"
