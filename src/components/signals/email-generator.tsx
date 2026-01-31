@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import type { Signal, GeneratedEmail } from "@/types";
 import type { EmailTone } from "@/lib/ai/email-generator";
 import { motion } from "motion/react";
+import { toast } from "sonner";
 
 interface EmailGeneratorProps {
   signalId: string;
@@ -84,8 +85,11 @@ export function EmailGenerator({ signalId, signal, existingEmail }: EmailGenerat
 
       const data = await response.json();
       setEmail(data);
+      toast.success("Email generated");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to generate email");
+      const errorMsg = err instanceof Error ? err.message : "Failed to generate email";
+      setError(errorMsg);
+      toast.error("Failed to generate email");
     } finally {
       setLoading(false);
     }
@@ -99,6 +103,7 @@ export function EmailGenerator({ signalId, signal, existingEmail }: EmailGenerat
     try {
       await navigator.clipboard.writeText(emailText);
       setCopySuccess(true);
+      toast.success("Email copied to clipboard");
 
       // Reset copy success after 2 seconds
       setTimeout(() => {
@@ -107,6 +112,7 @@ export function EmailGenerator({ signalId, signal, existingEmail }: EmailGenerat
     } catch (err) {
       console.error("Failed to copy:", err);
       setError("Failed to copy to clipboard");
+      toast.error("Failed to copy email");
     }
   };
 
