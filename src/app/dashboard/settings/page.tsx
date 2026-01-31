@@ -5,7 +5,9 @@ import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { motion } from "motion/react";
-import { Loader2, Check, Bell, BellOff, MessageSquare, ExternalLink, ChevronDown } from "lucide-react";
+import { Loader2, Check, Bell, BellOff, MessageSquare, ExternalLink, ChevronDown, Link2, Unlink, Key } from "lucide-react";
+import { CRM_PROVIDERS } from "@/lib/crm";
+import type { CRMProvider } from "@/types";
 
 const SIGNAL_TYPES = [
   { id: "hiring", label: "Hiring", description: "Job postings, team growth" },
@@ -42,6 +44,15 @@ interface SlackSettings {
   enabled: boolean;
 }
 
+interface CRMIntegrationDisplay {
+  id: string;
+  provider: CRMProvider;
+  connected_at: string;
+  auto_sync_enabled: boolean;
+  portal_id?: string | null;
+  instance_url?: string | null;
+}
+
 const DEFAULT_PREFS: NotificationPreferences = {
   email_enabled: true,
   signal_types: SIGNAL_TYPES.map((t) => t.id),
@@ -69,10 +80,20 @@ function SettingsContent() {
   const [error, setError] = useState<string | null>(null);
   const [slackMessage, setSlackMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
-  // Handle Slack OAuth callback messages
+  // CRM state
+  const [crmIntegrations, setCrmIntegrations] = useState<CRMIntegrationDisplay[]>([]);
+  const [crmLoading, setCrmLoading] = useState(false);
+  const [crmMessage, setCrmMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [apolloApiKey, setApolloApiKey] = useState("");
+  const [apolloConnecting, setApolloConnecting] = useState(false);
+  const [showApolloInput, setShowApolloInput] = useState(false);
+
+  // Handle OAuth callback messages
   useEffect(() => {
     const slackConnected = searchParams.get("slack_connected");
     const slackError = searchParams.get("slack_error");
+    const crmConnected = searchParams.get("crm_connected");
+    const crmError = searchParams.get("error");
 
     if (slackConnected === "true") {
       setSlackMessage({ type: "success", text: "Slack connected successfully! Select a channel below." });
@@ -87,11 +108,33 @@ function SettingsContent() {
       setSlackMessage({ type: "error", text: errorMessages[slackError] || `Error: ${slackError}` });
     }
 
+    if (crmConnected) {
+      const providerName = CRM_PROVIDERS[crmConnected as CRMProvider]?.name || crmConnected;
+      setCrmMessage({ type: "success", text: `${providerName} connected successfully!` });
+      loadCrmIntegrations();
+    } else if (crmError) {
+      setCrmMessage({ type: "error", text: crmError });
+    }
+
     // Clear URL params after showing message
-    if (slackConnected || slackError) {
+    if (slackConnected || slackError || crmConnected || crmError) {
       window.history.replaceState({}, "", "/dashboard/settings");
     }
   }, [searchParams]);
+
+  const loadCrmIntegrations = async () => {
+    setCrmLoading(true);
+    try {
+      const response = await fetch("/api/crm");
+      const data = await response.json();
+      if (!data.error) {
+        setCrmIntegrations(data.integrations || []);
+      }
+    } catch (err) {
+      console.error("Error loading CRM integrations:", err);
+    }
+    setCrmLoading(false);
+  };
 
   useEffect(() => {
     const loadPreferences = async () => {
@@ -131,6 +174,9 @@ function SettingsContent() {
           enabled: data.slack_enabled ?? false,
         });
       }
+
+      // Load CRM integrations
+      await loadCrmIntegrations();
 
       setLoading(false);
     };
@@ -258,6 +304,74 @@ function SettingsContent() {
       }
     } catch {
       setSlackMessage({ type: "error", text: "Failed to update Slack settings" });
+    }
+  };
+
+  const disconnectCrm = async (integrationId: string, provider: CRMProvider) => {
+    try {
+      const response = await fetch(`/api/crm?id=${integrationId}`, {
+        method: "DELETE",
+      });
+      const data = await response.json();
+
+      if (data.error) {
+        setCrmMessage({ type: "error", text: data.error });
+      } else {
+        setCrmIntegrations((prev) => prev.filter((i) => i.id !== integrationId));
+        setCrmMessage({ type: "success", text: `${CRM_PROVIDERS[provider].name} disconnected` });
+      }
+    } catch {
+      setCrmMessage({ type: "error", text: "Failed to disconnect CRM" });
+    }
+  };
+
+  const connectApollo = async () => {
+    if (!apolloApiKey.trim()) {
+      setCrmMessage({ type: "error", text: "Please enter your Apollo API key" });
+      return;
+    }
+
+    setApolloConnecting(true);
+    try {
+      const response = await fetch("/api/crm/apollo/connect", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ apiKey: apolloApiKey }),
+      });
+      const data = await response.json();
+
+      if (data.error) {
+        setCrmMessage({ type: "error", text: data.error });
+      } else {
+        setCrmMessage({ type: "success", text: "Apollo.io connected successfully!" });
+        setApolloApiKey("");
+        setShowApolloInput(false);
+        await loadCrmIntegrations();
+      }
+    } catch {
+      setCrmMessage({ type: "error", text: "Failed to connect Apollo" });
+    }
+    setApolloConnecting(false);
+  };
+
+  const toggleCrmSync = async (integrationId: string, enabled: boolean) => {
+    try {
+      const response = await fetch("/api/crm", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: integrationId, auto_sync_enabled: enabled }),
+      });
+      const data = await response.json();
+
+      if (data.error) {
+        setCrmMessage({ type: "error", text: data.error });
+      } else {
+        setCrmIntegrations((prev) =>
+          prev.map((i) => (i.id === integrationId ? { ...i, auto_sync_enabled: enabled } : i))
+        );
+      }
+    } catch {
+      setCrmMessage({ type: "error", text: "Failed to update CRM settings" });
     }
   };
 
@@ -460,6 +574,176 @@ function SettingsContent() {
                 </button>
               </div>
             )}
+          </div>
+        )}
+      </motion.div>
+
+      {/* CRM Integrations */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, delay: 0.17 }}
+        className="bg-card border border-border rounded-lg p-6"
+      >
+        <div className="flex items-center gap-3 mb-4">
+          <Link2 className="w-5 h-5 text-primary" />
+          <div>
+            <h2 className="font-medium text-foreground">CRM Integrations</h2>
+            <p className="text-sm text-muted-foreground">
+              Connect your CRM to automatically sync signals
+            </p>
+          </div>
+        </div>
+
+        {crmMessage && (
+          <div
+            className={`mb-4 p-3 rounded-lg text-sm ${
+              crmMessage.type === "success"
+                ? "bg-green-500/10 text-green-600 border border-green-500/20"
+                : "bg-destructive/10 text-destructive border border-destructive/20"
+            }`}
+          >
+            {crmMessage.text}
+          </div>
+        )}
+
+        {crmLoading ? (
+          <div className="flex items-center justify-center py-8">
+            <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {/* Connected CRMs */}
+            {crmIntegrations.map((integration) => {
+              const provider = CRM_PROVIDERS[integration.provider];
+              return (
+                <div
+                  key={integration.id}
+                  className="flex items-center justify-between p-4 bg-muted/50 rounded-lg"
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="text-xl">{provider.icon}</span>
+                    <div>
+                      <p className="font-medium text-foreground">{provider.name}</p>
+                      <p className="text-xs text-muted-foreground">
+                        Connected {new Date(integration.connected_at).toLocaleDateString()}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-muted-foreground">Auto-sync</span>
+                      <button
+                        onClick={() => toggleCrmSync(integration.id, !integration.auto_sync_enabled)}
+                        className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
+                          integration.auto_sync_enabled ? "bg-primary" : "bg-muted"
+                        }`}
+                      >
+                        <span
+                          className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform ${
+                            integration.auto_sync_enabled ? "translate-x-5" : "translate-x-1"
+                          }`}
+                        />
+                      </button>
+                    </div>
+                    <button
+                      onClick={() => disconnectCrm(integration.id, integration.provider)}
+                      className="p-1.5 text-muted-foreground hover:text-destructive transition-colors"
+                      title="Disconnect"
+                    >
+                      <Unlink className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+
+            {/* Available CRMs to connect */}
+            <div className="grid gap-3 sm:grid-cols-2">
+              {(Object.entries(CRM_PROVIDERS) as [CRMProvider, typeof CRM_PROVIDERS[CRMProvider]][])
+                .filter(([key]) => !crmIntegrations.some((i) => i.provider === key))
+                .map(([key, provider]) => (
+                  <div key={key}>
+                    {key === "apollo" ? (
+                      <div className="border border-border rounded-lg p-4">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="text-lg">{provider.icon}</span>
+                          <span className="font-medium text-foreground">{provider.name}</span>
+                        </div>
+                        <p className="text-xs text-muted-foreground mb-3">{provider.description}</p>
+
+                        {showApolloInput ? (
+                          <div className="space-y-2">
+                            <div className="flex items-center gap-2">
+                              <Key className="w-4 h-4 text-muted-foreground" />
+                              <input
+                                type="password"
+                                placeholder="Enter Apollo API key"
+                                value={apolloApiKey}
+                                onChange={(e) => setApolloApiKey(e.target.value)}
+                                className="flex-1 px-3 py-1.5 text-sm border border-border rounded bg-background focus:outline-none focus:ring-1 focus:ring-primary"
+                              />
+                            </div>
+                            <div className="flex gap-2">
+                              <button
+                                onClick={connectApollo}
+                                disabled={apolloConnecting}
+                                className="flex-1 px-3 py-1.5 text-sm bg-primary text-primary-foreground rounded hover:bg-primary/90 disabled:opacity-50"
+                              >
+                                {apolloConnecting ? (
+                                  <Loader2 className="w-4 h-4 animate-spin mx-auto" />
+                                ) : (
+                                  "Connect"
+                                )}
+                              </button>
+                              <button
+                                onClick={() => {
+                                  setShowApolloInput(false);
+                                  setApolloApiKey("");
+                                }}
+                                className="px-3 py-1.5 text-sm border border-border rounded hover:bg-muted"
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => setShowApolloInput(true)}
+                            className="w-full px-3 py-2 text-sm border border-border rounded-lg hover:border-primary/50 hover:bg-primary/5 transition-colors flex items-center justify-center gap-2"
+                          >
+                            <Key className="w-4 h-4" />
+                            Connect with API Key
+                          </button>
+                        )}
+                      </div>
+                    ) : key === "zoho" ? (
+                      <div className="border border-border rounded-lg p-4 opacity-50">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="text-lg">{provider.icon}</span>
+                          <span className="font-medium text-foreground">{provider.name}</span>
+                          <span className="text-xs bg-muted px-1.5 py-0.5 rounded">Coming soon</span>
+                        </div>
+                        <p className="text-xs text-muted-foreground">{provider.description}</p>
+                      </div>
+                    ) : (
+                      <a
+                        href={`/api/crm/${key}/oauth`}
+                        className="block border border-border rounded-lg p-4 hover:border-primary/50 hover:bg-primary/5 transition-colors"
+                      >
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="text-lg">{provider.icon}</span>
+                          <span className="font-medium text-foreground">{provider.name}</span>
+                        </div>
+                        <p className="text-xs text-muted-foreground mb-2">{provider.description}</p>
+                        <span className="text-xs text-primary flex items-center gap-1">
+                          Connect <ExternalLink className="w-3 h-3" />
+                        </span>
+                      </a>
+                    )}
+                  </div>
+                ))}
+            </div>
           </div>
         )}
       </motion.div>

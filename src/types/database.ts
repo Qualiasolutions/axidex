@@ -101,7 +101,7 @@ export type Database = {
         Row: {
           id: string
           user_id: string
-          provider: "hubspot" | "salesforce" | "pipedrive" | "zoho" | "apollo"
+          provider: "hubspot" | "salesforce" | "pipedrive" | "zoho" | "apollo" | "attio"
           access_token: string
           refresh_token: string | null
           token_expires_at: string | null
@@ -124,7 +124,7 @@ export type Database = {
         Insert: {
           id?: string
           user_id: string
-          provider: "hubspot" | "salesforce" | "pipedrive" | "zoho" | "apollo"
+          provider: "hubspot" | "salesforce" | "pipedrive" | "zoho" | "apollo" | "attio"
           access_token: string
           refresh_token?: string | null
           token_expires_at?: string | null
@@ -147,7 +147,7 @@ export type Database = {
         Update: {
           id?: string
           user_id?: string
-          provider?: "hubspot" | "salesforce" | "pipedrive" | "zoho" | "apollo"
+          provider?: "hubspot" | "salesforce" | "pipedrive" | "zoho" | "apollo" | "attio"
           access_token?: string
           refresh_token?: string | null
           token_expires_at?: string | null

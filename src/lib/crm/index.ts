@@ -4,12 +4,14 @@ import { HubSpotClient, getHubSpotAuthUrl, exchangeHubSpotCode } from "./hubspot
 import { SalesforceClient, getSalesforceAuthUrl, exchangeSalesforceCode } from "./salesforce";
 import { PipedriveClient, getPipedriveAuthUrl, exchangePipedriveCode } from "./pipedrive";
 import { ApolloClient, getApolloAuthUrl, exchangeApolloCode, validateApolloApiKey } from "./apollo";
+import { AttioClient, getAttioAuthUrl, exchangeAttioCode, validateAttioApiKey } from "./attio";
 
 export * from "./types";
 export { HubSpotClient } from "./hubspot";
 export { SalesforceClient } from "./salesforce";
 export { PipedriveClient } from "./pipedrive";
 export { ApolloClient, validateApolloApiKey } from "./apollo";
+export { AttioClient, validateAttioApiKey } from "./attio";
 
 // Provider display info
 export const CRM_PROVIDERS: Record<
@@ -46,6 +48,12 @@ export const CRM_PROVIDERS: Record<
     color: "#5B5FC7",
     description: "Connect to Apollo.io for sales intelligence and outreach",
   },
+  attio: {
+    name: "Attio",
+    icon: "⬡",
+    color: "#1a1a2e",
+    description: "Connect to Attio for modern CRM and relationship intelligence",
+  },
 };
 
 /**
@@ -76,6 +84,8 @@ export function createCRMClient(integration: CRMIntegration): CRMClient {
       );
     case "apollo":
       return new ApolloClient(integration.access_token);
+    case "attio":
+      return new AttioClient(integration.access_token);
     case "zoho":
       throw new Error("Zoho CRM integration not yet implemented");
     default:
@@ -100,6 +110,8 @@ export function getCRMAuthUrl(
       return getPipedriveAuthUrl(redirectUri, state);
     case "apollo":
       return getApolloAuthUrl(redirectUri, state);
+    case "attio":
+      return getAttioAuthUrl(redirectUri, state);
     case "zoho":
       throw new Error("Zoho CRM OAuth not yet implemented");
     default:
@@ -124,6 +136,8 @@ export async function exchangeCRMCode(
       return exchangePipedriveCode(code, redirectUri);
     case "apollo":
       return exchangeApolloCode(code, redirectUri);
+    case "attio":
+      return exchangeAttioCode(code, redirectUri);
     case "zoho":
       throw new Error("Zoho CRM OAuth not yet implemented");
     default:
@@ -193,7 +207,8 @@ export function validateProviderConfig(provider: CRMProvider): {
       if (!process.env.PIPEDRIVE_CLIENT_SECRET) missing.push("PIPEDRIVE_CLIENT_SECRET");
       break;
     case "apollo":
-      // Apollo uses API key, which is stored per-user, not in env vars
+    case "attio":
+      // Apollo and Attio use API key, which is stored per-user, not in env vars
       break;
     case "zoho":
       if (!process.env.ZOHO_CLIENT_ID) missing.push("ZOHO_CLIENT_ID");

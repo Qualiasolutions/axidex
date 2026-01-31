@@ -23,10 +23,13 @@ interface GeneratedEmailData {
 
 export function EmailGenerator({ signalId, signal, existingEmail }: EmailGeneratorProps) {
   const [loading, setLoading] = useState(false);
+  const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [email, setEmail] = useState<GeneratedEmailData | null>(null);
   const [selectedTone, setSelectedTone] = useState<EmailTone>("professional");
   const [copySuccess, setCopySuccess] = useState(false);
+  const [recipientEmail, setRecipientEmail] = useState("");
+  const [sendSuccess, setSendSuccess] = useState(false);
 
   // Load existing email on mount
   useEffect(() => {
@@ -104,6 +107,39 @@ export function EmailGenerator({ signalId, signal, existingEmail }: EmailGenerat
     } catch (err) {
       console.error("Failed to copy:", err);
       setError("Failed to copy to clipboard");
+    }
+  };
+
+  const handleSendEmail = async () => {
+    if (!email || !recipientEmail) return;
+
+    setSending(true);
+    setError(null);
+    setSendSuccess(false);
+
+    try {
+      const response = await fetch("/api/emails/send", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          emailId: email.id,
+          recipientEmail: recipientEmail.trim(),
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to send email");
+      }
+
+      setSendSuccess(true);
+      setTimeout(() => setSendSuccess(false), 3000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to send email");
+    } finally {
+      setSending(false);
     }
   };
 
@@ -208,6 +244,36 @@ export function EmailGenerator({ signalId, signal, existingEmail }: EmailGenerat
                 {email.body}
               </p>
             </div>
+          </div>
+
+          {/* Send email section */}
+          <div className="pt-4 border-t border-[var(--border-subtle)] space-y-3">
+            <label className="text-xs font-medium text-[var(--text-tertiary)] block">
+              Send to Recipient
+            </label>
+            <div className="flex items-center gap-2">
+              <input
+                type="email"
+                value={recipientEmail}
+                onChange={(e) => setRecipientEmail(e.target.value)}
+                placeholder="recipient@company.com"
+                className="flex-1 px-3 py-2 text-sm rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-primary)] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
+                disabled={sending}
+              />
+              <Button
+                variant="default"
+                onClick={handleSendEmail}
+                disabled={sending || !recipientEmail.trim()}
+                className="min-w-[100px]"
+              >
+                {sending ? "Sending..." : sendSuccess ? "✓ Sent!" : "Send"}
+              </Button>
+            </div>
+            {sendSuccess && (
+              <p className="text-xs text-green-600">
+                Email sent successfully to {recipientEmail}
+              </p>
+            )}
           </div>
 
           {/* Tone badge */}

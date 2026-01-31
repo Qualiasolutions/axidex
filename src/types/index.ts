@@ -106,7 +106,7 @@ export interface AutomationRule {
 }
 
 // CRM Integration types
-export type CRMProvider = "hubspot" | "salesforce" | "pipedrive" | "zoho" | "apollo";
+export type CRMProvider = "hubspot" | "salesforce" | "pipedrive" | "zoho" | "apollo" | "attio";
 
 export type CRMSyncStatus = "pending" | "syncing" | "success" | "failed";
 

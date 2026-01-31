@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getCRMAuthUrl, validateProviderConfig } from "@/lib/crm";
 import type { CRMProvider } from "@/types";
 
-const VALID_PROVIDERS: CRMProvider[] = ["hubspot", "salesforce", "pipedrive", "zoho", "apollo"];
+const VALID_PROVIDERS: CRMProvider[] = ["hubspot", "salesforce", "pipedrive", "zoho", "apollo", "attio"];
 
 export async function GET(
   request: Request,
