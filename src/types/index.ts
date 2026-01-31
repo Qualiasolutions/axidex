@@ -44,6 +44,24 @@ export interface GeneratedEmail {
   signal?: Signal;
 }
 
+// Subscription types
+export type SubscriptionStatus = "free" | "active" | "past_due" | "canceled";
+export type SubscriptionTier = "free" | "pro" | "enterprise";
+
+export interface Subscription {
+  id: string;
+  user_id: string;
+  stripe_subscription_id: string;
+  stripe_customer_id: string;
+  status: SubscriptionStatus;
+  tier: SubscriptionTier;
+  current_period_start: string;
+  current_period_end: string;
+  cancel_at_period_end: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface User {
   id: string;
   email: string;
@@ -51,6 +69,12 @@ export interface User {
   avatar_url?: string;
   company_name?: string;
   created_at: string;
+  // Subscription fields
+  subscription_status?: SubscriptionStatus;
+  subscription_tier?: SubscriptionTier;
+  stripe_customer_id?: string;
+  stripe_subscription_id?: string;
+  subscription_period_end?: string;
 }
 
 export interface SignalFilter {
