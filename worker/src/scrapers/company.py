@@ -8,34 +8,66 @@ import structlog
 
 log = structlog.get_logger()
 
-# Target company websites with known press release pages
-COMPANY_SOURCES = [
-    {
-        "name": "Salesforce",
+# Known company press release URLs mapping
+KNOWN_PRESS_URLS = {
+    "salesforce": {
         "domain": "salesforce.com",
         "press_url": "https://www.salesforce.com/news/press-releases/",
-        "careers_url": "https://careers.salesforce.com/",
     },
-    {
-        "name": "HubSpot",
+    "hubspot": {
         "domain": "hubspot.com",
         "press_url": "https://www.hubspot.com/company/news",
-        "careers_url": "https://www.hubspot.com/careers",
     },
-    {
-        "name": "Stripe",
+    "stripe": {
         "domain": "stripe.com",
         "press_url": "https://stripe.com/newsroom",
-        "careers_url": "https://stripe.com/jobs",
     },
-]
+    "shopify": {
+        "domain": "shopify.com",
+        "press_url": "https://news.shopify.com/",
+    },
+    "twilio": {
+        "domain": "twilio.com",
+        "press_url": "https://www.twilio.com/press",
+    },
+    "vercel": {
+        "domain": "vercel.com",
+        "press_url": "https://vercel.com/blog",
+    },
+    "supabase": {
+        "domain": "supabase.com",
+        "press_url": "https://supabase.com/blog",
+    },
+}
 
 
 class CompanyWebsiteScraper(BaseScraper):
     name = "company"
 
+    def __init__(self, target_companies: list[str] | None = None):
+        self.target_companies = target_companies or list(KNOWN_PRESS_URLS.keys())
+
+    def _get_company_sources(self) -> list[dict]:
+        """Build list of company sources from target companies."""
+        sources = []
+        for company in self.target_companies:
+            company_lower = company.lower()
+            if company_lower in KNOWN_PRESS_URLS:
+                info = KNOWN_PRESS_URLS[company_lower]
+                sources.append({
+                    "name": company,
+                    "domain": info["domain"],
+                    "press_url": info["press_url"],
+                })
+        return sources
+
     async def scrape(self) -> list[Signal]:
         signals = []
+        company_sources = self._get_company_sources()
+
+        if not company_sources:
+            log.info("no_company_sources", target_companies=self.target_companies)
+            return signals
 
         async with httpx.AsyncClient(
             timeout=30.0,
@@ -44,7 +76,7 @@ class CompanyWebsiteScraper(BaseScraper):
             },
             follow_redirects=True,
         ) as client:
-            for company in COMPANY_SOURCES:
+            for company in company_sources:
                 try:
                     # Scrape press releases
                     press_signals = await self._scrape_press_releases(client, company)

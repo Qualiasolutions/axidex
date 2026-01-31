@@ -157,22 +157,24 @@ export function ScraperConfigSection() {
 
   const addCompany = () => {
     if (!config || !newCompany.trim()) return;
-    if (config.target_companies.includes(newCompany.trim())) {
+    const companies = config.target_companies ?? [];
+    if (companies.includes(newCompany.trim())) {
       setNewCompany("");
       return;
     }
     setConfig({
       ...config,
-      target_companies: [...config.target_companies, newCompany.trim()],
+      target_companies: [...companies, newCompany.trim()],
     });
     setNewCompany("");
   };
 
   const removeCompany = (company: string) => {
     if (!config) return;
+    const companies = config.target_companies ?? [];
     setConfig({
       ...config,
-      target_companies: config.target_companies.filter((c) => c !== company),
+      target_companies: companies.filter((c) => c !== company),
     });
   };
 
@@ -320,7 +322,7 @@ export function ScraperConfigSection() {
                 <Check className="w-4 h-4 text-green-600" />
                 {latestRun.total_signals} signals found
               </span>
-              {latestRun.ai_enriched_count > 0 && (
+              {(latestRun.ai_enriched_count ?? 0) > 0 && (
                 <span className="text-muted-foreground">
                   {latestRun.ai_enriched_count} AI-enriched
                 </span>

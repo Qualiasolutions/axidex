@@ -19,9 +19,8 @@ from ..db.dedup import is_duplicate, get_content_hash
 
 log = structlog.get_logger()
 
-# Target companies for LinkedIn job scraping
-# In production, this would come from user preferences or database
-TARGET_COMPANIES = [
+# Default target companies for LinkedIn job scraping
+DEFAULT_TARGET_COMPANIES = [
     "Stripe",
     "Shopify",
     "Vercel",
@@ -29,8 +28,8 @@ TARGET_COMPANIES = [
     "Linear",
 ]
 
-# Job title keywords indicating buying signals
-SIGNAL_KEYWORDS = [
+# Default job title keywords indicating buying signals
+DEFAULT_SIGNAL_KEYWORDS = [
     "Sales",
     "Account Executive",
     "Business Development",
@@ -58,11 +57,17 @@ class LinkedInScraper(BaseScraper):
 
     name = "linkedin"
 
-    def __init__(self):
+    def __init__(
+        self,
+        target_companies: list[str] | None = None,
+        signal_keywords: list[str] | None = None,
+    ):
         settings = get_settings()
         self.api_token = settings.bright_data_api_token
         self.proxy_url = settings.proxy_url
         self._enabled = bool(self.api_token)
+        self.target_companies = target_companies or DEFAULT_TARGET_COMPANIES
+        self.signal_keywords = signal_keywords or DEFAULT_SIGNAL_KEYWORDS
 
         if not self._enabled:
             log.warning(
@@ -83,7 +88,7 @@ class LinkedInScraper(BaseScraper):
 
         signals = []
 
-        for company in TARGET_COMPANIES:
+        for company in self.target_companies:
             try:
                 company_signals = await self._scrape_company_jobs(company)
                 signals.extend(company_signals)
@@ -234,7 +239,7 @@ class LinkedInScraper(BaseScraper):
 
         # Check if job title indicates buying signal
         title_lower = title.lower()
-        if not any(kw.lower() in title_lower for kw in SIGNAL_KEYWORDS):
+        if not any(kw.lower() in title_lower for kw in self.signal_keywords):
             return None
 
         # Dedup check

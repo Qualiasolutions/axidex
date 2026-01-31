@@ -14,50 +14,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      automation_rules: {
-        Row: {
-          id: string
-          user_id: string
-          name: string
-          description: string | null
-          trigger_conditions: Json
-          actions: Json
-          is_active: boolean
-          created_at: string
-          updated_at: string
-        }
-        Insert: {
-          id?: string
-          user_id: string
-          name: string
-          description?: string | null
-          trigger_conditions?: Json
-          actions?: Json
-          is_active?: boolean
-          created_at?: string
-          updated_at?: string
-        }
-        Update: {
-          id?: string
-          user_id?: string
-          name?: string
-          description?: string | null
-          trigger_conditions?: Json
-          actions?: Json
-          is_active?: boolean
-          created_at?: string
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "automation_rules_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       audit_log: {
         Row: {
           action: string
@@ -97,75 +53,119 @@ export type Database = {
         }
         Relationships: []
       }
-      crm_integrations: {
+      automation_rules: {
         Row: {
+          actions: Json
+          created_at: string | null
+          description: string | null
           id: string
+          is_active: boolean | null
+          name: string
+          trigger_conditions: Json
+          updated_at: string | null
           user_id: string
-          provider: "hubspot" | "salesforce" | "pipedrive" | "zoho" | "apollo" | "attio"
-          access_token: string
-          refresh_token: string | null
-          token_expires_at: string | null
-          instance_url: string | null
-          portal_id: string | null
-          account_id: string | null
-          connected_at: string
-          connected_by_email: string | null
-          auto_sync_enabled: boolean
-          sync_on_signal_types: string[]
-          sync_on_priorities: string[]
-          field_mapping: Json
-          create_company: boolean
-          create_contact: boolean
-          create_deal: boolean
-          create_note: boolean
-          created_at: string
-          updated_at: string
         }
         Insert: {
+          actions?: Json
+          created_at?: string | null
+          description?: string | null
           id?: string
+          is_active?: boolean | null
+          name: string
+          trigger_conditions?: Json
+          updated_at?: string | null
           user_id: string
-          provider: "hubspot" | "salesforce" | "pipedrive" | "zoho" | "apollo" | "attio"
-          access_token: string
-          refresh_token?: string | null
-          token_expires_at?: string | null
-          instance_url?: string | null
-          portal_id?: string | null
-          account_id?: string | null
-          connected_at?: string
-          connected_by_email?: string | null
-          auto_sync_enabled?: boolean
-          sync_on_signal_types?: string[]
-          sync_on_priorities?: string[]
-          field_mapping?: Json
-          create_company?: boolean
-          create_contact?: boolean
-          create_deal?: boolean
-          create_note?: boolean
-          created_at?: string
-          updated_at?: string
         }
         Update: {
+          actions?: Json
+          created_at?: string | null
+          description?: string | null
           id?: string
+          is_active?: boolean | null
+          name?: string
+          trigger_conditions?: Json
+          updated_at?: string | null
           user_id?: string
-          provider?: "hubspot" | "salesforce" | "pipedrive" | "zoho" | "apollo" | "attio"
-          access_token?: string
-          refresh_token?: string | null
-          token_expires_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "automation_rules_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      crm_integrations: {
+        Row: {
+          access_token: string
+          account_id: string | null
+          auto_sync_enabled: boolean | null
+          connected_at: string | null
+          connected_by_email: string | null
+          create_company: boolean | null
+          create_contact: boolean | null
+          create_deal: boolean | null
+          create_note: boolean | null
+          created_at: string | null
+          field_mapping: Json | null
+          id: string
+          instance_url: string | null
+          portal_id: string | null
+          provider: Database["public"]["Enums"]["crm_provider"]
+          refresh_token: string | null
+          sync_on_priorities: string[] | null
+          sync_on_signal_types: string[] | null
+          token_expires_at: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          access_token: string
+          account_id?: string | null
+          auto_sync_enabled?: boolean | null
+          connected_at?: string | null
+          connected_by_email?: string | null
+          create_company?: boolean | null
+          create_contact?: boolean | null
+          create_deal?: boolean | null
+          create_note?: boolean | null
+          created_at?: string | null
+          field_mapping?: Json | null
+          id?: string
           instance_url?: string | null
           portal_id?: string | null
+          provider: Database["public"]["Enums"]["crm_provider"]
+          refresh_token?: string | null
+          sync_on_priorities?: string[] | null
+          sync_on_signal_types?: string[] | null
+          token_expires_at?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          access_token?: string
           account_id?: string | null
-          connected_at?: string
+          auto_sync_enabled?: boolean | null
+          connected_at?: string | null
           connected_by_email?: string | null
-          auto_sync_enabled?: boolean
-          sync_on_signal_types?: string[]
-          sync_on_priorities?: string[]
-          field_mapping?: Json
-          create_company?: boolean
-          create_contact?: boolean
-          create_deal?: boolean
-          create_note?: boolean
-          created_at?: string
-          updated_at?: string
+          create_company?: boolean | null
+          create_contact?: boolean | null
+          create_deal?: boolean | null
+          create_note?: boolean | null
+          created_at?: string | null
+          field_mapping?: Json | null
+          id?: string
+          instance_url?: string | null
+          portal_id?: string | null
+          provider?: Database["public"]["Enums"]["crm_provider"]
+          refresh_token?: string | null
+          sync_on_priorities?: string[] | null
+          sync_on_signal_types?: string[] | null
+          token_expires_at?: string | null
+          updated_at?: string | null
+          user_id?: string
         }
         Relationships: [
           {
@@ -174,66 +174,66 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
-          }
+          },
         ]
       }
       crm_sync_logs: {
         Row: {
-          id: string
-          integration_id: string
-          signal_id: string
-          user_id: string
-          status: "pending" | "syncing" | "success" | "failed"
-          started_at: string
           completed_at: string | null
+          created_at: string | null
           crm_company_id: string | null
           crm_contact_id: string | null
           crm_deal_id: string | null
           crm_note_id: string | null
-          error_message: string | null
           error_code: string | null
-          retry_count: number
+          error_message: string | null
+          id: string
+          integration_id: string
           request_payload: Json | null
           response_payload: Json | null
-          created_at: string
+          retry_count: number | null
+          signal_id: string
+          started_at: string | null
+          status: Database["public"]["Enums"]["crm_sync_status"] | null
+          user_id: string
         }
         Insert: {
+          completed_at?: string | null
+          created_at?: string | null
+          crm_company_id?: string | null
+          crm_contact_id?: string | null
+          crm_deal_id?: string | null
+          crm_note_id?: string | null
+          error_code?: string | null
+          error_message?: string | null
           id?: string
           integration_id: string
-          signal_id: string
-          user_id: string
-          status?: "pending" | "syncing" | "success" | "failed"
-          started_at?: string
-          completed_at?: string | null
-          crm_company_id?: string | null
-          crm_contact_id?: string | null
-          crm_deal_id?: string | null
-          crm_note_id?: string | null
-          error_message?: string | null
-          error_code?: string | null
-          retry_count?: number
           request_payload?: Json | null
           response_payload?: Json | null
-          created_at?: string
+          retry_count?: number | null
+          signal_id: string
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["crm_sync_status"] | null
+          user_id: string
         }
         Update: {
-          id?: string
-          integration_id?: string
-          signal_id?: string
-          user_id?: string
-          status?: "pending" | "syncing" | "success" | "failed"
-          started_at?: string
           completed_at?: string | null
+          created_at?: string | null
           crm_company_id?: string | null
           crm_contact_id?: string | null
           crm_deal_id?: string | null
           crm_note_id?: string | null
-          error_message?: string | null
           error_code?: string | null
-          retry_count?: number
+          error_message?: string | null
+          id?: string
+          integration_id?: string
           request_payload?: Json | null
           response_payload?: Json | null
-          created_at?: string
+          retry_count?: number | null
+          signal_id?: string
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["crm_sync_status"] | null
+          user_id?: string
         }
         Relationships: [
           {
@@ -256,7 +256,7 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
-          }
+          },
         ]
       }
       generated_emails: {
@@ -266,6 +266,7 @@ export type Database = {
           deleted_at: string | null
           id: string
           signal_id: string
+          status: string | null
           subject: string
           tone: string
           user_id: string
@@ -276,6 +277,7 @@ export type Database = {
           deleted_at?: string | null
           id?: string
           signal_id: string
+          status?: string | null
           subject: string
           tone: string
           user_id: string
@@ -286,6 +288,7 @@ export type Database = {
           deleted_at?: string | null
           id?: string
           signal_id?: string
+          status?: string | null
           subject?: string
           tone?: string
           user_id?: string
@@ -316,13 +319,13 @@ export type Database = {
           full_name: string | null
           id: string
           notification_preferences: Json | null
-          updated_at: string | null
-          slack_workspace_id: string | null
-          slack_workspace_name: string | null
           slack_access_token: string | null
           slack_channel_id: string | null
           slack_channel_name: string | null
           slack_enabled: boolean | null
+          slack_workspace_id: string | null
+          slack_workspace_name: string | null
+          updated_at: string | null
         }
         Insert: {
           avatar_url?: string | null
@@ -332,13 +335,13 @@ export type Database = {
           full_name?: string | null
           id: string
           notification_preferences?: Json | null
-          updated_at?: string | null
-          slack_workspace_id?: string | null
-          slack_workspace_name?: string | null
           slack_access_token?: string | null
           slack_channel_id?: string | null
           slack_channel_name?: string | null
           slack_enabled?: boolean | null
+          slack_workspace_id?: string | null
+          slack_workspace_name?: string | null
+          updated_at?: string | null
         }
         Update: {
           avatar_url?: string | null
@@ -348,15 +351,124 @@ export type Database = {
           full_name?: string | null
           id?: string
           notification_preferences?: Json | null
-          updated_at?: string | null
-          slack_workspace_id?: string | null
-          slack_workspace_name?: string | null
           slack_access_token?: string | null
           slack_channel_id?: string | null
           slack_channel_name?: string | null
           slack_enabled?: boolean | null
+          slack_workspace_id?: string | null
+          slack_workspace_name?: string | null
+          updated_at?: string | null
         }
         Relationships: []
+      }
+      scrape_runs: {
+        Row: {
+          ai_enriched_count: number | null
+          completed_at: string | null
+          created_at: string | null
+          error_details: Json | null
+          error_message: string | null
+          estimated_duration_seconds: number | null
+          id: string
+          progress: Json | null
+          signals_by_source: Json | null
+          started_at: string | null
+          status: Database["public"]["Enums"]["scrape_status"] | null
+          total_signals: number | null
+          user_id: string | null
+        }
+        Insert: {
+          ai_enriched_count?: number | null
+          completed_at?: string | null
+          created_at?: string | null
+          error_details?: Json | null
+          error_message?: string | null
+          estimated_duration_seconds?: number | null
+          id?: string
+          progress?: Json | null
+          signals_by_source?: Json | null
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["scrape_status"] | null
+          total_signals?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          ai_enriched_count?: number | null
+          completed_at?: string | null
+          created_at?: string | null
+          error_details?: Json | null
+          error_message?: string | null
+          estimated_duration_seconds?: number | null
+          id?: string
+          progress?: Json | null
+          signals_by_source?: Json | null
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["scrape_status"] | null
+          total_signals?: number | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scrape_runs_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scraper_config: {
+        Row: {
+          auto_scrape_enabled: boolean | null
+          created_at: string | null
+          id: string
+          scrape_interval_minutes: number | null
+          signal_keywords: string[] | null
+          source_company_newsrooms: boolean | null
+          source_indeed: boolean | null
+          source_linkedin: boolean | null
+          source_techcrunch: boolean | null
+          target_companies: string[] | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          auto_scrape_enabled?: boolean | null
+          created_at?: string | null
+          id?: string
+          scrape_interval_minutes?: number | null
+          signal_keywords?: string[] | null
+          source_company_newsrooms?: boolean | null
+          source_indeed?: boolean | null
+          source_linkedin?: boolean | null
+          source_techcrunch?: boolean | null
+          target_companies?: string[] | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          auto_scrape_enabled?: boolean | null
+          created_at?: string | null
+          id?: string
+          scrape_interval_minutes?: number | null
+          signal_keywords?: string[] | null
+          source_company_newsrooms?: boolean | null
+          source_indeed?: boolean | null
+          source_linkedin?: boolean | null
+          source_techcrunch?: boolean | null
+          target_companies?: string[] | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scraper_config_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       signals: {
         Row: {
@@ -376,7 +488,7 @@ export type Database = {
           status: string
           summary: string
           title: string
-          user_id: string
+          user_id: string | null
         }
         Insert: {
           company_domain?: string | null
@@ -395,7 +507,7 @@ export type Database = {
           status?: string
           summary: string
           title: string
-          user_id: string
+          user_id?: string | null
         }
         Update: {
           company_domain?: string | null
@@ -414,120 +526,11 @@ export type Database = {
           status?: string
           summary?: string
           title?: string
-          user_id?: string
+          user_id?: string | null
         }
         Relationships: [
           {
             foreignKeyName: "signals_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      scraper_config: {
-        Row: {
-          id: string
-          user_id: string
-          target_companies: string[]
-          signal_keywords: string[]
-          source_techcrunch: boolean
-          source_indeed: boolean
-          source_linkedin: boolean
-          source_company_newsrooms: boolean
-          scrape_interval_minutes: number
-          auto_scrape_enabled: boolean
-          created_at: string
-          updated_at: string
-        }
-        Insert: {
-          id?: string
-          user_id: string
-          target_companies?: string[]
-          signal_keywords?: string[]
-          source_techcrunch?: boolean
-          source_indeed?: boolean
-          source_linkedin?: boolean
-          source_company_newsrooms?: boolean
-          scrape_interval_minutes?: number
-          auto_scrape_enabled?: boolean
-          created_at?: string
-          updated_at?: string
-        }
-        Update: {
-          id?: string
-          user_id?: string
-          target_companies?: string[]
-          signal_keywords?: string[]
-          source_techcrunch?: boolean
-          source_indeed?: boolean
-          source_linkedin?: boolean
-          source_company_newsrooms?: boolean
-          scrape_interval_minutes?: number
-          auto_scrape_enabled?: boolean
-          created_at?: string
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "scraper_config_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: true
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      scrape_runs: {
-        Row: {
-          id: string
-          user_id: string | null
-          status: "pending" | "running" | "completed" | "failed"
-          started_at: string | null
-          completed_at: string | null
-          estimated_duration_seconds: number | null
-          progress: Json
-          total_signals: number
-          signals_by_source: Json
-          ai_enriched_count: number
-          error_message: string | null
-          error_details: Json | null
-          created_at: string
-        }
-        Insert: {
-          id?: string
-          user_id?: string | null
-          status?: "pending" | "running" | "completed" | "failed"
-          started_at?: string | null
-          completed_at?: string | null
-          estimated_duration_seconds?: number | null
-          progress?: Json
-          total_signals?: number
-          signals_by_source?: Json
-          ai_enriched_count?: number
-          error_message?: string | null
-          error_details?: Json | null
-          created_at?: string
-        }
-        Update: {
-          id?: string
-          user_id?: string | null
-          status?: "pending" | "running" | "completed" | "failed"
-          started_at?: string | null
-          completed_at?: string | null
-          estimated_duration_seconds?: number | null
-          progress?: Json
-          total_signals?: number
-          signals_by_source?: Json
-          ai_enriched_count?: number
-          error_message?: string | null
-          error_details?: Json | null
-          created_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "scrape_runs_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
@@ -541,15 +544,6 @@ export type Database = {
     }
     Functions: {
       cleanup_soft_deleted_records: { Args: never; Returns: undefined }
-      get_active_scraper_configs: {
-        Args: Record<string, never>
-        Returns: {
-          user_id: string
-          target_companies: string[]
-          signal_keywords: string[]
-          sources: Json
-        }[]
-      }
       find_similar_signals:
         | {
             Args: {
@@ -578,10 +572,27 @@ export type Database = {
               title: string
             }[]
           }
+      get_active_scraper_configs: {
+        Args: never
+        Returns: {
+          signal_keywords: string[]
+          sources: Json
+          target_companies: string[]
+          user_id: string
+        }[]
+      }
       get_dashboard_stats: { Args: { p_user_id: string }; Returns: Json }
     }
     Enums: {
-      [_ in never]: never
+      crm_provider:
+        | "hubspot"
+        | "salesforce"
+        | "pipedrive"
+        | "zoho"
+        | "apollo"
+        | "attio"
+      crm_sync_status: "pending" | "syncing" | "success" | "failed"
+      scrape_status: "pending" | "running" | "completed" | "failed"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -708,6 +719,17 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      crm_provider: [
+        "hubspot",
+        "salesforce",
+        "pipedrive",
+        "zoho",
+        "apollo",
+        "attio",
+      ],
+      crm_sync_status: ["pending", "syncing", "success", "failed"],
+      scrape_status: ["pending", "running", "completed", "failed"],
+    },
   },
 } as const

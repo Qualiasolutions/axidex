@@ -80,6 +80,7 @@ function SettingsContent() {
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [slackMessage, setSlackMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [slackTesting, setSlackTesting] = useState(false);
 
   // CRM state
   const [crmIntegrations, setCrmIntegrations] = useState<CRMIntegrationDisplay[]>([]);
@@ -408,6 +409,26 @@ function SettingsContent() {
     }
   };
 
+  const testSlack = async () => {
+    setSlackTesting(true);
+    setSlackMessage(null);
+    try {
+      const response = await fetch("/api/slack/test", {
+        method: "POST",
+      });
+      const data = await response.json();
+
+      if (data.error) {
+        setSlackMessage({ type: "error", text: data.error });
+      } else {
+        setSlackMessage({ type: "success", text: data.message || "Test notification sent!" });
+      }
+    } catch {
+      setSlackMessage({ type: "error", text: "Failed to send test notification" });
+    }
+    setSlackTesting(false);
+  };
+
   const disconnectSlack = async () => {
     const supabase = createClient();
     const {
@@ -589,22 +610,45 @@ function SettingsContent() {
 
             {/* Slack enabled toggle */}
             {slack.channel_id && (
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">
-                  Send notifications to Slack
-                </span>
-                <button
-                  onClick={toggleSlackEnabled}
-                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                    slack.enabled ? "bg-primary" : "bg-muted"
-                  }`}
-                >
-                  <span
-                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                      slack.enabled ? "translate-x-6" : "translate-x-1"
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">
+                    Send notifications to Slack
+                  </span>
+                  <button
+                    onClick={toggleSlackEnabled}
+                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                      slack.enabled ? "bg-primary" : "bg-muted"
                     }`}
-                  />
-                </button>
+                  >
+                    <span
+                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                        slack.enabled ? "translate-x-6" : "translate-x-1"
+                      }`}
+                    />
+                  </button>
+                </div>
+
+                {/* Test Slack button */}
+                {slack.enabled && (
+                  <button
+                    onClick={testSlack}
+                    disabled={slackTesting}
+                    className="w-full px-4 py-2 text-sm border border-border rounded-lg hover:border-primary/50 hover:bg-primary/5 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+                  >
+                    {slackTesting ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Sending test...
+                      </>
+                    ) : (
+                      <>
+                        <MessageSquare className="w-4 h-4" />
+                        Send Test Notification
+                      </>
+                    )}
+                  </button>
+                )}
               </div>
             )}
           </div>

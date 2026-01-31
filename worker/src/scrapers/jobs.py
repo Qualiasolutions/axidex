@@ -53,7 +53,7 @@ class JobBoardScraper(BaseScraper):
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
             },
         ) as client:
-            for company in TARGET_COMPANIES:
+            for company in self.target_companies:
                 try:
                     company_signals = await self._scrape_company_jobs(client, company)
                     signals.extend(company_signals)
@@ -108,7 +108,7 @@ class JobBoardScraper(BaseScraper):
                     continue
 
                 # Check if job title indicates buying signal
-                if not any(kw.lower() in title.lower() for kw in SIGNAL_KEYWORDS):
+                if not any(kw.lower() in title.lower() for kw in self.signal_keywords):
                     continue
 
                 # Dedup check
