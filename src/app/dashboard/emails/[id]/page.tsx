@@ -22,6 +22,9 @@ const statusConfig: Record<GeneratedEmail["status"], { label: string; variant: "
   sent: { label: "Sent", variant: "success" },
 };
 
+const truncateText = (text: string, maxLength: number) =>
+  text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
+
 export default function EmailDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const router = useRouter();
@@ -92,7 +95,10 @@ export default function EmailDetailPage({ params }: { params: Promise<{ id: stri
         <Header
           title="Email"
           subtitle="Loading..."
-          breadcrumbs={[{ label: "Emails", href: "/dashboard/emails" }, { label: "Loading..." }]}
+          breadcrumbs={[
+            { label: "Emails", href: "/dashboard/emails" },
+            { label: "Loading..." },
+          ]}
         />
         <main className="p-6 lg:p-8">
           <div className="max-w-3xl mx-auto space-y-6">
@@ -110,7 +116,10 @@ export default function EmailDetailPage({ params }: { params: Promise<{ id: stri
         <Header
           title="Email"
           subtitle="Not found"
-          breadcrumbs={[{ label: "Emails", href: "/dashboard/emails" }, { label: "Not Found" }]}
+          breadcrumbs={[
+            { label: "Emails", href: "/dashboard/emails" },
+            { label: "Not Found" },
+          ]}
         />
         <main className="p-6 lg:p-8">
           <motion.div
@@ -137,7 +146,10 @@ export default function EmailDetailPage({ params }: { params: Promise<{ id: stri
     <>
       <Header
         title={email.subject}
-        breadcrumbs={[{ label: "Emails", href: "/dashboard/emails" }, { label: email.subject }]}
+        breadcrumbs={[
+          { label: "Emails", href: "/dashboard/emails" },
+          { label: truncateText(email.subject, 40) },
+        ]}
       />
       <main className="p-6 lg:p-8">
         <div className="max-w-3xl mx-auto space-y-6">
