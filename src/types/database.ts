@@ -331,6 +331,7 @@ export type Database = {
           stripe_customer_id: string | null
           stripe_subscription_id: string | null
           subscription_period_end: string | null
+          onboarding_completed_at: string | null
         }
         Insert: {
           avatar_url?: string | null
@@ -352,6 +353,7 @@ export type Database = {
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null
           subscription_period_end?: string | null
+          onboarding_completed_at?: string | null
         }
         Update: {
           avatar_url?: string | null
@@ -373,6 +375,7 @@ export type Database = {
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null
           subscription_period_end?: string | null
+          onboarding_completed_at?: string | null
         }
         Relationships: []
       }
