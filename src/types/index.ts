@@ -28,13 +28,20 @@ export interface Signal {
   } | null;
 }
 
+export type EmailTone = "professional" | "casual" | "enthusiastic";
+export type EmailStatus = "draft" | "sent";
+
 export interface GeneratedEmail {
   id: string;
   signal_id: string;
+  user_id: string;
   subject: string;
   body: string;
-  tone: "professional" | "casual" | "enthusiastic";
+  tone: EmailTone;
+  status: EmailStatus;
   created_at: string;
+  deleted_at: string | null;
+  signal?: Signal;
 }
 
 export interface User {
@@ -65,4 +72,35 @@ export interface DashboardStats {
   emails_drafted: number;
   signals_by_type: Record<SignalType, number>;
   signals_by_day: { date: string; count: number }[];
+}
+
+// Aggregated account from signals
+export interface Account {
+  company_domain: string;
+  company_name: string;
+  company_logo: string | null;
+  signal_count: number;
+  high_priority_count: number;
+  last_signal: string;
+}
+
+// Automation rule
+export interface AutomationRule {
+  id: string;
+  user_id: string;
+  name: string;
+  description: string | null;
+  trigger_conditions: {
+    signal_types?: SignalType[];
+    priorities?: SignalPriority[];
+    keywords?: string[];
+    companies?: string[];
+  };
+  actions: {
+    type: "generate_email" | "mark_status" | "notify";
+    config: Record<string, unknown>;
+  }[];
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
 }
