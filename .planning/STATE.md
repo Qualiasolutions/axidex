@@ -9,19 +9,19 @@ See: .planning/PROJECT.md (updated 2026-01-30)
 
 ## Current Position
 
-Phase: 6 - Production Deployment
-Plan: Not started
-Status: Ready to plan
-Last activity: 2026-01-30 — Roadmap v1.1 created
+Phase: 6 - Production Deployment ✓
+Plan: Complete
+Status: Phase complete, ready for Phase 7
+Last activity: 2026-01-31 — Phase 6 deployed to production
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [██░░░░░░░░] 25% (1/4 phases)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 12 (v1.0)
-- Average duration: 3min 0s
-- Total execution time: 0.62 hours
+- Total plans completed: 14 (12 v1.0 + 2 v1.1)
+- Average duration: 3min 30s
+- Total execution time: 0.82 hours
 
 **By Phase (v1.0):**
 
@@ -37,7 +37,7 @@ Progress: [░░░░░░░░░░] 0%
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 6. Production Deployment | 0/2 | - | - |
+| 6. Production Deployment | 2/2 ✓ | 35min | 17min 30s |
 | 7. Observability | 0/2 | - | - |
 | 8. LinkedIn Scraping | 0/2 | - | - |
 | 9. Notifications | 0/1 | - | - |
@@ -57,19 +57,20 @@ Recent decisions affecting current work:
 | D016 | Random 2-5s delays between LinkedIn requests | 04-01 | Prevents rate limiting without predictable patterns |
 | D017 | Lazy-initialize Resend client | 04-02 | Avoid build errors without API key |
 | D018 | JSONB for notification preferences | 04-02 | Flexible schema, queryable with GIN index |
+| D019 | Use OpenRouter with Gemini 2.5 Flash for AI | 06-01 | Cost-effective, user preference |
+| D020 | Deploy worker to Railway | 06-02 | Python runtime, scheduled execution |
 
 ### Pending Todos
 
-**From v1.0 (carry-forward):**
-- Apply migrations to Supabase production (001-009) - Phase 6
-- Configure Supabase Auth (enable email provider, set site URL) - Phase 6
-- Deploy worker to Railway - Phase 6
-- Add BRIGHT_DATA_API_TOKEN to worker environment - Phase 8
-- Add RESEND_API_KEY to Vercel environment - Phase 6
-- Configure Supabase database webhook for signals INSERT - Phase 6
-- Deploy check-notification Edge Function - Phase 6
+**Completed in Phase 6:**
+- ~~Apply migrations to Supabase production (001-009)~~ ✓
+- ~~Deploy worker to Railway~~ ✓
+- ~~Deploy check-notification Edge Function~~ ✓
 
-**v1.1 New:**
+**Still Pending:**
+- Configure Supabase database webhook for signals INSERT - Manual step
+- Add RESEND_API_KEY to Vercel environment - Phase 9
+- Add BRIGHT_DATA_API_TOKEN to worker environment - Phase 8
 - Add SENTRY_DSN to Next.js and worker environments - Phase 7
 - Configure Sentry alerts for worker failures - Phase 7
 
@@ -80,11 +81,12 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-01-30
-Stopped at: Roadmap v1.1 created
+Last session: 2026-01-31
+Stopped at: Phase 6 complete
 Resume file: None
-Next step: `/gsd:plan-phase 6`
+Next step: `/gsd:plan-phase 7` or `/gsd:discuss-phase 7`
 
 ---
 *State initialized: 2026-01-30*
 *Milestone v1.1 started*
+*Phase 6 completed: 2026-01-31*
