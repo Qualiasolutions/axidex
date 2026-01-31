@@ -101,6 +101,9 @@ export interface AutomationRule {
     config: Record<string, unknown>;
   }[];
   is_active: boolean;
+  times_triggered?: number;
+  last_triggered_at?: string | null;
+  last_signal_id?: string | null;
   created_at: string;
   updated_at: string;
 }
