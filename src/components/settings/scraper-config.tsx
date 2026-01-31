@@ -30,6 +30,7 @@ import type {
 import { cn } from "@/lib/utils";
 
 const SOURCE_OPTIONS = [
+  // Configurable sources (stored in DB)
   {
     id: "source_techcrunch",
     label: "TechCrunch",
@@ -66,6 +67,66 @@ const SOURCE_OPTIONS = [
     color: "from-purple-500 to-violet-500",
     bgColor: "bg-purple-500/10",
     borderColor: "border-purple-500/20",
+  },
+];
+
+// Always-on sources (no DB config needed - free APIs)
+const ALWAYS_ON_SOURCES = [
+  {
+    id: "hackernews",
+    label: "Hacker News",
+    description: "Top tech & startup stories",
+    icon: Zap,
+    color: "from-orange-500 to-red-500",
+    bgColor: "bg-orange-500/10",
+  },
+  {
+    id: "googlenews",
+    label: "Google News",
+    description: "Company-specific news articles",
+    icon: Newspaper,
+    color: "from-blue-500 to-cyan-500",
+    bgColor: "bg-blue-500/10",
+  },
+  {
+    id: "prnewswire",
+    label: "PR Newswire",
+    description: "Official press releases",
+    icon: Rss,
+    color: "from-red-500 to-pink-500",
+    bgColor: "bg-red-500/10",
+  },
+  {
+    id: "globenewswire",
+    label: "GlobeNewswire",
+    description: "More press releases",
+    icon: Rss,
+    color: "from-teal-500 to-emerald-500",
+    bgColor: "bg-teal-500/10",
+  },
+  {
+    id: "techblogs",
+    label: "Tech Blogs",
+    description: "VentureBeat, Wired, Ars Technica",
+    icon: Newspaper,
+    color: "from-violet-500 to-purple-500",
+    bgColor: "bg-violet-500/10",
+  },
+  {
+    id: "producthunt",
+    label: "Product Hunt",
+    description: "Daily product launches",
+    icon: TrendingUp,
+    color: "from-orange-500 to-amber-500",
+    bgColor: "bg-orange-500/10",
+  },
+  {
+    id: "reddit",
+    label: "Reddit",
+    description: "r/startups, r/SaaS, r/Entrepreneur",
+    icon: Rss,
+    color: "from-orange-600 to-red-600",
+    bgColor: "bg-orange-600/10",
   },
 ];
 
@@ -894,11 +955,11 @@ export function ScraperConfigSection() {
           </div>
         </div>
 
-        {/* Data Sources */}
+        {/* Configurable Data Sources */}
         <div className="space-y-4">
           <label className="font-medium text-foreground flex items-center gap-2">
             <Rss className="w-4 h-4 text-muted-foreground" />
-            Data Sources
+            Configurable Sources
             <span className="text-xs text-muted-foreground font-normal">
               (
               {
@@ -919,6 +980,47 @@ export function ScraperConfigSection() {
                 index={index}
               />
             ))}
+          </div>
+        </div>
+
+        {/* Always-On Sources */}
+        <div className="space-y-4">
+          <label className="font-medium text-foreground flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-primary" />
+            Always-On Sources
+            <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium">
+              {ALWAYS_ON_SOURCES.length} active
+            </span>
+          </label>
+          <p className="text-sm text-muted-foreground -mt-2">
+            These free sources run automatically with every scrape.
+          </p>
+          <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+            {ALWAYS_ON_SOURCES.map((source, index) => {
+              const Icon = source.icon;
+              return (
+                <motion.div
+                  key={source.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                  className="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-br from-primary/5 to-transparent border border-primary/10"
+                >
+                  <div className={cn("p-2 rounded-lg", source.bgColor)}>
+                    <Icon className="w-4 h-4 text-foreground" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-sm text-foreground truncate">
+                      {source.label}
+                    </p>
+                    <p className="text-xs text-muted-foreground truncate">
+                      {source.description}
+                    </p>
+                  </div>
+                  <Check className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                </motion.div>
+              );
+            })}
           </div>
         </div>
 
