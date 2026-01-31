@@ -35,6 +35,14 @@ interface Profile {
   email: string;
   full_name: string | null;
   notification_preferences: NotificationPreferences | null;
+  slack_enabled: boolean | null;
+  slack_access_token: string | null;
+  slack_channel_id: string | null;
+}
+
+interface SlackPostResult {
+  ok: boolean;
+  error?: string;
 }
 
 // Priority level mapping for comparison
@@ -42,6 +50,22 @@ const priorityLevels: Record<string, number> = {
   high: 3,
   medium: 2,
   low: 1,
+};
+
+// Emoji mappings for Slack messages
+const priorityEmoji: Record<string, string> = {
+  high: "🔴",
+  medium: "🟡",
+  low: "🟢",
+};
+
+const typeEmoji: Record<string, string> = {
+  hiring: "👥",
+  funding: "💰",
+  expansion: "🌍",
+  partnership: "🤝",
+  product_launch: "🚀",
+  leadership_change: "👔",
 };
 
 // Check if signal priority meets threshold
@@ -67,6 +91,102 @@ const DEFAULT_PREFS: NotificationPreferences = {
   ],
   priority_threshold: "high",
 };
+
+// Post notification to Slack channel
+async function postToSlack(
+  accessToken: string,
+  channelId: string,
+  signal: {
+    id: string;
+    company_name: string;
+    title: string;
+    summary: string;
+    priority: string;
+    signal_type: string;
+    source_url?: string;
+    source_name?: string;
+  },
+  dashboardUrl: string
+): Promise<SlackPostResult> {
+  const priorityIcon = priorityEmoji[signal.priority] || "⚪";
+  const typeIcon = typeEmoji[signal.signal_type] || "📊";
+
+  const blocks = [
+    {
+      type: "header",
+      text: {
+        type: "plain_text",
+        text: `${priorityIcon} New ${signal.priority.toUpperCase()} Priority Signal`,
+        emoji: true,
+      },
+    },
+    {
+      type: "section",
+      text: {
+        type: "mrkdwn",
+        text: `*${signal.company_name}*\n${typeIcon} ${signal.title}`,
+      },
+      accessory: {
+        type: "button",
+        text: {
+          type: "plain_text",
+          text: "View in Dashboard",
+          emoji: true,
+        },
+        url: `${dashboardUrl}/dashboard/signals/${signal.id}`,
+      },
+    },
+    {
+      type: "section",
+      text: {
+        type: "mrkdwn",
+        text: signal.summary,
+      },
+    },
+  ];
+
+  // Add source context if available
+  if (signal.source_url && signal.source_name) {
+    blocks.push({
+      type: "context",
+      elements: [
+        {
+          type: "mrkdwn",
+          text: `Source: <${signal.source_url}|${signal.source_name}>`,
+        },
+      ],
+    } as typeof blocks[0]);
+  }
+
+  const message = {
+    channel: channelId,
+    text: `${priorityIcon} New ${signal.priority} priority signal from ${signal.company_name}: ${signal.title}`,
+    blocks,
+  };
+
+  try {
+    const response = await fetch("https://slack.com/api/chat.postMessage", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(message),
+    });
+
+    const data = await response.json();
+
+    if (!data.ok) {
+      console.error("Slack API error:", data.error);
+      return { ok: false, error: data.error };
+    }
+
+    return { ok: true };
+  } catch (err) {
+    console.error("Error posting to Slack:", err);
+    return { ok: false, error: "Failed to post message" };
+  }
+}
 
 serve(async (req: Request) => {
   try {
@@ -102,10 +222,10 @@ serve(async (req: Request) => {
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Fetch user profile and notification preferences
+    // Fetch user profile and notification preferences (including Slack fields)
     const { data: profile, error: profileError } = await supabase
       .from("profiles")
-      .select("id, email, full_name, notification_preferences")
+      .select("id, email, full_name, notification_preferences, slack_enabled, slack_access_token, slack_channel_id")
       .eq("id", signal.user_id)
       .single();
 
@@ -123,18 +243,13 @@ serve(async (req: Request) => {
     // Get preferences with defaults
     const prefs: NotificationPreferences =
       (profile as Profile).notification_preferences || DEFAULT_PREFS;
+    const typedProfile = profile as Profile;
 
-    // Check 1: Email notifications enabled?
-    if (!prefs.email_enabled) {
-      console.log(`User ${signal.user_id}: Email notifications disabled`);
-      return new Response(
-        JSON.stringify({ skipped: true, reason: "Email notifications disabled" }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
-      );
-    }
+    // Check signal type and priority filters (applies to both email and Slack)
+    const signalTypeAllowed = prefs.signal_types.includes(signal.signal_type);
+    const priorityMet = meetsPriorityThreshold(signal.priority, prefs.priority_threshold);
 
-    // Check 2: Signal type in allowed types?
-    if (!prefs.signal_types.includes(signal.signal_type)) {
+    if (!signalTypeAllowed) {
       console.log(
         `User ${signal.user_id}: Signal type ${signal.signal_type} not in allowed types`
       );
@@ -147,8 +262,7 @@ serve(async (req: Request) => {
       );
     }
 
-    // Check 3: Signal priority meets threshold?
-    if (!meetsPriorityThreshold(signal.priority, prefs.priority_threshold)) {
+    if (!priorityMet) {
       console.log(
         `User ${signal.user_id}: Signal priority ${signal.priority} below threshold ${prefs.priority_threshold}`
       );
@@ -161,61 +275,103 @@ serve(async (req: Request) => {
       );
     }
 
-    // All checks passed - send notification email
+    // Signal passes filters - send notifications based on user preferences
     const appUrl = Deno.env.get("APP_URL") || "https://axidex.vercel.app";
+    const dashboardUrl = Deno.env.get("DASHBOARD_URL") || appUrl;
     const internalApiKey = Deno.env.get("INTERNAL_API_KEY");
 
-    const notificationPayload = {
-      email: (profile as Profile).email,
-      userName: (profile as Profile).full_name || (profile as Profile).email.split("@")[0],
-      signal: {
-        id: signal.id,
-        company_name: signal.company_name,
-        signal_type: signal.signal_type,
-        title: signal.title,
-        summary: signal.summary,
-        priority: signal.priority,
-      },
-    };
+    let emailSent = false;
+    let emailId: string | undefined;
+    let emailError: string | undefined;
+    let slackSent = false;
+    let slackError: string | undefined;
 
-    console.log(`Sending notification to ${(profile as Profile).email} for signal ${signal.id}`);
+    // Email notification (if enabled)
+    if (prefs.email_enabled) {
+      const notificationPayload = {
+        email: typedProfile.email,
+        userName: typedProfile.full_name || typedProfile.email.split("@")[0],
+        signal: {
+          id: signal.id,
+          company_name: signal.company_name,
+          signal_type: signal.signal_type,
+          title: signal.title,
+          summary: signal.summary,
+          priority: signal.priority,
+        },
+      };
 
-    // Call the notification API route
-    const headers: Record<string, string> = {
-      "Content-Type": "application/json",
-    };
+      console.log(`Sending email notification to ${typedProfile.email} for signal ${signal.id}`);
 
-    if (internalApiKey) {
-      headers["Authorization"] = `Bearer ${internalApiKey}`;
+      const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+      };
+
+      if (internalApiKey) {
+        headers["Authorization"] = `Bearer ${internalApiKey}`;
+      }
+
+      try {
+        const response = await fetch(`${appUrl}/api/send-notification`, {
+          method: "POST",
+          headers,
+          body: JSON.stringify(notificationPayload),
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          emailSent = true;
+          emailId = result.id;
+          console.log(`Email notification sent successfully: ${result.id}`);
+        } else {
+          console.error("Email notification API error:", result);
+          emailError = result.error || "Failed to send email";
+        }
+      } catch (err) {
+        console.error("Error sending email notification:", err);
+        emailError = err instanceof Error ? err.message : "Unknown error";
+      }
+    } else {
+      console.log(`User ${signal.user_id}: Email notifications disabled`);
     }
 
-    const response = await fetch(`${appUrl}/api/send-notification`, {
-      method: "POST",
-      headers,
-      body: JSON.stringify(notificationPayload),
-    });
+    // Slack notification (if enabled and connected)
+    if (typedProfile.slack_enabled && typedProfile.slack_access_token && typedProfile.slack_channel_id) {
+      console.log(`Sending Slack notification for signal ${signal.id}`);
 
-    const result = await response.json();
-
-    if (!response.ok) {
-      console.error("Notification API error:", result);
-      return new Response(
-        JSON.stringify({
-          error: "Failed to send notification",
-          details: result,
-        }),
-        { status: 500, headers: { "Content-Type": "application/json" } }
+      const slackResult = await postToSlack(
+        typedProfile.slack_access_token,
+        typedProfile.slack_channel_id,
+        {
+          id: signal.id,
+          company_name: signal.company_name,
+          title: signal.title,
+          summary: signal.summary,
+          priority: signal.priority,
+          signal_type: signal.signal_type,
+        },
+        dashboardUrl
       );
+
+      slackSent = slackResult.ok;
+      slackError = slackResult.error;
+      console.log(`Slack notification ${slackSent ? "sent" : "failed"} for signal ${signal.id}`);
+    } else if (typedProfile.slack_enabled) {
+      console.log(`User ${signal.user_id}: Slack enabled but missing token or channel`);
+      slackError = "Missing Slack token or channel";
     }
 
-    console.log(`Notification sent successfully: ${result.id}`);
-
+    // Return combined result
     return new Response(
       JSON.stringify({
-        sent: true,
-        emailId: result.id,
-        to: (profile as Profile).email,
+        success: true,
         signalId: signal.id,
+        emailSent,
+        emailId,
+        emailError,
+        slackSent,
+        slackError,
       }),
       { status: 200, headers: { "Content-Type": "application/json" } }
     );
