@@ -7,8 +7,10 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { AccountCard } from "@/components/accounts/account-card";
 import { AccountCardSkeleton } from "@/components/ui/skeleton";
+import { EmptyState } from "@/components/ui/empty-state";
 import { motion } from "motion/react";
 import { useAccounts } from "@/hooks/use-accounts";
+import { Building2 } from "lucide-react";
 
 type SortBy = "last_signal" | "signal_count" | "company_name";
 
@@ -269,39 +271,27 @@ function AccountsPageContent() {
 
         {/* Empty state */}
         {!isLoading && !error && accounts.length === 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.1 }}
-            className="flex flex-col items-center justify-center py-24 px-6 text-center bg-[var(--bg-primary)] rounded-xl border border-[var(--border-subtle)]"
-          >
-            <h3 className="text-lg font-medium text-[var(--text-primary)] mb-2">
-              No accounts found
-            </h3>
-            <p className="text-sm text-[var(--text-tertiary)] max-w-md mb-8 leading-relaxed">
-              {searchQuery || minSignals > 0
+          <EmptyState
+            icon={Building2}
+            title="No accounts found"
+            description={
+              searchQuery || minSignals > 0
                 ? "No accounts match your current filters. Try adjusting your filters or clearing them to see all accounts."
-                : "Accounts are automatically created from your signals. Once you have signals for companies, they will appear here."}
-            </p>
-            <div className="flex flex-col sm:flex-row items-center gap-3">
-              {(searchQuery || minSignals > 0) && (
-                <Button
-                  variant="default"
-                  onClick={() => {
-                    router.push("/dashboard/accounts");
-                  }}
-                >
-                  Clear Filters
-                </Button>
-              )}
-              <Button
-                variant={searchQuery || minSignals > 0 ? "secondary" : "default"}
-                onClick={() => router.push("/dashboard/signals")}
-              >
-                View Signals
+                : "Accounts are automatically created from your signals. Once you have signals for companies, they will appear here."
+            }
+          >
+            {(searchQuery || minSignals > 0) && (
+              <Button onClick={() => router.push("/dashboard/accounts")}>
+                Clear Filters
               </Button>
-            </div>
-          </motion.div>
+            )}
+            <Button
+              variant={searchQuery || minSignals > 0 ? "outline" : "default"}
+              onClick={() => router.push("/dashboard/signals")}
+            >
+              View Signals
+            </Button>
+          </EmptyState>
         )}
       </main>
     </>

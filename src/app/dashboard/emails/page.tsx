@@ -7,9 +7,11 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { EmailCard } from "@/components/emails/email-card";
 import { EmailCardSkeleton } from "@/components/ui/skeleton";
+import { EmptyState } from "@/components/ui/empty-state";
 import { motion } from "motion/react";
 import type { EmailTone, EmailStatus } from "@/types";
 import { useEmails } from "@/hooks/use-emails";
+import { Mail } from "lucide-react";
 import {
   startOfDay,
   endOfDay,
@@ -426,39 +428,27 @@ function EmailsPageContent() {
 
         {/* Empty state */}
         {!isLoading && !error && emails.length === 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.1 }}
-            className="flex flex-col items-center justify-center py-24 px-6 text-center bg-[var(--bg-primary)] rounded-xl border border-[var(--border-subtle)]"
-          >
-            <h3 className="text-lg font-medium text-[var(--text-primary)] mb-2">
-              No emails yet
-            </h3>
-            <p className="text-sm text-[var(--text-tertiary)] max-w-md mb-8 leading-relaxed">
-              {activeTones.length > 0 || activeStatuses.length > 0 || searchQuery || from
+          <EmptyState
+            icon={Mail}
+            title="No emails yet"
+            description={
+              activeTones.length > 0 || activeStatuses.length > 0 || searchQuery || from
                 ? "No emails match your current filters. Try adjusting your filters or clearing them to see all emails."
-                : "Generate emails from your signals to start building your outreach library. Click 'Draft Email' on any signal to get started."}
-            </p>
-            <div className="flex flex-col sm:flex-row items-center gap-3">
-              {(activeTones.length > 0 || activeStatuses.length > 0 || searchQuery || from) && (
-                <Button
-                  variant="default"
-                  onClick={() => {
-                    router.push("/dashboard/emails");
-                  }}
-                >
-                  Clear Filters
-                </Button>
-              )}
-              <Button
-                variant={activeTones.length > 0 || activeStatuses.length > 0 || searchQuery || from ? "secondary" : "default"}
-                onClick={() => router.push("/dashboard/signals")}
-              >
-                View Signals
+                : "Generate emails from your signals to start building your outreach library. Click 'Draft Email' on any signal to get started."
+            }
+          >
+            {(activeTones.length > 0 || activeStatuses.length > 0 || searchQuery || from) && (
+              <Button onClick={() => router.push("/dashboard/emails")}>
+                Clear Filters
               </Button>
-            </div>
-          </motion.div>
+            )}
+            <Button
+              variant={activeTones.length > 0 || activeStatuses.length > 0 || searchQuery || from ? "outline" : "default"}
+              onClick={() => router.push("/dashboard/signals")}
+            >
+              View Signals
+            </Button>
+          </EmptyState>
         )}
       </main>
     </>
