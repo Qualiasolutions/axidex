@@ -26,7 +26,7 @@ Milestone v1.2 focuses on UX polish and feature completion for launch readiness.
 - [x] **Phase 9: Notifications** - Preferences UI and email alerts (code complete)
 
 ### Milestone v1.2 (Current)
-- [ ] **Phase 10: Navigation & UX** - Icons, mobile nav, keyboard shortcuts, breadcrumbs
+- [x] **Phase 10: Navigation & UX** - Icons, mobile nav, keyboard shortcuts, breadcrumbs
 - [ ] **Phase 11: Performance** - Optimistic UI, caching, prefetching, skeletons
 - [ ] **Phase 12: Design Polish** - Visual hierarchy, spacing, toasts, empty states
 - [ ] **Phase 13: Slack Integration** - OAuth, channel selection, auto-posting
@@ -187,7 +187,7 @@ Plans:
 | 7. Observability | 2/2 | Complete |
 | 8. LinkedIn Scraping | 2/2 | Complete |
 | 9. Notifications | 1/1 | Complete |
-| 10. Navigation & UX | 0/2 | Pending |
+| 10. Navigation & UX | 2/2 | Complete |
 | 11. Performance | 0/2 | Pending |
 | 12. Design Polish | 0/2 | Pending |
 | 13. Slack Integration | 0/2 | Pending |

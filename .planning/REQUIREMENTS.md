@@ -7,10 +7,10 @@
 
 ### Navigation & UX
 
-- [ ] **NAV-01**: Sidebar displays icons alongside text labels
-- [ ] **NAV-02**: Mobile navigation drawer accessible on small screens
-- [ ] **NAV-03**: Keyboard shortcuts for common actions (j/k navigation, g+s for signals, etc.)
-- [ ] **NAV-04**: Breadcrumb navigation on detail pages
+- [x] **NAV-01**: Sidebar displays icons alongside text labels
+- [x] **NAV-02**: Mobile navigation drawer accessible on small screens
+- [x] **NAV-03**: Keyboard shortcuts for common actions (j/k navigation, g+s for signals, etc.)
+- [x] **NAV-04**: Breadcrumb navigation on detail pages
 
 ### Performance
 
