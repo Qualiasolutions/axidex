@@ -8,7 +8,8 @@ import { motion } from "motion/react";
 import { Loader2, Check, Bell, BellOff, MessageSquare, ExternalLink, ChevronDown, Link2, Unlink, Key } from "lucide-react";
 import { CRM_PROVIDERS } from "@/lib/crm";
 import type { CRMProvider } from "@/types";
-import { ScraperConfigSection } from "@/components/settings/scraper-config";
+import Link from "next/link";
+import { RefreshCw, ArrowRight } from "lucide-react";
 
 const SIGNAL_TYPES = [
   { id: "hiring", label: "Hiring", description: "Job postings, team growth" },
@@ -655,8 +656,34 @@ function SettingsContent() {
         )}
       </motion.div>
 
-      {/* Scraper Configuration */}
-      <ScraperConfigSection />
+      {/* Scraper Configuration Link */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, delay: 0.17 }}
+      >
+        <Link
+          href="/dashboard/scraping"
+          className="block bg-card border border-border rounded-lg p-6 hover:border-primary/30 hover:bg-primary/5 transition-all group"
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-xl bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                <RefreshCw className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <h2 className="font-medium text-foreground group-hover:text-primary transition-colors">
+                  Signal Scraper Configuration
+                </h2>
+                <p className="text-sm text-muted-foreground">
+                  Configure data sources, target companies, and scraping schedule
+                </p>
+              </div>
+            </div>
+            <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
+          </div>
+        </Link>
+      </motion.div>
 
       {/* CRM Integrations */}
       <motion.div

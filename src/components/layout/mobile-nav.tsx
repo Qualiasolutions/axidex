@@ -17,6 +17,7 @@ import {
   Settings,
   Menu,
   X,
+  RefreshCw,
   type LucideIcon,
 } from "lucide-react";
 import type { User } from "@supabase/supabase-js";
@@ -30,6 +31,7 @@ interface NavItem {
 const navigation: NavItem[] = [
   { name: "Overview", href: "/dashboard", icon: LayoutDashboard },
   { name: "Signals", href: "/dashboard/signals", icon: Radio },
+  { name: "Scraping", href: "/dashboard/scraping", icon: RefreshCw },
   { name: "Emails", href: "/dashboard/emails", icon: Mail },
   { name: "Accounts", href: "/dashboard/accounts", icon: Building2 },
   { name: "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
