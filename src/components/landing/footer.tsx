@@ -2,17 +2,17 @@ import Link from "next/link"
 import { Zap } from "lucide-react"
 
 const platformLinks = [
-  { href: "/#signals", label: "Signal Types" },
-  { href: "/#features", label: "AI Outreach" },
+  { href: "/#features", label: "Features" },
   { href: "/#how-it-works", label: "How It Works" },
-  { href: "/#pricing", label: "Pricing" },
+  { href: "/pricing", label: "Pricing" },
+  { href: "/dashboard", label: "Dashboard" },
 ]
 
 const companyLinks = [
-  { href: "/#features", label: "About" },
-  { href: "/#pricing", label: "Customers" },
+  { href: "/pricing", label: "Pricing" },
   { href: "mailto:hello@axidex.com", label: "Contact" },
   { href: "/login", label: "Sign In" },
+  { href: "/dashboard", label: "Get Started" },
 ]
 
 const socialLinks = [

@@ -10,10 +10,9 @@ import type { Easing } from "motion/react"
 const easeOutExpo: Easing = [0.16, 1, 0.3, 1];
 
 const navLinks = [
-  { href: "#signals", label: "Signals" },
   { href: "#features", label: "Features" },
   { href: "#how-it-works", label: "How It Works" },
-  { href: "#pricing", label: "Pricing" },
+  { href: "/pricing", label: "Pricing" },
 ]
 
 export function Header() {
