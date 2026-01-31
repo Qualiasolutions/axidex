@@ -22,7 +22,7 @@ Milestone v1.1 takes Axidex from dev environment to production. Deploy infrastru
 ### Milestone v1.1 (Current)
 - [x] **Phase 6: Production Deployment** - Migrations, worker, Edge Function, environment variables
 - [x] **Phase 7: Observability** - Sentry integration, health checks, alerting
-- [ ] **Phase 8: LinkedIn Scraping** - Bright Data integration for LinkedIn Jobs
+- [x] **Phase 8: LinkedIn Scraping** - Bright Data integration for LinkedIn Jobs
 - [ ] **Phase 9: Notifications** - Preferences UI and email alerts
 
 ## Phase Details
@@ -72,8 +72,8 @@ Plans:
 4. Scraper runs on schedule without rate limiting
 
 Plans:
-- [ ] 08-01-PLAN.md — Verify Bright Data integration and add unit tests
-- [ ] 08-02-PLAN.md — Verify deduplication, scheduler, and update requirements
+- [x] 08-01-PLAN.md — Verify Bright Data integration and add unit tests
+- [x] 08-02-PLAN.md — Verify deduplication, scheduler, and update requirements
 
 ### Phase 9: Notifications
 **Goal:** Users receive email alerts for high-priority signals matching their criteria
@@ -98,7 +98,7 @@ Plans:
 |-------|----------------|--------|
 | 6. Production Deployment | 2/2 | Complete |
 | 7. Observability | 2/2 | Complete |
-| 8. LinkedIn Scraping | 0/2 | Pending |
+| 8. LinkedIn Scraping | 2/2 | Complete |
 | 9. Notifications | 0/1 | Pending |
 
 ---
