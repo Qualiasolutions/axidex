@@ -14,10 +14,10 @@
 
 ### Performance
 
-- [ ] **PERF-01**: Optimistic UI updates for user actions (mark read, toggle, etc.)
-- [ ] **PERF-02**: Client-side caching with SWR or React Query
-- [ ] **PERF-03**: Skeleton loading states consistent across all pages
-- [ ] **PERF-04**: Prefetch linked pages on hover
+- [x] **PERF-01**: Optimistic UI updates for user actions (mark read, toggle, etc.)
+- [x] **PERF-02**: Client-side caching with SWR or React Query
+- [x] **PERF-03**: Skeleton loading states consistent across all pages
+- [x] **PERF-04**: Prefetch linked pages on hover
 
 ### Design Polish
 

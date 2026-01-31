@@ -27,7 +27,7 @@ Milestone v1.2 focuses on UX polish and feature completion for launch readiness.
 
 ### Milestone v1.2 (Current)
 - [x] **Phase 10: Navigation & UX** - Icons, mobile nav, keyboard shortcuts, breadcrumbs
-- [ ] **Phase 11: Performance** - Optimistic UI, caching, prefetching, skeletons
+- [x] **Phase 11: Performance** - Optimistic UI, caching, prefetching, skeletons
 - [ ] **Phase 12: Design Polish** - Visual hierarchy, spacing, toasts, empty states
 - [ ] **Phase 13: Slack Integration** - OAuth, channel selection, auto-posting
 - [ ] **Phase 14: Billing** - Stripe checkout, portal, webhooks, usage limits
@@ -131,8 +131,8 @@ Plans:
 4. Links prefetch on hover
 
 Plans:
-- [ ] 11-01-PLAN.md — SWR caching and skeleton loading components
-- [ ] 11-02-PLAN.md — Optimistic updates and prefetch on hover
+- [x] 11-01-PLAN.md — SWR caching and skeleton loading components
+- [x] 11-02-PLAN.md — Optimistic updates and prefetch on hover
 
 ### Phase 12: Design Polish
 **Goal:** Professional, cohesive visual design across all pages
@@ -192,7 +192,7 @@ Plans:
 | 8. LinkedIn Scraping | 2/2 | Complete |
 | 9. Notifications | 1/1 | Complete |
 | 10. Navigation & UX | 2/2 | Complete |
-| 11. Performance | 0/2 | Pending |
+| 11. Performance | 2/2 | Complete |
 | 12. Design Polish | 0/2 | Pending |
 | 13. Slack Integration | 0/2 | Pending |
 | 14. Billing | 0/2 | Pending |
