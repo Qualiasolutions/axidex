@@ -426,12 +426,130 @@ export type Database = {
           },
         ]
       }
+      scraper_config: {
+        Row: {
+          id: string
+          user_id: string
+          target_companies: string[]
+          signal_keywords: string[]
+          source_techcrunch: boolean
+          source_indeed: boolean
+          source_linkedin: boolean
+          source_company_newsrooms: boolean
+          scrape_interval_minutes: number
+          auto_scrape_enabled: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          target_companies?: string[]
+          signal_keywords?: string[]
+          source_techcrunch?: boolean
+          source_indeed?: boolean
+          source_linkedin?: boolean
+          source_company_newsrooms?: boolean
+          scrape_interval_minutes?: number
+          auto_scrape_enabled?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          target_companies?: string[]
+          signal_keywords?: string[]
+          source_techcrunch?: boolean
+          source_indeed?: boolean
+          source_linkedin?: boolean
+          source_company_newsrooms?: boolean
+          scrape_interval_minutes?: number
+          auto_scrape_enabled?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scraper_config_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scrape_runs: {
+        Row: {
+          id: string
+          user_id: string | null
+          status: "pending" | "running" | "completed" | "failed"
+          started_at: string | null
+          completed_at: string | null
+          estimated_duration_seconds: number | null
+          progress: Json
+          total_signals: number
+          signals_by_source: Json
+          ai_enriched_count: number
+          error_message: string | null
+          error_details: Json | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id?: string | null
+          status?: "pending" | "running" | "completed" | "failed"
+          started_at?: string | null
+          completed_at?: string | null
+          estimated_duration_seconds?: number | null
+          progress?: Json
+          total_signals?: number
+          signals_by_source?: Json
+          ai_enriched_count?: number
+          error_message?: string | null
+          error_details?: Json | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string | null
+          status?: "pending" | "running" | "completed" | "failed"
+          started_at?: string | null
+          completed_at?: string | null
+          estimated_duration_seconds?: number | null
+          progress?: Json
+          total_signals?: number
+          signals_by_source?: Json
+          ai_enriched_count?: number
+          error_message?: string | null
+          error_details?: Json | null
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scrape_runs_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
       cleanup_soft_deleted_records: { Args: never; Returns: undefined }
+      get_active_scraper_configs: {
+        Args: Record<string, never>
+        Returns: {
+          user_id: string
+          target_companies: string[]
+          signal_keywords: string[]
+          sources: Json
+        }[]
+      }
       find_similar_signals:
         | {
             Args: {

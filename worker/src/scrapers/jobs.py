@@ -9,8 +9,8 @@ import structlog
 
 log = structlog.get_logger()
 
-# Target companies - in production, this would come from user preferences
-TARGET_COMPANIES = [
+# Default target companies (used if no config provided)
+DEFAULT_TARGET_COMPANIES = [
     "Salesforce",
     "HubSpot",
     "Stripe",
@@ -18,8 +18,8 @@ TARGET_COMPANIES = [
     "Twilio",
 ]
 
-# Job title keywords indicating growth/buying signals
-SIGNAL_KEYWORDS = [
+# Default job title keywords indicating growth/buying signals
+DEFAULT_SIGNAL_KEYWORDS = [
     "Sales Director",
     "Account Executive",
     "Business Development",
@@ -33,9 +33,15 @@ SIGNAL_KEYWORDS = [
 class JobBoardScraper(BaseScraper):
     name = "jobs"
 
-    def __init__(self):
+    def __init__(
+        self,
+        target_companies: list[str] | None = None,
+        signal_keywords: list[str] | None = None,
+    ):
         settings = get_settings()
         self.proxy = settings.proxy_url
+        self.target_companies = target_companies or DEFAULT_TARGET_COMPANIES
+        self.signal_keywords = signal_keywords or DEFAULT_SIGNAL_KEYWORDS
 
     async def scrape(self) -> list[Signal]:
         signals = []

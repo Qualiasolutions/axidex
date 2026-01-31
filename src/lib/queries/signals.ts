@@ -19,11 +19,11 @@ export async function buildSignalsQuery(
   filters: QueryParams,
   userId: string
 ) {
-  // Include both user's own signals AND shared signals (user_id is NULL)
+  // Only show user's own signals
   let query = supabase
     .from("signals")
     .select("*", { count: "exact" })
-    .or(`user_id.eq.${userId},user_id.is.null`)
+    .eq("user_id", userId)
     .is("deleted_at", null)
     .order("detected_at", { ascending: false });
 

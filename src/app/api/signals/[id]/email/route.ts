@@ -58,12 +58,12 @@ export async function POST(
       return NextResponse.json({ error: "Invalid tone parameter" }, { status: 400 });
     }
 
-    // Fetch signal - include user's own signals AND shared signals (user_id is NULL)
+    // Fetch user's signal
     const { data: signalData, error: signalError } = await supabase
       .from("signals")
       .select("*")
       .eq("id", signalId)
-      .or(`user_id.eq.${user.id},user_id.is.null`)
+      .eq("user_id", user.id)
       .single();
 
     if (signalError || !signalData) {

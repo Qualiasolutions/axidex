@@ -19,12 +19,12 @@ export async function GET(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Fetch signal - include user's own signals AND shared signals (user_id is NULL)
+    // Fetch user's signal
     const { data: signal, error: signalError } = await supabase
       .from("signals")
       .select("*")
       .eq("id", id)
-      .or(`user_id.eq.${user.id},user_id.is.null`)
+      .eq("user_id", user.id)
       .single();
 
     if (signalError || !signal) {

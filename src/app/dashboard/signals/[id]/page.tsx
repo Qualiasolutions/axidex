@@ -23,12 +23,12 @@ export default async function SignalDetailPage({ params }: SignalDetailPageProps
     notFound();
   }
 
-  // Fetch signal - include user's own signals AND shared signals (user_id is NULL)
+  // Fetch user's signal
   const { data: signalData, error } = await supabase
     .from("signals")
     .select("*")
     .eq("id", id)
-    .or(`user_id.eq.${user.id},user_id.is.null`)
+    .eq("user_id", user.id)
     .single();
 
   if (error || !signalData) {

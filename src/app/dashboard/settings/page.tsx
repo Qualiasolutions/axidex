@@ -8,6 +8,7 @@ import { motion } from "motion/react";
 import { Loader2, Check, Bell, BellOff, MessageSquare, ExternalLink, ChevronDown, Link2, Unlink, Key } from "lucide-react";
 import { CRM_PROVIDERS } from "@/lib/crm";
 import type { CRMProvider } from "@/types";
+import { ScraperConfigSection } from "@/components/settings/scraper-config";
 
 const SIGNAL_TYPES = [
   { id: "hiring", label: "Hiring", description: "Job postings, team growth" },
@@ -609,6 +610,9 @@ function SettingsContent() {
           </div>
         )}
       </motion.div>
+
+      {/* Scraper Configuration */}
+      <ScraperConfigSection />
 
       {/* CRM Integrations */}
       <motion.div
