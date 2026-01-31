@@ -130,6 +130,10 @@ Plans:
 3. All pages have consistent skeleton states
 4. Links prefetch on hover
 
+Plans:
+- [ ] 11-01-PLAN.md — SWR caching and skeleton loading components
+- [ ] 11-02-PLAN.md — Optimistic updates and prefetch on hover
+
 ### Phase 12: Design Polish
 **Goal:** Professional, cohesive visual design across all pages
 **Depends on:** Phase 10, 11
