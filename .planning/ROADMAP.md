@@ -154,13 +154,18 @@ Plans:
 **Goal:** Users receive signal notifications in Slack
 **Depends on:** None (parallel track)
 **Requirements:** SLCK-01, SLCK-02, SLCK-03, SLCK-04
-**Plans:** 2 plans
+**Plans:** 1 plan
 
 **Success Criteria:**
-1. User can connect Slack workspace
-2. User can choose notification channel
+1. User can connect Slack workspace (already complete)
+2. User can choose notification channel (already complete)
 3. High-priority signals appear in Slack within 5 minutes
-4. Slack messages have clickable links to dashboard
+4. Slack messages have clickable links to dashboard (already complete)
+
+**Note:** SLCK-01, SLCK-02, SLCK-04 were already implemented in prior work. This phase completes SLCK-03 by adding auto-posting to the Edge Function.
+
+Plans:
+- [ ] 13-01-PLAN.md — Add Slack auto-posting to Edge Function
 
 ### Phase 14: Billing
 **Goal:** Users can subscribe and manage their plan
@@ -198,7 +203,7 @@ Plans:
 | 10. Navigation & UX | 2/2 | Complete |
 | 11. Performance | 2/2 | Complete |
 | 12. Design Polish | 2/2 | Complete |
-| 13. Slack Integration | 0/2 | Pending |
+| 13. Slack Integration | 0/1 | Pending |
 | 14. Billing | 0/2 | Pending |
 | 15. Onboarding | 0/1 | Pending |
 
