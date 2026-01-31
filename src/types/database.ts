@@ -155,6 +155,12 @@ export type Database = {
           id: string
           notification_preferences: Json | null
           updated_at: string | null
+          slack_workspace_id: string | null
+          slack_workspace_name: string | null
+          slack_access_token: string | null
+          slack_channel_id: string | null
+          slack_channel_name: string | null
+          slack_enabled: boolean | null
         }
         Insert: {
           avatar_url?: string | null
@@ -165,6 +171,12 @@ export type Database = {
           id: string
           notification_preferences?: Json | null
           updated_at?: string | null
+          slack_workspace_id?: string | null
+          slack_workspace_name?: string | null
+          slack_access_token?: string | null
+          slack_channel_id?: string | null
+          slack_channel_name?: string | null
+          slack_enabled?: boolean | null
         }
         Update: {
           avatar_url?: string | null
@@ -175,6 +187,12 @@ export type Database = {
           id?: string
           notification_preferences?: Json | null
           updated_at?: string | null
+          slack_workspace_id?: string | null
+          slack_workspace_name?: string | null
+          slack_access_token?: string | null
+          slack_channel_id?: string | null
+          slack_channel_name?: string | null
+          slack_enabled?: boolean | null
         }
         Relationships: []
       }

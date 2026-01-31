@@ -1,14 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { motion } from "motion/react";
-import { Loader2, Check, Bell, BellOff } from "lucide-react";
-import type { Json } from "@/types/database";
-
-// Type for notification preferences stored as JSONB
-type NotificationPrefsJson = Json;
+import { Loader2, Check, Bell, BellOff, MessageSquare, ExternalLink, ChevronDown } from "lucide-react";
 
 const SIGNAL_TYPES = [
   { id: "hiring", label: "Hiring", description: "Job postings, team growth" },
@@ -31,18 +28,70 @@ interface NotificationPreferences {
   priority_threshold: string;
 }
 
+interface SlackChannel {
+  id: string;
+  name: string;
+  is_private: boolean;
+}
+
+interface SlackSettings {
+  workspace_id: string | null;
+  workspace_name: string | null;
+  channel_id: string | null;
+  channel_name: string | null;
+  enabled: boolean;
+}
+
 const DEFAULT_PREFS: NotificationPreferences = {
   email_enabled: true,
   signal_types: SIGNAL_TYPES.map((t) => t.id),
   priority_threshold: "high",
 };
 
-export default function SettingsPage() {
+const DEFAULT_SLACK: SlackSettings = {
+  workspace_id: null,
+  workspace_name: null,
+  channel_id: null,
+  channel_name: null,
+  enabled: false,
+};
+
+function SettingsContent() {
+  const searchParams = useSearchParams();
   const [prefs, setPrefs] = useState<NotificationPreferences>(DEFAULT_PREFS);
+  const [slack, setSlack] = useState<SlackSettings>(DEFAULT_SLACK);
+  const [channels, setChannels] = useState<SlackChannel[]>([]);
+  const [channelsOpen, setChannelsOpen] = useState(false);
+  const [channelsLoading, setChannelsLoading] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [slackMessage, setSlackMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+  // Handle Slack OAuth callback messages
+  useEffect(() => {
+    const slackConnected = searchParams.get("slack_connected");
+    const slackError = searchParams.get("slack_error");
+
+    if (slackConnected === "true") {
+      setSlackMessage({ type: "success", text: "Slack connected successfully! Select a channel below." });
+    } else if (slackError) {
+      const errorMessages: Record<string, string> = {
+        access_denied: "Slack authorization was cancelled",
+        no_code: "Authorization failed - no code received",
+        not_configured: "Slack integration is not configured",
+        save_failed: "Failed to save Slack credentials",
+        unknown: "An unknown error occurred",
+      };
+      setSlackMessage({ type: "error", text: errorMessages[slackError] || `Error: ${slackError}` });
+    }
+
+    // Clear URL params after showing message
+    if (slackConnected || slackError) {
+      window.history.replaceState({}, "", "/dashboard/settings");
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     const loadPreferences = async () => {
@@ -56,11 +105,10 @@ export default function SettingsPage() {
         return;
       }
 
-      // Fetch notification preferences
-      // Using explicit typing to avoid Supabase inference issues
+      // Fetch notification preferences and Slack settings
       const { data, error: fetchError } = await supabase
         .from("profiles")
-        .select("notification_preferences")
+        .select("notification_preferences, slack_workspace_id, slack_workspace_name, slack_channel_id, slack_channel_name, slack_enabled")
         .eq("id", user.id)
         .single();
 
@@ -73,6 +121,15 @@ export default function SettingsPage() {
         if (savedPrefs) {
           setPrefs(savedPrefs);
         }
+
+        // Load Slack settings
+        setSlack({
+          workspace_id: data.slack_workspace_id,
+          workspace_name: data.slack_workspace_name,
+          channel_id: data.slack_channel_id,
+          channel_name: data.slack_channel_name,
+          enabled: data.slack_enabled ?? false,
+        });
       }
 
       setLoading(false);
@@ -122,6 +179,116 @@ export default function SettingsPage() {
       ? prefs.signal_types.filter((t) => t !== typeId)
       : [...prefs.signal_types, typeId];
     setPrefs({ ...prefs, signal_types: types });
+  };
+
+  const loadChannels = async () => {
+    if (channels.length > 0) {
+      setChannelsOpen(!channelsOpen);
+      return;
+    }
+
+    setChannelsLoading(true);
+    try {
+      const response = await fetch("/api/slack/channels");
+      const data = await response.json();
+
+      if (data.error) {
+        setSlackMessage({ type: "error", text: data.error });
+      } else {
+        setChannels(data.channels || []);
+        setChannelsOpen(true);
+      }
+    } catch {
+      setSlackMessage({ type: "error", text: "Failed to load channels" });
+    }
+    setChannelsLoading(false);
+  };
+
+  const selectChannel = async (channel: SlackChannel) => {
+    try {
+      const response = await fetch("/api/slack/channels", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          channel_id: channel.id,
+          channel_name: channel.name,
+          enabled: true,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.error) {
+        setSlackMessage({ type: "error", text: data.error });
+      } else {
+        setSlack({
+          ...slack,
+          channel_id: channel.id,
+          channel_name: channel.name,
+          enabled: true,
+        });
+        setChannelsOpen(false);
+        setSlackMessage({ type: "success", text: `Notifications will be sent to #${channel.name}` });
+      }
+    } catch {
+      setSlackMessage({ type: "error", text: "Failed to update channel" });
+    }
+  };
+
+  const toggleSlackEnabled = async () => {
+    const newEnabled = !slack.enabled;
+
+    try {
+      const response = await fetch("/api/slack/channels", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          channel_id: slack.channel_id,
+          channel_name: slack.channel_name,
+          enabled: newEnabled,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.error) {
+        setSlackMessage({ type: "error", text: data.error });
+      } else {
+        setSlack({ ...slack, enabled: newEnabled });
+      }
+    } catch {
+      setSlackMessage({ type: "error", text: "Failed to update Slack settings" });
+    }
+  };
+
+  const disconnectSlack = async () => {
+    const supabase = createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) return;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { error: updateError } = await (supabase as any)
+      .from("profiles")
+      .update({
+        slack_workspace_id: null,
+        slack_workspace_name: null,
+        slack_access_token: null,
+        slack_channel_id: null,
+        slack_channel_name: null,
+        slack_enabled: false,
+      })
+      .eq("id", user.id);
+
+    if (updateError) {
+      setSlackMessage({ type: "error", text: "Failed to disconnect Slack" });
+    } else {
+      setSlack(DEFAULT_SLACK);
+      setChannels([]);
+      setSlackMessage({ type: "success", text: "Slack disconnected" });
+    }
   };
 
   if (loading) {
@@ -179,6 +346,122 @@ export default function SettingsPage() {
             />
           </button>
         </div>
+      </motion.div>
+
+      {/* Slack integration */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, delay: 0.15 }}
+        className="bg-card border border-border rounded-lg p-6"
+      >
+        <div className="flex items-center gap-3 mb-4">
+          <MessageSquare className="w-5 h-5 text-primary" />
+          <div>
+            <h2 className="font-medium text-foreground">Slack Notifications</h2>
+            <p className="text-sm text-muted-foreground">
+              Get real-time signal alerts in your Slack channel
+            </p>
+          </div>
+        </div>
+
+        {slackMessage && (
+          <div
+            className={`mb-4 p-3 rounded-lg text-sm ${
+              slackMessage.type === "success"
+                ? "bg-green-500/10 text-green-600 border border-green-500/20"
+                : "bg-destructive/10 text-destructive border border-destructive/20"
+            }`}
+          >
+            {slackMessage.text}
+          </div>
+        )}
+
+        {!slack.workspace_id ? (
+          <a
+            href="/api/slack/oauth"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-[#4A154B] text-white rounded-lg hover:bg-[#3a1039] transition-colors"
+          >
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M5.042 15.165a2.528 2.528 0 0 1-2.52 2.523A2.528 2.528 0 0 1 0 15.165a2.527 2.527 0 0 1 2.522-2.52h2.52v2.52zM6.313 15.165a2.527 2.527 0 0 1 2.521-2.52 2.527 2.527 0 0 1 2.521 2.52v6.313A2.528 2.528 0 0 1 8.834 24a2.528 2.528 0 0 1-2.521-2.522v-6.313zM8.834 5.042a2.528 2.528 0 0 1-2.521-2.52A2.528 2.528 0 0 1 8.834 0a2.528 2.528 0 0 1 2.521 2.522v2.52H8.834zM8.834 6.313a2.528 2.528 0 0 1 2.521 2.521 2.528 2.528 0 0 1-2.521 2.521H2.522A2.528 2.528 0 0 1 0 8.834a2.528 2.528 0 0 1 2.522-2.521h6.312zM18.956 8.834a2.528 2.528 0 0 1 2.522-2.521A2.528 2.528 0 0 1 24 8.834a2.528 2.528 0 0 1-2.522 2.521h-2.522V8.834zM17.688 8.834a2.528 2.528 0 0 1-2.523 2.521 2.527 2.527 0 0 1-2.52-2.521V2.522A2.527 2.527 0 0 1 15.165 0a2.528 2.528 0 0 1 2.523 2.522v6.312zM15.165 18.956a2.528 2.528 0 0 1 2.523 2.522A2.528 2.528 0 0 1 15.165 24a2.527 2.527 0 0 1-2.52-2.522v-2.522h2.52zM15.165 17.688a2.527 2.527 0 0 1-2.52-2.523 2.526 2.526 0 0 1 2.52-2.52h6.313A2.527 2.527 0 0 1 24 15.165a2.528 2.528 0 0 1-2.522 2.523h-6.313z"/>
+            </svg>
+            Connect Slack
+            <ExternalLink className="w-3 h-3 ml-1" />
+          </a>
+        ) : (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+              <div>
+                <p className="text-sm font-medium text-foreground">{slack.workspace_name}</p>
+                <p className="text-xs text-muted-foreground">Connected workspace</p>
+              </div>
+              <button
+                onClick={disconnectSlack}
+                className="text-sm text-destructive hover:text-destructive/80 transition-colors"
+              >
+                Disconnect
+              </button>
+            </div>
+
+            {/* Channel selector */}
+            <div className="relative">
+              <button
+                onClick={loadChannels}
+                disabled={channelsLoading}
+                className="w-full flex items-center justify-between p-3 border border-border rounded-lg hover:border-muted-foreground/30 transition-colors"
+              >
+                <span className="text-sm">
+                  {slack.channel_name ? `#${slack.channel_name}` : "Select a channel..."}
+                </span>
+                {channelsLoading ? (
+                  <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
+                ) : (
+                  <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${channelsOpen ? "rotate-180" : ""}`} />
+                )}
+              </button>
+
+              {channelsOpen && channels.length > 0 && (
+                <div className="absolute z-10 mt-1 w-full max-h-60 overflow-auto bg-card border border-border rounded-lg shadow-lg">
+                  {channels.map((channel) => (
+                    <button
+                      key={channel.id}
+                      onClick={() => selectChannel(channel)}
+                      className={`w-full text-left px-3 py-2 text-sm hover:bg-muted/50 transition-colors ${
+                        slack.channel_id === channel.id ? "bg-primary/5 text-primary" : ""
+                      }`}
+                    >
+                      #{channel.name}
+                      {channel.is_private && (
+                        <span className="ml-2 text-xs text-muted-foreground">(private)</span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Slack enabled toggle */}
+            {slack.channel_id && (
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">
+                  Send notifications to Slack
+                </span>
+                <button
+                  onClick={toggleSlackEnabled}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                    slack.enabled ? "bg-primary" : "bg-muted"
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                      slack.enabled ? "translate-x-6" : "translate-x-1"
+                    }`}
+                  />
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </motion.div>
 
       {/* Priority threshold */}
@@ -315,5 +598,19 @@ export default function SettingsPage() {
         )}
       </motion.div>
     </main>
+  );
+}
+
+export default function SettingsPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="p-6 lg:p-8 flex items-center justify-center min-h-[60vh]">
+          <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+        </main>
+      }
+    >
+      <SettingsContent />
+    </Suspense>
   );
 }

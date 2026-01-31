@@ -2,7 +2,6 @@ import { createClient } from "@/lib/supabase/server";
 import { Header } from "@/components/layout/header";
 import { SignalTypeBadge, PriorityBadge, StatusBadge } from "@/components/ui/badge";
 import { formatDate } from "@/lib/utils";
-import { motion } from "motion/react";
 import { notFound } from "next/navigation";
 import type { Signal, GeneratedEmail } from "@/types";
 import { EmailGenerator } from "@/components/signals/email-generator";
@@ -24,12 +23,12 @@ export default async function SignalDetailPage({ params }: SignalDetailPageProps
     notFound();
   }
 
-  // Fetch signal
+  // Fetch signal - include user's own signals AND shared signals (user_id is NULL)
   const { data: signalData, error } = await supabase
     .from("signals")
     .select("*")
     .eq("id", id)
-    .eq("user_id", user.id)
+    .or(`user_id.eq.${user.id},user_id.is.null`)
     .single();
 
   if (error || !signalData) {
@@ -66,12 +65,7 @@ export default async function SignalDetailPage({ params }: SignalDetailPageProps
       <main className="p-6 lg:p-8 space-y-6 max-w-5xl">
 
         {/* Signal header */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-          className="bg-[var(--bg-primary)] rounded-xl p-6 border border-[var(--border-subtle)] space-y-4"
-        >
+        <div className="bg-[var(--bg-primary)] rounded-xl p-6 border border-[var(--border-subtle)] space-y-4">
           {/* Company info */}
           <div className="flex items-start justify-between gap-4">
             <div className="flex items-center gap-4">
@@ -179,16 +173,12 @@ export default async function SignalDetailPage({ params }: SignalDetailPageProps
               View original
             </a>
           </div>
-        </motion.div>
+        </div>
 
         {/* Email generation section */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.1 }}
-        >
+        <div id="email">
           <EmailGenerator signalId={id} signal={signal} existingEmail={existingEmail ?? undefined} />
-        </motion.div>
+        </div>
       </main>
     </>
   );

@@ -1,6 +1,7 @@
 "use client";
 
 import { memo } from "react";
+import { useRouter } from "next/navigation";
 import { SignalTypeBadge, PriorityBadge, StatusBadge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn, formatRelativeTime } from "@/lib/utils";
@@ -10,11 +11,12 @@ import Link from "next/link";
 
 interface SignalCardProps {
   signal: Signal;
-  onGenerateEmail?: (signal: Signal) => void;
   index?: number;
 }
 
-export const SignalCard = memo(function SignalCard({ signal, onGenerateEmail, index = 0 }: SignalCardProps) {
+export const SignalCard = memo(function SignalCard({ signal, index = 0 }: SignalCardProps) {
+  const router = useRouter();
+
   return (
     <Link href={`/dashboard/signals/${signal.id}`}>
       <motion.div
@@ -63,14 +65,16 @@ export const SignalCard = memo(function SignalCard({ signal, onGenerateEmail, in
           <div className="flex items-center gap-2 text-xs text-[var(--text-tertiary)]">
             <span>{signal.source_name}</span>
             <span className="text-[var(--border-default)]">·</span>
-            <a
-              href={signal.source_url}
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                window.open(signal.source_url, "_blank", "noopener,noreferrer");
+              }}
               className="text-[var(--accent)] hover:underline"
             >
               Source
-            </a>
+            </button>
           </div>
           <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
             <Button
@@ -79,14 +83,11 @@ export const SignalCard = memo(function SignalCard({ signal, onGenerateEmail, in
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                onGenerateEmail?.(signal);
+                router.push(`/dashboard/signals/${signal.id}#email`);
               }}
               className="h-7 px-2"
             >
               Draft Email
-            </Button>
-            <Button variant="ghost" size="sm" className="h-7 px-2">
-              View Details
             </Button>
           </div>
         </div>
