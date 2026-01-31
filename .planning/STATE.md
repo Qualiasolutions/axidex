@@ -9,10 +9,10 @@ See: .planning/PROJECT.md (updated 2026-01-30)
 
 ## Current Position
 
-Phase: 8 - LinkedIn Scraping (complete)
-Plan: 08-02 ✓ Complete
-Status: Phase 8 complete, ready for Phase 9
-Last activity: 2026-01-31 — Deduplication verified, requirements complete
+Phase: 9 - Notifications (paused)
+Plan: 09-01 ◆ Code verified, manual steps pending
+Status: Notification infrastructure verified, awaiting manual configuration
+Last activity: 2026-01-31 — Code verification complete, user deferred manual setup
 
 Progress: [██████░░░░] 58% (18/31 plans)
 
@@ -83,13 +83,16 @@ Recent decisions affecting current work:
 - ~~Deduplication logic verified with unit tests~~ ✓
 - ~~All LNKD-* requirements marked complete~~ ✓
 
-**Still Pending:**
-- Configure Supabase database webhook for signals INSERT - Manual step
-- Add RESEND_API_KEY to Vercel environment - Phase 9
-- Add BRIGHT_DATA_API_TOKEN to worker environment - Manual setup
-- Add SENTRY_DSN environment variables (Next.js and worker) - Manual setup
-- Configure Railway health check in Dashboard - Manual setup
-- (Optional) Set up UptimeRobot or Sentry Crons for alerting - Manual setup
+**Phase 9 Manual Steps (deferred):**
+- Add RESEND_API_KEY to Vercel environment
+- Configure Supabase database webhook for signals INSERT
+- End-to-end verification test
+
+**Other Manual Setup:**
+- Add BRIGHT_DATA_API_TOKEN to worker environment
+- Add SENTRY_DSN environment variables (Next.js and worker)
+- Configure Railway health check in Dashboard
+- (Optional) Set up UptimeRobot or Sentry Crons for alerting
 
 ### Blockers/Concerns
 
@@ -99,9 +102,9 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-01-31
-Stopped at: Phase 8 complete
-Resume file: None
-Next step: Phase 9 (Notifications) - final phase of v1.1
+Stopped at: Phase 9 code verified, manual steps deferred
+Resume file: .planning/phases/09-notifications/09-01-SUMMARY.md
+Next step: Complete manual configuration (Resend API key, Supabase webhook, E2E test)
 
 ---
 *State initialized: 2026-01-30*
@@ -109,3 +112,4 @@ Next step: Phase 9 (Notifications) - final phase of v1.1
 *Phase 6 completed: 2026-01-31*
 *Phase 7 completed: 2026-01-31*
 *Phase 8 completed: 2026-01-31*
+*Phase 9 paused: 2026-01-31 (code verified, manual steps pending)*
