@@ -97,10 +97,100 @@ export interface AutomationRule {
     companies?: string[];
   };
   actions: {
-    type: "generate_email" | "mark_status" | "notify";
+    type: "generate_email" | "mark_status" | "notify" | "push_to_crm";
     config: Record<string, unknown>;
   }[];
   is_active: boolean;
   created_at: string;
   updated_at: string;
+}
+
+// CRM Integration types
+export type CRMProvider = "hubspot" | "salesforce" | "pipedrive" | "zoho" | "apollo";
+
+export type CRMSyncStatus = "pending" | "syncing" | "success" | "failed";
+
+export interface CRMFieldMapping {
+  company_name: string;
+  company_domain: string;
+  signal_type: string;
+  title: string;
+  summary: string;
+  priority: string;
+  source_url: string;
+  [key: string]: string;
+}
+
+export interface CRMIntegration {
+  id: string;
+  user_id: string;
+  provider: CRMProvider;
+  access_token: string;
+  refresh_token: string | null;
+  token_expires_at: string | null;
+  instance_url: string | null;
+  portal_id: string | null;
+  account_id: string | null;
+  connected_at: string;
+  connected_by_email: string | null;
+  auto_sync_enabled: boolean;
+  sync_on_signal_types: SignalType[];
+  sync_on_priorities: SignalPriority[];
+  field_mapping: CRMFieldMapping;
+  create_company: boolean;
+  create_contact: boolean;
+  create_deal: boolean;
+  create_note: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CRMSyncLog {
+  id: string;
+  integration_id: string;
+  signal_id: string;
+  user_id: string;
+  status: CRMSyncStatus;
+  started_at: string;
+  completed_at: string | null;
+  crm_company_id: string | null;
+  crm_contact_id: string | null;
+  crm_deal_id: string | null;
+  crm_note_id: string | null;
+  error_message: string | null;
+  error_code: string | null;
+  retry_count: number;
+  created_at: string;
+}
+
+// CRM API response types
+export interface CRMCompany {
+  id: string;
+  name: string;
+  domain?: string;
+  website?: string;
+}
+
+export interface CRMContact {
+  id: string;
+  email?: string;
+  firstName?: string;
+  lastName?: string;
+  company?: string;
+}
+
+export interface CRMDeal {
+  id: string;
+  name: string;
+  stage?: string;
+  amount?: number;
+}
+
+export interface CRMSyncResult {
+  success: boolean;
+  companyId?: string;
+  contactId?: string;
+  dealId?: string;
+  noteId?: string;
+  error?: string;
 }

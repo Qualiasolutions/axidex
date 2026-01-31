@@ -18,8 +18,8 @@ class Settings(BaseSettings):
 
     # OpenAI / OpenRouter
     openai_api_key: Optional[str] = None
-    openai_api_base: Optional[str] = None  # Set to https://openrouter.ai/api/v1 for OpenRouter
-    openai_model: str = "gpt-4o-mini"  # Use mini for cost efficiency, or OpenRouter model name
+    openai_api_base: Optional[str] = "https://openrouter.ai/api/v1"  # OpenRouter by default
+    openai_model: str = "google/gemini-2.0-pro-exp-02-05"  # Gemini Pro for extraction/scraping
     ai_enabled: bool = True  # Can disable AI for testing
 
     # Sentry

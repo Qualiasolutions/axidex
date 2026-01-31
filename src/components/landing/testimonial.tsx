@@ -1,39 +1,64 @@
+"use client"
+
 import { Quote } from "lucide-react"
 import Image from "next/image"
+import { motion } from "motion/react"
+import type { Easing } from "motion/react"
+
+const easeOutExpo: Easing = [0.16, 1, 0.3, 1];
 
 export function Testimonial() {
   return (
-    <section className="w-full py-24 border-t border-border relative overflow-hidden">
+    <section className="w-full py-28 lg:py-32 border-t border-border/50 relative overflow-hidden">
       {/* Background gradient */}
       <div
-        className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-accent/5 via-transparent to-transparent opacity-50"
+        className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(234,88,12,0.08),transparent)]"
         aria-hidden="true"
       />
 
       <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
-        <Quote className="size-16 text-accent/20 mx-auto mb-8" aria-hidden="true" />
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6, ease: easeOutExpo }}
+        >
+          <Quote className="size-16 lg:size-20 text-accent/15 mx-auto mb-10" aria-hidden="true" />
+        </motion.div>
 
-        <blockquote className="text-2xl md:text-4xl font-serif text-foreground leading-tight mb-8 text-balance">
+        <motion.blockquote
+          initial={{ opacity: 0, y: 32 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.7, delay: 0.1, ease: easeOutExpo }}
+          className="text-2xl md:text-4xl lg:text-5xl font-serif text-foreground leading-snug mb-10 text-balance tracking-tight"
+        >
           {
             "\"Axidex changed how we approach outbound. We went from generic blasts to perfectly-timed, signal-driven conversations. Our reply rate jumped from 12% to 47%.\""
           }
-        </blockquote>
+        </motion.blockquote>
 
-        <div className="flex flex-col items-center gap-2">
-          <div className="size-12 rounded-full border border-border overflow-hidden">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.6, delay: 0.2, ease: easeOutExpo }}
+          className="flex flex-col items-center gap-4"
+        >
+          <div className="size-14 rounded-full border-2 border-accent/20 overflow-hidden shadow-lg shadow-accent/10">
             <Image
               src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face"
               alt="Sarah Chen portrait"
-              width={48}
-              height={48}
+              width={56}
+              height={56}
               className="object-cover"
             />
           </div>
           <div>
-            <cite className="text-foreground font-semibold not-italic block">Sarah Chen</cite>
-            <p className="text-accent text-xs uppercase tracking-widest mt-1">VP of Sales @ TechScale</p>
+            <cite className="text-foreground font-semibold text-lg not-italic block">Sarah Chen</cite>
+            <p className="text-accent text-xs uppercase tracking-widest mt-1 font-medium">VP of Sales @ TechScale</p>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   )

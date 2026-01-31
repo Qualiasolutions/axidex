@@ -97,6 +97,168 @@ export type Database = {
         }
         Relationships: []
       }
+      crm_integrations: {
+        Row: {
+          id: string
+          user_id: string
+          provider: "hubspot" | "salesforce" | "pipedrive" | "zoho" | "apollo"
+          access_token: string
+          refresh_token: string | null
+          token_expires_at: string | null
+          instance_url: string | null
+          portal_id: string | null
+          account_id: string | null
+          connected_at: string
+          connected_by_email: string | null
+          auto_sync_enabled: boolean
+          sync_on_signal_types: string[]
+          sync_on_priorities: string[]
+          field_mapping: Json
+          create_company: boolean
+          create_contact: boolean
+          create_deal: boolean
+          create_note: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          provider: "hubspot" | "salesforce" | "pipedrive" | "zoho" | "apollo"
+          access_token: string
+          refresh_token?: string | null
+          token_expires_at?: string | null
+          instance_url?: string | null
+          portal_id?: string | null
+          account_id?: string | null
+          connected_at?: string
+          connected_by_email?: string | null
+          auto_sync_enabled?: boolean
+          sync_on_signal_types?: string[]
+          sync_on_priorities?: string[]
+          field_mapping?: Json
+          create_company?: boolean
+          create_contact?: boolean
+          create_deal?: boolean
+          create_note?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          provider?: "hubspot" | "salesforce" | "pipedrive" | "zoho" | "apollo"
+          access_token?: string
+          refresh_token?: string | null
+          token_expires_at?: string | null
+          instance_url?: string | null
+          portal_id?: string | null
+          account_id?: string | null
+          connected_at?: string
+          connected_by_email?: string | null
+          auto_sync_enabled?: boolean
+          sync_on_signal_types?: string[]
+          sync_on_priorities?: string[]
+          field_mapping?: Json
+          create_company?: boolean
+          create_contact?: boolean
+          create_deal?: boolean
+          create_note?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crm_integrations_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      crm_sync_logs: {
+        Row: {
+          id: string
+          integration_id: string
+          signal_id: string
+          user_id: string
+          status: "pending" | "syncing" | "success" | "failed"
+          started_at: string
+          completed_at: string | null
+          crm_company_id: string | null
+          crm_contact_id: string | null
+          crm_deal_id: string | null
+          crm_note_id: string | null
+          error_message: string | null
+          error_code: string | null
+          retry_count: number
+          request_payload: Json | null
+          response_payload: Json | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          integration_id: string
+          signal_id: string
+          user_id: string
+          status?: "pending" | "syncing" | "success" | "failed"
+          started_at?: string
+          completed_at?: string | null
+          crm_company_id?: string | null
+          crm_contact_id?: string | null
+          crm_deal_id?: string | null
+          crm_note_id?: string | null
+          error_message?: string | null
+          error_code?: string | null
+          retry_count?: number
+          request_payload?: Json | null
+          response_payload?: Json | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          integration_id?: string
+          signal_id?: string
+          user_id?: string
+          status?: "pending" | "syncing" | "success" | "failed"
+          started_at?: string
+          completed_at?: string | null
+          crm_company_id?: string | null
+          crm_contact_id?: string | null
+          crm_deal_id?: string | null
+          crm_note_id?: string | null
+          error_message?: string | null
+          error_code?: string | null
+          retry_count?: number
+          request_payload?: Json | null
+          response_payload?: Json | null
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crm_sync_logs_integration_id_fkey"
+            columns: ["integration_id"]
+            isOneToOne: false
+            referencedRelation: "crm_integrations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "crm_sync_logs_signal_id_fkey"
+            columns: ["signal_id"]
+            isOneToOne: false
+            referencedRelation: "signals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "crm_sync_logs_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       generated_emails: {
         Row: {
           body: string

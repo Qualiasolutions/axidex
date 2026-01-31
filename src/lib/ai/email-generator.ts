@@ -87,7 +87,7 @@ Generate an email that references this specific signal and offers relevant value
 
   try {
     const completion = await openrouter.chat.completions.create({
-      model: "google/gemini-2.5-flash-preview-05-20",
+      model: "google/gemini-2.0-flash-001",  // Fast model for email generation
       max_tokens: 500,
       messages: [
         {

@@ -4,7 +4,7 @@
 
 -- CRM provider enum type
 DO $$ BEGIN
-  CREATE TYPE crm_provider AS ENUM ('hubspot', 'salesforce', 'pipedrive', 'zoho');
+  CREATE TYPE crm_provider AS ENUM ('hubspot', 'salesforce', 'pipedrive', 'zoho', 'apollo');
 EXCEPTION
   WHEN duplicate_object THEN null;
 END $$;
