@@ -87,6 +87,9 @@ function SettingsContent() {
   const [apolloApiKey, setApolloApiKey] = useState("");
   const [apolloConnecting, setApolloConnecting] = useState(false);
   const [showApolloInput, setShowApolloInput] = useState(false);
+  const [attioApiKey, setAttioApiKey] = useState("");
+  const [attioConnecting, setAttioConnecting] = useState(false);
+  const [showAttioInput, setShowAttioInput] = useState(false);
 
   // Handle OAuth callback messages
   useEffect(() => {
@@ -352,6 +355,35 @@ function SettingsContent() {
       setCrmMessage({ type: "error", text: "Failed to connect Apollo" });
     }
     setApolloConnecting(false);
+  };
+
+  const connectAttio = async () => {
+    if (!attioApiKey.trim()) {
+      setCrmMessage({ type: "error", text: "Please enter your Attio API key" });
+      return;
+    }
+
+    setAttioConnecting(true);
+    try {
+      const response = await fetch("/api/crm/attio/connect", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ apiKey: attioApiKey }),
+      });
+      const data = await response.json();
+
+      if (data.error) {
+        setCrmMessage({ type: "error", text: data.error });
+      } else {
+        setCrmMessage({ type: "success", text: "Attio connected successfully!" });
+        setAttioApiKey("");
+        setShowAttioInput(false);
+        await loadCrmIntegrations();
+      }
+    } catch {
+      setCrmMessage({ type: "error", text: "Failed to connect Attio" });
+    }
+    setAttioConnecting(false);
   };
 
   const toggleCrmSync = async (integrationId: string, enabled: boolean) => {
@@ -664,7 +696,7 @@ function SettingsContent() {
                 .filter(([key]) => !crmIntegrations.some((i) => i.provider === key))
                 .map(([key, provider]) => (
                   <div key={key}>
-                    {key === "apollo" ? (
+                    {key === "apollo" || key === "attio" ? (
                       <div className="border border-border rounded-lg p-4">
                         <div className="flex items-center gap-2 mb-2">
                           <span className="text-lg">{provider.icon}</span>
@@ -672,25 +704,25 @@ function SettingsContent() {
                         </div>
                         <p className="text-xs text-muted-foreground mb-3">{provider.description}</p>
 
-                        {showApolloInput ? (
+                        {(key === "apollo" ? showApolloInput : showAttioInput) ? (
                           <div className="space-y-2">
                             <div className="flex items-center gap-2">
                               <Key className="w-4 h-4 text-muted-foreground" />
                               <input
                                 type="password"
-                                placeholder="Enter Apollo API key"
-                                value={apolloApiKey}
-                                onChange={(e) => setApolloApiKey(e.target.value)}
+                                placeholder={`Enter ${provider.name} API key`}
+                                value={key === "apollo" ? apolloApiKey : attioApiKey}
+                                onChange={(e) => key === "apollo" ? setApolloApiKey(e.target.value) : setAttioApiKey(e.target.value)}
                                 className="flex-1 px-3 py-1.5 text-sm border border-border rounded bg-background focus:outline-none focus:ring-1 focus:ring-primary"
                               />
                             </div>
                             <div className="flex gap-2">
                               <button
-                                onClick={connectApollo}
-                                disabled={apolloConnecting}
+                                onClick={key === "apollo" ? connectApollo : connectAttio}
+                                disabled={key === "apollo" ? apolloConnecting : attioConnecting}
                                 className="flex-1 px-3 py-1.5 text-sm bg-primary text-primary-foreground rounded hover:bg-primary/90 disabled:opacity-50"
                               >
-                                {apolloConnecting ? (
+                                {(key === "apollo" ? apolloConnecting : attioConnecting) ? (
                                   <Loader2 className="w-4 h-4 animate-spin mx-auto" />
                                 ) : (
                                   "Connect"
@@ -698,8 +730,13 @@ function SettingsContent() {
                               </button>
                               <button
                                 onClick={() => {
-                                  setShowApolloInput(false);
-                                  setApolloApiKey("");
+                                  if (key === "apollo") {
+                                    setShowApolloInput(false);
+                                    setApolloApiKey("");
+                                  } else {
+                                    setShowAttioInput(false);
+                                    setAttioApiKey("");
+                                  }
                                 }}
                                 className="px-3 py-1.5 text-sm border border-border rounded hover:bg-muted"
                               >
@@ -709,7 +746,7 @@ function SettingsContent() {
                           </div>
                         ) : (
                           <button
-                            onClick={() => setShowApolloInput(true)}
+                            onClick={() => key === "apollo" ? setShowApolloInput(true) : setShowAttioInput(true)}
                             className="w-full px-3 py-2 text-sm border border-border rounded-lg hover:border-primary/50 hover:bg-primary/5 transition-colors flex items-center justify-center gap-2"
                           >
                             <Key className="w-4 h-4" />
