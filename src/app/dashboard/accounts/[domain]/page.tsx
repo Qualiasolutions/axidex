@@ -72,7 +72,14 @@ export default function AccountDetailPage({ params }: { params: Promise<{ domain
   if (loading) {
     return (
       <>
-        <Header title="Account" subtitle="Loading..." />
+        <Header
+          title="Account"
+          subtitle="Loading..."
+          breadcrumbs={[
+            { label: "Accounts", href: "/dashboard/accounts" },
+            { label: "Loading..." },
+          ]}
+        />
         <main className="p-6 lg:p-8">
           <div className="max-w-4xl mx-auto space-y-6">
             <div className="h-24 bg-[var(--bg-secondary)] rounded-xl animate-pulse" />
@@ -90,7 +97,14 @@ export default function AccountDetailPage({ params }: { params: Promise<{ domain
   if (error || !account) {
     return (
       <>
-        <Header title="Account" subtitle="Not found" />
+        <Header
+          title="Account"
+          subtitle="Not found"
+          breadcrumbs={[
+            { label: "Accounts", href: "/dashboard/accounts" },
+            { label: "Not Found" },
+          ]}
+        />
         <main className="p-6 lg:p-8">
           <motion.div
             initial={{ opacity: 0, y: 12 }}
@@ -117,7 +131,14 @@ export default function AccountDetailPage({ params }: { params: Promise<{ domain
 
   return (
     <>
-      <Header title={account.company_name} subtitle={account.company_domain} />
+      <Header
+        title={account.company_name}
+        subtitle={account.company_domain}
+        breadcrumbs={[
+          { label: "Accounts", href: "/dashboard/accounts" },
+          { label: account.company_name },
+        ]}
+      />
       <main className="p-6 lg:p-8">
         <div className="max-w-4xl mx-auto space-y-6">
           {/* Back button */}
