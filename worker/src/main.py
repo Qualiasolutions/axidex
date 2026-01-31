@@ -3,6 +3,7 @@ import schedule
 import time
 import structlog
 from .config import get_settings
+from .health import HealthServer, update_health, set_status
 from .scrapers.news import TechCrunchScraper
 from .scrapers.jobs import JobBoardScraper
 from .scrapers.company import CompanyWebsiteScraper
@@ -67,10 +68,18 @@ async def run_scrapers():
         by_source=signals_by_source
     )
 
+    # Update health status
+    update_health(success=True, scrape_count=total_signals)
+
 
 def job():
     """Wrapper to run async scrapers from sync scheduler."""
-    asyncio.run(run_scrapers())
+    try:
+        asyncio.run(run_scrapers())
+    except Exception as e:
+        log.error("scrape_cycle_failed", error=str(e))
+        update_health(success=False, scrape_count=0)
+        raise
 
 
 def main():
@@ -83,6 +92,11 @@ def main():
         model=settings.openai_model,
         linkedin_enabled=linkedin_enabled
     )
+
+    # Start health check server
+    health_server = HealthServer(port=settings.health_port)
+    health_server.start()
+    set_status("healthy")
 
     # Run immediately on start
     job()
