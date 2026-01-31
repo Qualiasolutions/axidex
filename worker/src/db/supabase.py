@@ -18,14 +18,16 @@ def get_client() -> Client:
     return _client
 
 
-def insert_signal(signal: Signal, user_id: str) -> dict | None:
-    """Insert a signal for a specific user. Returns inserted row or None on error."""
+def insert_signal(signal: Signal, user_id: str | None = None) -> dict | None:
+    """Insert a signal. If user_id is None, creates a shared signal visible to all users."""
     try:
         client = get_client()
         data = signal.model_dump()
-        data["user_id"] = user_id
+        if user_id is not None:
+            data["user_id"] = user_id
+        # user_id will be NULL for shared signals
         result = client.table("signals").insert(data).execute()
-        log.info("signal_inserted", company=signal.company_name, type=signal.signal_type)
+        log.info("signal_inserted", company=signal.company_name, type=signal.signal_type, shared=user_id is None)
         return result.data[0] if result.data else None
     except Exception as e:
         log.error("signal_insert_failed", error=str(e), company=signal.company_name)

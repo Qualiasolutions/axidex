@@ -20,8 +20,9 @@ structlog.configure(
 )
 log = structlog.get_logger()
 
-# Demo user ID - in production, signals would be assigned to users based on their preferences
-DEMO_USER_ID = "00000000-0000-0000-0000-000000000000"
+# Shared signals use NULL user_id - all authenticated users can view them
+# In production, signals could be assigned to specific users based on preferences
+SYSTEM_USER_ID = None  # NULL = shared signal visible to all users
 
 
 async def run_scrapers():
@@ -59,7 +60,7 @@ async def run_scrapers():
                     if enriched_signal.metadata.get('ai_enriched'):
                         enriched_signals += 1
 
-                    result = insert_signal(enriched_signal, DEMO_USER_ID)
+                    result = insert_signal(enriched_signal, SYSTEM_USER_ID)
                     if result:
                         total_signals += 1
                         scraper_count += 1
