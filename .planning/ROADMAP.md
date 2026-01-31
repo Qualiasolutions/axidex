@@ -179,6 +179,10 @@ Plans:
 3. Subscription changes reflect in app immediately
 4. Free tier has enforced limits
 
+Plans:
+- [ ] 14-01-PLAN.md — Stripe checkout flow with schema, checkout API, and webhook handler
+- [ ] 14-02-PLAN.md — Billing portal and usage limits enforcement
+
 ### Phase 15: Onboarding
 **Goal:** New users understand the product and get value quickly
 **Depends on:** Phase 10, 12 (UX must be polished)
