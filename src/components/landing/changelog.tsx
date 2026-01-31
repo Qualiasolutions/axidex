@@ -41,10 +41,10 @@ export function Changelog() {
             Every single week.
           </p>
           <Link
-            href="#"
+            href="/signup"
             className="inline-flex items-center gap-1 text-xs text-accent mt-4 font-medium hover:underline"
           >
-            View all updates <ArrowRight className="size-4" />
+            Get started free <ArrowRight className="size-4" />
           </Link>
         </div>
 

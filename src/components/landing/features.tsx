@@ -25,10 +25,12 @@ const links = [
   {
     title: "View Signal Types",
     description: "Explore 50+ buying intent signals we track.",
+    href: "/signup",
   },
   {
-    title: "Integration Guide",
-    description: "Connect with your CRM in minutes.",
+    title: "Get Started",
+    description: "Start detecting signals in minutes.",
+    href: "/signup",
   },
 ]
 
@@ -64,7 +66,7 @@ export function Features() {
         {links.map((link) => (
           <a
             key={link.title}
-            href="#"
+            href={link.href}
             className="bg-background p-10 flex items-center justify-between group hover:bg-card transition-colors"
           >
             <div>

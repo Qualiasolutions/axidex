@@ -11,14 +11,9 @@ import type { User } from "@supabase/supabase-js";
 const navigation = [
   { name: "Overview", href: "/dashboard" },
   { name: "Signals", href: "/dashboard/signals" },
-  { name: "Emails", href: "/dashboard/emails" },
-  { name: "Accounts", href: "/dashboard/accounts" },
-  { name: "Analytics", href: "/dashboard/analytics" },
-  { name: "Rules", href: "/dashboard/rules" },
 ];
 
 const bottomNavigation = [
-  { name: "Notifications", href: "/dashboard/notifications" },
   { name: "Settings", href: "/dashboard/settings" },
 ];
 

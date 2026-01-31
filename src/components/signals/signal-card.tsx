@@ -75,13 +75,17 @@ export function SignalCard({ signal, onGenerateEmail, index = 0 }: SignalCardPro
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => onGenerateEmail?.(signal)}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onGenerateEmail?.(signal);
+              }}
               className="h-7 px-2"
             >
               Draft Email
             </Button>
             <Button variant="ghost" size="sm" className="h-7 px-2">
-              More
+              View Details
             </Button>
           </div>
         </div>

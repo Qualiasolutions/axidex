@@ -2,6 +2,7 @@
 
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { Header } from "@/components/layout/header";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -311,9 +312,11 @@ function SignalsPageContent() {
               >
                 Refresh
               </Button>
-              <Button variant="default" size="sm">
-                Add Source
-              </Button>
+              <Link href="/dashboard/settings">
+                <Button variant="default" size="sm">
+                  Settings
+                </Button>
+              </Link>
             </div>
           </div>
 
@@ -506,9 +509,11 @@ function SignalsPageContent() {
                   Clear Filters
                 </Button>
               )}
-              <Button variant={activeTypes.length > 0 || activePriorities.length > 0 || searchQuery || from ? "secondary" : "default"}>
-                Configure Signal Sources
-              </Button>
+              <Link href="/dashboard/settings">
+                <Button variant={activeTypes.length > 0 || activePriorities.length > 0 || searchQuery || from ? "secondary" : "default"}>
+                  Configure Notifications
+                </Button>
+              </Link>
             </div>
           </motion.div>
         )}

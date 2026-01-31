@@ -2,22 +2,22 @@ import Link from "next/link"
 import { Zap } from "lucide-react"
 
 const platformLinks = [
-  { href: "#", label: "Signal Types" },
-  { href: "#", label: "AI Outreach" },
-  { href: "#", label: "Integrations" },
-  { href: "#", label: "API" },
+  { href: "/#signals", label: "Signal Types" },
+  { href: "/#features", label: "AI Outreach" },
+  { href: "/#how-it-works", label: "How It Works" },
+  { href: "/#pricing", label: "Pricing" },
 ]
 
 const companyLinks = [
-  { href: "#", label: "About" },
-  { href: "#", label: "Customers" },
-  { href: "#", label: "Careers" },
-  { href: "#", label: "Privacy" },
+  { href: "/#features", label: "About" },
+  { href: "/#pricing", label: "Customers" },
+  { href: "mailto:hello@axidex.com", label: "Contact" },
+  { href: "/login", label: "Sign In" },
 ]
 
 const socialLinks = [
-  { href: "#", label: "X", ariaLabel: "Follow us on X" },
-  { href: "#", label: "In", ariaLabel: "Connect on LinkedIn" },
+  { href: "https://x.com", label: "X", ariaLabel: "Follow us on X" },
+  { href: "https://linkedin.com", label: "In", ariaLabel: "Connect on LinkedIn" },
 ]
 
 export function Footer() {

@@ -171,9 +171,11 @@ export default function DashboardPage() {
               <p className="text-sm text-[var(--text-tertiary)] max-w-sm mb-8">
                 Configure your signal sources to start detecting buying signals from news, job boards, and funding announcements.
               </p>
-              <Button variant="default" size="sm">
-                Add Signal Source
-              </Button>
+              <Link href="/dashboard/signals">
+                <Button variant="default" size="sm">
+                  View All Signals
+                </Button>
+              </Link>
             </div>
           ) : (
             <div className="p-4 space-y-3">
@@ -193,18 +195,18 @@ export default function DashboardPage() {
         >
           {[
             {
-              title: "Add Sources",
-              description: "Configure news feeds, job boards, and PR sources",
-              href: "/dashboard/rules",
-            },
-            {
-              title: "Import Accounts",
-              description: "Upload your target account list to track",
-              href: "/dashboard/accounts",
+              title: "View Signals",
+              description: "Browse and filter all detected buying signals",
+              href: "/dashboard/signals",
             },
             {
               title: "Configure Alerts",
-              description: "Set up Slack, email, or webhook notifications",
+              description: "Set up email notifications for new signals",
+              href: "/dashboard/settings",
+            },
+            {
+              title: "Account Settings",
+              description: "Manage your profile and preferences",
               href: "/dashboard/settings",
             },
           ].map((action) => (
