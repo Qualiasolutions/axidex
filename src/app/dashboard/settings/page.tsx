@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { motion } from "motion/react";
-import { Loader2, Check, Bell, BellOff, MessageSquare, ExternalLink, ChevronDown, Link2, Unlink, Key } from "lucide-react";
+import { Loader2, Check, Bell, BellOff, MessageSquare, ExternalLink, ChevronDown, Link2, Unlink, Key, CreditCard } from "lucide-react";
 import { CRM_PROVIDERS } from "@/lib/crm";
 import type { CRMProvider } from "@/types";
 import Link from "next/link";
@@ -94,6 +94,18 @@ function SettingsContent() {
   const [attioConnecting, setAttioConnecting] = useState(false);
   const [showAttioInput, setShowAttioInput] = useState(false);
 
+  // Billing state
+  const [subscription, setSubscription] = useState<{
+    tier: "free" | "pro" | "enterprise";
+    status: "free" | "active" | "past_due" | "canceled";
+    periodEnd: string | null;
+  }>({
+    tier: "free",
+    status: "free",
+    periodEnd: null,
+  });
+  const [billingLoading, setBillingLoading] = useState(false);
+
   // Handle OAuth callback messages
   useEffect(() => {
     const slackConnected = searchParams.get("slack_connected");
@@ -154,10 +166,10 @@ function SettingsContent() {
         return;
       }
 
-      // Fetch notification preferences and Slack settings
+      // Fetch notification preferences, Slack settings, and subscription info
       const { data, error: fetchError } = await supabase
         .from("profiles")
-        .select("notification_preferences, slack_workspace_id, slack_workspace_name, slack_channel_id, slack_channel_name, slack_enabled")
+        .select("notification_preferences, slack_workspace_id, slack_workspace_name, slack_channel_id, slack_channel_name, slack_enabled, subscription_tier, subscription_status, subscription_period_end")
         .eq("id", user.id)
         .single();
 
@@ -178,6 +190,13 @@ function SettingsContent() {
           channel_id: data.slack_channel_id,
           channel_name: data.slack_channel_name,
           enabled: data.slack_enabled ?? false,
+        });
+
+        // Load subscription info
+        setSubscription({
+          tier: (data.subscription_tier as "free" | "pro" | "enterprise") || "free",
+          status: (data.subscription_status as "free" | "active" | "past_due" | "canceled") || "free",
+          periodEnd: data.subscription_period_end || null,
         });
       }
 
@@ -460,6 +479,27 @@ function SettingsContent() {
     }
   };
 
+  const openBillingPortal = async () => {
+    setBillingLoading(true);
+    try {
+      const response = await fetch("/api/billing/portal", {
+        method: "POST",
+      });
+      const data = await response.json();
+
+      if (data.error) {
+        console.error("Error opening billing portal:", data.error);
+        setError(data.error);
+      } else if (data.url) {
+        window.location.href = data.url;
+      }
+    } catch (err) {
+      console.error("Error opening billing portal:", err);
+      setError("Failed to open billing portal");
+    }
+    setBillingLoading(false);
+  };
+
   if (loading) {
     return (
       <main className="p-6 lg:p-8 flex items-center justify-center min-h-[60vh]">
@@ -654,6 +694,81 @@ function SettingsContent() {
             )}
           </div>
         )}
+      </motion.div>
+
+      {/* Billing */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, delay: 0.16 }}
+        className="bg-card border border-border rounded-lg p-6"
+      >
+        <div className="flex items-center gap-3 mb-4">
+          <CreditCard className="w-5 h-5 text-primary" />
+          <div>
+            <h2 className="font-medium text-foreground">Subscription & Billing</h2>
+            <p className="text-sm text-muted-foreground">
+              Manage your subscription plan and billing
+            </p>
+          </div>
+        </div>
+
+        {/* Show current plan */}
+        <div className="p-4 bg-muted/50 rounded-lg mb-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-foreground">
+                {subscription.tier === "free" ? "Free Plan" :
+                 subscription.tier === "pro" ? "Pro Plan" : "Enterprise Plan"}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                {subscription.status === "active" && subscription.periodEnd &&
+                  `Renews ${new Date(subscription.periodEnd).toLocaleDateString()}`}
+                {subscription.status === "canceled" && "Cancels at period end"}
+                {subscription.tier === "free" && "Upgrade for more features"}
+              </p>
+            </div>
+            {subscription.tier !== "free" && (
+              <span className={`px-2 py-1 text-xs rounded-full ${
+                subscription.status === "active"
+                  ? "bg-primary/10 text-primary"
+                  : subscription.status === "past_due"
+                  ? "bg-yellow-500/10 text-yellow-600"
+                  : "bg-muted text-muted-foreground"
+              }`}>
+                {subscription.status === "active" ? "Active" :
+                 subscription.status === "past_due" ? "Past Due" : "Canceled"}
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Actions */}
+        <div className="flex gap-3">
+          {subscription.tier === "free" ? (
+            <Link
+              href="/pricing"
+              className="inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+            >
+              Upgrade Plan
+            </Link>
+          ) : (
+            <button
+              onClick={openBillingPortal}
+              disabled={billingLoading}
+              className="inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium border border-border rounded-lg hover:border-primary/50 hover:bg-primary/5 transition-colors disabled:opacity-50"
+            >
+              {billingLoading ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Loading...
+                </>
+              ) : (
+                "Manage Subscription"
+              )}
+            </button>
+          )}
+        </div>
       </motion.div>
 
       {/* Scraper Configuration Link */}
