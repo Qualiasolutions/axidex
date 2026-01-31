@@ -88,13 +88,16 @@ export const EmailCard = memo(function EmailCard({ email, index = 0 }: EmailCard
                 <>
                   <span>{email.signal.signal_type}</span>
                   <span className="text-[var(--border-default)]">·</span>
-                  <Link
-                    href={`/dashboard/signals/${email.signal_id}`}
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      window.location.href = `/dashboard/signals/${email.signal_id}`;
+                    }}
                     className="text-[var(--accent)] hover:underline"
-                    onClick={(e) => e.stopPropagation()}
                   >
                     View Signal
-                  </Link>
+                  </button>
                 </>
               )}
             </div>
