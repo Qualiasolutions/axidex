@@ -9,19 +9,19 @@ See: .planning/PROJECT.md (updated 2026-01-31)
 
 ## Current Position
 
-Phase: 13 - Slack Integration
-Plan: 1 of 1 (Complete)
-Status: Phase complete
-Last activity: 2026-01-31 — Completed 13-01-PLAN.md
+Phase: 14 - Billing
+Plan: 1 of 2 (In progress)
+Status: In progress
+Last activity: 2026-01-31 — Completed 14-01-PLAN.md
 
-Progress: [█████████░] 90% (28/31 plans)
+Progress: [█████████░] 93% (29/31 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 27 (12 v1.0 + 15 v1.2)
-- Average duration: 3min 30s
-- Total execution time: 1.59 hours
+- Total plans completed: 29 (12 v1.0 + 17 v1.2)
+- Average duration: 3min 33s
+- Total execution time: 1.71 hours
 
 **By Phase (v1.0):**
 
@@ -49,10 +49,10 @@ Progress: [█████████░] 90% (28/31 plans)
 | 10. Navigation & UX | 2/2 ✓ | 4min 17s | 2min 09s |
 | 11. Performance | 2/2 ✓ | 16min 49s | 8min 25s |
 | 12. Design Polish | 2/2 ✓ | 5min 38s | 2min 49s |
-
 | 13. Slack Integration | 1/1 ✓ | 2min 8s | 2min 8s |
+| 14. Billing | 1/2 | 5min 57s | - |
 
-**Total v1.2:** 7 plans, 31min 52s
+**Total v1.2:** 8 plans, 37min 49s
 
 *Updated after each plan completion*
 
@@ -98,9 +98,9 @@ Recent decisions affecting current work:
 | D045 | Icon selection matches page context | 12-02 | Visual identity reinforces page purpose |
 | D046 | Conditional empty state descriptions | 12-02 | Context-aware messaging reduces user confusion |
 | D047 | Toast notifications for async actions | 12-02 | Immediate user feedback for all state changes |
-| D048 | Slack uses same signal type/priority filters as email | 13-01 | Consistent notification behavior across channels |
-| D049 | Non-blocking dual-channel notifications | 13-01 | Slack failures don't prevent email delivery |
-| D050 | Block Kit format for Slack messages | 13-01 | Rich formatting with emojis, buttons, and sections |
+| D048 | Lazy-initialize Stripe client | 14-01 | Avoids build errors when env vars not set |
+| D049 | Use service role client for webhooks | 14-01 | Bypass RLS for server-side subscription updates |
+| D050 | Store subscription history in separate table | 14-01 | Audit trail and period tracking independent of current status |
 
 ### Pending Todos
 
@@ -124,6 +124,16 @@ Recent decisions affecting current work:
 - Configure Supabase database webhook for signals INSERT
 - End-to-end verification test
 
+**Phase 14 Manual Setup Required:**
+- Add STRIPE_SECRET_KEY to Vercel environment
+- Add STRIPE_PUBLISHABLE_KEY to Vercel environment
+- Add STRIPE_WEBHOOK_SECRET to Vercel environment
+- Create Pro and Enterprise products in Stripe Dashboard
+- Add STRIPE_PRO_PRICE_ID and STRIPE_ENTERPRISE_PRICE_ID env vars
+- Add SUPABASE_SERVICE_ROLE_KEY to Vercel environment
+- Create webhook endpoint in Stripe Dashboard pointing to /api/webhooks/stripe
+- Apply migration 015_billing.sql to Supabase production
+
 **Other Manual Setup:**
 - Add BRIGHT_DATA_API_TOKEN to worker environment
 - Add SENTRY_DSN environment variables (Next.js and worker)
@@ -138,9 +148,9 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-01-31
-Stopped at: Completed 13-01-PLAN.md
+Stopped at: Completed 14-01-PLAN.md
 Resume file: None
-Next step: Phase 14 (Billing)
+Next step: Phase 14-02 (Billing Portal)
 
 ---
 *State initialized: 2026-01-30*
@@ -153,3 +163,4 @@ Next step: Phase 14 (Billing)
 *Phase 11 completed: 2026-01-31*
 *Phase 12 completed: 2026-01-31*
 *Phase 13 completed: 2026-01-31*
+*Phase 14-01 completed: 2026-01-31*
