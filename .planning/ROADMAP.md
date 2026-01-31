@@ -88,7 +88,7 @@ Plans:
 4. User receives email within 5 minutes of matching signal insertion
 
 Plans:
-- [ ] 09-01-PLAN.md — Notification preferences UI and email delivery flow
+- [ ] 09-01-PLAN.md — Verify notification system and complete manual configuration
 
 ## Progress
 
