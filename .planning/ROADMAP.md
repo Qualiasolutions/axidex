@@ -171,7 +171,7 @@ Plans:
 **Goal:** Users can subscribe and manage their plan
 **Depends on:** None (parallel track)
 **Requirements:** BILL-01, BILL-02, BILL-03, BILL-04
-**Plans:** 2 plans
+**Plans:** 3 plans
 
 **Success Criteria:**
 1. User can upgrade via Stripe checkout
@@ -180,8 +180,9 @@ Plans:
 4. Free tier has enforced limits
 
 Plans:
-- [ ] 14-01-PLAN.md — Stripe checkout flow with schema, checkout API, and webhook handler
-- [ ] 14-02-PLAN.md — Billing portal and usage limits enforcement
+- [x] 14-01-PLAN.md — Stripe checkout flow with schema, checkout API, and webhook handler
+- [x] 14-02-PLAN.md — Billing portal and usage limits enforcement
+- [x] 14-03-PLAN.md — Email generation limit enforcement (gap closure)
 
 ### Phase 15: Onboarding
 **Goal:** New users understand the product and get value quickly
@@ -208,7 +209,7 @@ Plans:
 | 11. Performance | 2/2 | Complete |
 | 12. Design Polish | 2/2 | Complete |
 | 13. Slack Integration | 1/1 | Complete |
-| 14. Billing | 2/2 | Complete |
+| 14. Billing | 3/3 | Complete |
 | 15. Onboarding | 0/1 | Pending |
 
 ---
