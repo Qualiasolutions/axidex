@@ -3,6 +3,7 @@ import { generateEmail, type EmailTone } from "@/lib/ai/email-generator";
 import { NextRequest, NextResponse } from "next/server";
 import type { Signal } from "@/types";
 import type { Database } from "@/types/database";
+import { checkLimit, getUsageCount } from "@/lib/billing";
 
 // Type alias for database rows
 type SignalRow = Database["public"]["Tables"]["signals"]["Row"];
@@ -47,6 +48,23 @@ export async function POST(
 
     if (authError || !user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    // Check email generation limit
+    const currentEmailCount = await getUsageCount(user.id, 'emails');
+    const { allowed, limit, tier } = await checkLimit(user.id, 'emails_per_day', currentEmailCount);
+
+    if (!allowed) {
+      return NextResponse.json(
+        {
+          error: 'Daily email generation limit reached',
+          limit,
+          current: currentEmailCount,
+          tier,
+          upgrade_url: '/pricing',
+        },
+        { status: 403 }
+      );
     }
 
     // Parse request body
