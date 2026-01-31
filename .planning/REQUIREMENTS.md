@@ -21,10 +21,10 @@
 
 ### Design Polish
 
-- [ ] **UI-01**: Consistent spacing and typography across all pages
-- [ ] **UI-02**: Improved visual hierarchy in cards and lists
-- [ ] **UI-03**: Empty states with helpful actions
-- [ ] **UI-04**: Toast notifications for user feedback
+- [x] **UI-01**: Consistent spacing and typography across all pages
+- [x] **UI-02**: Improved visual hierarchy in cards and lists
+- [x] **UI-03**: Empty states with helpful actions
+- [x] **UI-04**: Toast notifications for user feedback
 
 ### Slack Integration
 

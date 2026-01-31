@@ -28,7 +28,7 @@ Milestone v1.2 focuses on UX polish and feature completion for launch readiness.
 ### Milestone v1.2 (Current)
 - [x] **Phase 10: Navigation & UX** - Icons, mobile nav, keyboard shortcuts, breadcrumbs
 - [x] **Phase 11: Performance** - Optimistic UI, caching, prefetching, skeletons
-- [ ] **Phase 12: Design Polish** - Visual hierarchy, spacing, toasts, empty states
+- [x] **Phase 12: Design Polish** - Visual hierarchy, spacing, toasts, empty states
 - [ ] **Phase 13: Slack Integration** - OAuth, channel selection, auto-posting
 - [ ] **Phase 14: Billing** - Stripe checkout, portal, webhooks, usage limits
 - [ ] **Phase 15: Onboarding** - Welcome screen, guided tour, setup wizard
@@ -147,8 +147,8 @@ Plans:
 4. Toast notifications for all user feedback
 
 Plans:
-- [ ] 12-01-PLAN.md — Toast notifications and reusable EmptyState component
-- [ ] 12-02-PLAN.md — Apply EmptyState across pages and add remaining toasts
+- [x] 12-01-PLAN.md — Toast notifications and reusable EmptyState component
+- [x] 12-02-PLAN.md — Apply EmptyState across pages and add remaining toasts
 
 ### Phase 13: Slack Integration
 **Goal:** Users receive signal notifications in Slack
@@ -197,7 +197,7 @@ Plans:
 | 9. Notifications | 1/1 | Complete |
 | 10. Navigation & UX | 2/2 | Complete |
 | 11. Performance | 2/2 | Complete |
-| 12. Design Polish | 0/2 | Pending |
+| 12. Design Polish | 2/2 | Complete |
 | 13. Slack Integration | 0/2 | Pending |
 | 14. Billing | 0/2 | Pending |
 | 15. Onboarding | 0/1 | Pending |
