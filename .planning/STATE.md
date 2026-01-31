@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-01-30)
 ## Current Position
 
 Phase: 7 - Observability (in progress)
-Plan: 2 of 2
+Plan: 1 of 2 complete
 Status: In progress
-Last activity: 2026-01-31 — Completed 07-02-PLAN.md (worker health checks)
+Last activity: 2026-01-31 — Completed 07-01-PLAN.md (Sentry integration)
 
 Progress: [███░░░░░░░] 37.5% (1.5/4 phases)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 15 (12 v1.0 + 3 v1.1)
-- Average duration: 3min 15s
-- Total execution time: 0.85 hours
+- Total plans completed: 16 (12 v1.0 + 4 v1.1)
+- Average duration: 3min 24s
+- Total execution time: 0.93 hours
 
 **By Phase (v1.0):**
 
@@ -38,7 +38,7 @@ Progress: [███░░░░░░░] 37.5% (1.5/4 phases)
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 6. Production Deployment | 2/2 ✓ | 35min | 17min 30s |
-| 7. Observability | 1/2 | 2min | 2min |
+| 7. Observability | 1/2 | 4min 41s | 4min 41s |
 | 8. LinkedIn Scraping | 0/2 | - | - |
 | 9. Notifications | 0/1 | - | - |
 
@@ -59,9 +59,10 @@ Recent decisions affecting current work:
 | D018 | JSONB for notification preferences | 04-02 | Flexible schema, queryable with GIN index |
 | D019 | Use OpenRouter with Gemini 2.5 Flash for AI | 06-01 | Cost-effective, user preference |
 | D020 | Deploy worker to Railway | 06-02 | Python runtime, scheduled execution |
-| D021 | Port 8080 for health endpoint | 07-02 | Railway default, configurable via HEALTH_PORT |
-| D022 | Daemon thread for health server | 07-02 | Non-blocking, auto-stops with main process |
-| D023 | 200/503 status codes for health check | 07-02 | 200 for healthy/starting, 503 for degraded/stopped |
+| D021 | Separate DSN env vars for Sentry (NEXT_PUBLIC_ vs private) | 07-01 | Security - keep server credentials out of browser |
+| D022 | 10% trace sampling in production | 07-01 | Balance Sentry quota vs observability |
+| D023 | Session replay 10%/100% sampling | 07-01 | Always capture error context, limit normal sessions |
+| D024 | LoggingIntegration for Python worker | 07-01 | Integrates with structlog; captures relevant levels |
 
 ### Pending Todos
 
@@ -70,14 +71,17 @@ Recent decisions affecting current work:
 - ~~Deploy worker to Railway~~ ✓
 - ~~Deploy check-notification Edge Function~~ ✓
 
+**Completed in Phase 7-01:**
+- ~~Integrate Sentry SDK for Next.js~~ ✓
+- ~~Integrate Sentry SDK for Python worker~~ ✓
+
 **Still Pending:**
 - Configure Supabase database webhook for signals INSERT - Manual step
 - Add RESEND_API_KEY to Vercel environment - Phase 9
 - Add BRIGHT_DATA_API_TOKEN to worker environment - Phase 8
-- Add SENTRY_DSN to Next.js and worker environments - Phase 7-01
-- Configure Sentry alerts for worker failures - Phase 7-01
-- Configure Railway health check (Dashboard -> Settings) - Phase 7-02
-- Set up UptimeRobot external monitoring (optional) - Phase 7-02
+- Add SENTRY_DSN environment variables (Next.js and worker) - Manual setup
+- Configure Sentry alerts for worker failures - Manual setup
+- (Optional) Add SENTRY_AUTH_TOKEN for source map uploads - Manual setup
 
 ### Blockers/Concerns
 
@@ -86,10 +90,10 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-01-31T05:30:44Z
-Stopped at: Completed 07-02-PLAN.md
+Last session: 2026-01-31T07:33:28Z
+Stopped at: Completed 07-01-PLAN.md execution
 Resume file: None
-Next step: `/gsd:execute-phase 7` for plan 07-01 or continue with phase 8
+Next step: `/gsd:execute-phase 7` for plan 07-02 (if exists) or continue with phase 8
 
 ---
 *State initialized: 2026-01-30*
