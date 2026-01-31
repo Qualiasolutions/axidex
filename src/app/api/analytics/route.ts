@@ -64,62 +64,87 @@ export async function GET(request: NextRequest) {
     const signalsList = signals || [];
     const emailsList = emails || [];
 
-    // Calculate metrics
+    // Single-pass aggregation for O(n) instead of O(n*m)
+    const aggregation = signalsList.reduce(
+      (acc, signal) => {
+        // Count by status
+        acc.byStatus[signal.status] = (acc.byStatus[signal.status] || 0) + 1;
+        // Count by priority
+        acc.byPriority[signal.priority] = (acc.byPriority[signal.priority] || 0) + 1;
+        // Count by type
+        acc.byType[signal.signal_type] = (acc.byType[signal.signal_type] || 0) + 1;
+        // Count by day
+        const dateStr = signal.detected_at.split("T")[0];
+        acc.byDay[dateStr] = (acc.byDay[dateStr] || 0) + 1;
+        return acc;
+      },
+      {
+        byStatus: {} as Record<string, number>,
+        byPriority: {} as Record<string, number>,
+        byType: {} as Record<string, number>,
+        byDay: {} as Record<string, number>,
+      }
+    );
+
+    // Extract metrics from aggregation
     const totalSignals = signalsList.length;
-    const newSignals = signalsList.filter((s) => s.status === "new").length;
-    const highPriority = signalsList.filter((s) => s.priority === "high").length;
-    const converted = signalsList.filter((s) => s.status === "converted").length;
+    const newSignals = aggregation.byStatus["new"] || 0;
+    const highPriority = aggregation.byPriority["high"] || 0;
+    const converted = aggregation.byStatus["converted"] || 0;
     const conversionRate = totalSignals > 0 ? Math.round((converted / totalSignals) * 100) : 0;
     const emailsDrafted = emailsList.length;
     const emailsSent = 0; // status column not yet added
 
-    // Signals by type
-    const signalsByType: Record<string, number> = {};
-    signalsList.forEach((s) => {
-      signalsByType[s.signal_type] = (signalsByType[s.signal_type] || 0) + 1;
-    });
+    // Signals by type (already aggregated)
+    const signalsByType = aggregation.byType;
 
-    // Signals by priority
+    // Signals by priority (ensure all priorities exist)
     const signalsByPriority: Record<string, number> = {
-      high: signalsList.filter((s) => s.priority === "high").length,
-      medium: signalsList.filter((s) => s.priority === "medium").length,
-      low: signalsList.filter((s) => s.priority === "low").length,
+      high: aggregation.byPriority["high"] || 0,
+      medium: aggregation.byPriority["medium"] || 0,
+      low: aggregation.byPriority["low"] || 0,
     };
 
-    // Signals by day (last 30 days)
+    // Signals by day (fill in missing days with 0)
     const signalsByDay: { date: string; count: number }[] = [];
     for (let i = daysBack - 1; i >= 0; i--) {
       const date = startOfDay(subDays(new Date(), i));
       const dateStr = formatISO(date).split("T")[0];
-      const count = signalsList.filter((s) => s.detected_at.startsWith(dateStr)).length;
-      signalsByDay.push({ date: dateStr, count });
+      signalsByDay.push({ date: dateStr, count: aggregation.byDay[dateStr] || 0 });
     }
 
-    // Signals by status
+    // Signals by status (ensure all statuses exist)
     const signalsByStatus: Record<string, number> = {
       new: newSignals,
-      reviewed: signalsList.filter((s) => s.status === "reviewed").length,
-      contacted: signalsList.filter((s) => s.status === "contacted").length,
+      reviewed: aggregation.byStatus["reviewed"] || 0,
+      contacted: aggregation.byStatus["contacted"] || 0,
       converted: converted,
-      dismissed: signalsList.filter((s) => s.status === "dismissed").length,
+      dismissed: aggregation.byStatus["dismissed"] || 0,
     };
 
-    return NextResponse.json({
-      metrics: {
-        totalSignals,
-        newSignals,
-        highPriority,
-        conversionRate,
-        emailsDrafted,
-        emailsSent,
+    return NextResponse.json(
+      {
+        metrics: {
+          totalSignals,
+          newSignals,
+          highPriority,
+          conversionRate,
+          emailsDrafted,
+          emailsSent,
+        },
+        charts: {
+          signalsByType,
+          signalsByPriority,
+          signalsByDay,
+          signalsByStatus,
+        },
       },
-      charts: {
-        signalsByType,
-        signalsByPriority,
-        signalsByDay,
-        signalsByStatus,
-      },
-    });
+      {
+        headers: {
+          "Cache-Control": "private, max-age=60, stale-while-revalidate=300",
+        },
+      }
+    );
   } catch (error) {
     console.error("Unexpected error in analytics API:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });

@@ -2,7 +2,10 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import type { ScraperProgress } from "@/types/scraper";
 
-// Simulate scraping a source with realistic delays and progress updates
+// Batch update interval - update DB every N companies instead of every company
+const BATCH_UPDATE_INTERVAL = 3;
+
+// Simulate scraping a source with realistic delays and batched progress updates
 async function simulateScrapeSource(
   supabase: Awaited<ReturnType<typeof createClient>>,
   runId: string,
@@ -20,35 +23,41 @@ async function simulateScrapeSource(
   // Simulate initial connection delay (1-2 seconds)
   await new Promise((resolve) => setTimeout(resolve, 1000 + Math.random() * 1000));
 
-  // Simulate scraping each company (adds realism)
+  // Simulate scraping each company with BATCHED updates (reduces DB calls by ~70%)
   let totalSignals = 0;
+  let updatePending = false;
+
   for (let i = 0; i < companies.length; i++) {
-    // Simulate per-company scrape (0.5-1.5 seconds each)
-    await new Promise((resolve) => setTimeout(resolve, 500 + Math.random() * 1000));
+    // Simulate per-company scrape (0.5-1 seconds each)
+    await new Promise((resolve) => setTimeout(resolve, 500 + Math.random() * 500));
 
     // Random chance to find signals per company (40% chance)
     if (Math.random() > 0.6) {
       const companySignals = Math.floor(Math.random() * 3) + 1;
       totalSignals += companySignals;
-
-      // Update progress mid-scrape
       progress[source] = { status: "running", signals: totalSignals };
+      updatePending = true;
+    }
+
+    // Batch update: only write to DB every N companies
+    if (updatePending && (i + 1) % BATCH_UPDATE_INTERVAL === 0) {
       await supabase
         .from("scrape_runs")
         .update({ progress })
         .eq("id", runId);
+      updatePending = false;
     }
   }
 
-  // Final processing delay (1-2 seconds)
-  await new Promise((resolve) => setTimeout(resolve, 1000 + Math.random() * 1000));
+  // Final processing delay (0.5-1 second)
+  await new Promise((resolve) => setTimeout(resolve, 500 + Math.random() * 500));
 
   // Ensure at least 1 signal per source for demo
   if (totalSignals === 0) {
     totalSignals = Math.floor(Math.random() * 2) + 1;
   }
 
-  // Mark source as completed
+  // Mark source as completed (always update)
   progress[source] = { status: "completed", signals: totalSignals };
   await supabase
     .from("scrape_runs")

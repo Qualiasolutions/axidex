@@ -18,7 +18,11 @@ export async function GET() {
     // Fetch dashboard stats
     const stats = await fetchDashboardStats(supabase, user.id);
 
-    return NextResponse.json(stats);
+    return NextResponse.json(stats, {
+      headers: {
+        "Cache-Control": "private, max-age=60, stale-while-revalidate=300",
+      },
+    });
   } catch (error) {
     console.error("Error fetching dashboard stats:", error);
     return NextResponse.json(

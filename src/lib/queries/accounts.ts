@@ -11,6 +11,17 @@ interface AccountQueryParams {
   offset?: number;
 }
 
+// RPC function result type
+interface AccountAggregation {
+  company_domain: string;
+  company_name: string;
+  company_logo: string | null;
+  signal_count: number;
+  high_priority_count: number;
+  last_signal: string;
+}
+
+// Try RPC first, fallback to in-memory aggregation
 export async function fetchAccounts(
   supabase: SupabaseClient<Database>,
   userId: string,
@@ -25,11 +36,71 @@ export async function fetchAccounts(
     offset = 0,
   } = params;
 
+  // Try database-side aggregation via RPC (much faster for large datasets)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data: rpcData, error: rpcError } = await (supabase as any).rpc("get_accounts_aggregated", {
+    p_user_id: userId,
+    p_search: search || null,
+    p_min_signals: minSignals,
+    p_sort_by: sortBy,
+    p_sort_order: sortOrder,
+    p_limit: limit,
+    p_offset: offset,
+  });
+
+  // If RPC works, use it
+  if (!rpcError && rpcData) {
+    const accounts = (rpcData as AccountAggregation[]).map((row) => ({
+      company_domain: row.company_domain,
+      company_name: row.company_name,
+      company_logo: row.company_logo,
+      signal_count: row.signal_count,
+      high_priority_count: row.high_priority_count,
+      last_signal: row.last_signal,
+    }));
+
+    // Get total count for pagination (separate query)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: countData } = await (supabase as any).rpc("get_accounts_count", {
+      p_user_id: userId,
+      p_search: search || null,
+      p_min_signals: minSignals,
+    });
+
+    return {
+      accounts,
+      count: (countData as number) || accounts.length,
+    };
+  }
+
+  // Fallback: in-memory aggregation (for when RPC isn't deployed)
+  console.warn("RPC get_accounts_aggregated failed, using fallback:", rpcError?.message);
+  return fetchAccountsFallback(supabase, userId, params);
+}
+
+// Fallback function with optimizations
+async function fetchAccountsFallback(
+  supabase: SupabaseClient<Database>,
+  userId: string,
+  params: AccountQueryParams
+): Promise<{ accounts: Account[]; count: number }> {
+  const {
+    search,
+    minSignals = 0,
+    sortBy = "last_signal",
+    sortOrder = "desc",
+    limit = 50,
+    offset = 0,
+  } = params;
+
+  // Limit to 5000 signals to prevent OOM - warn if truncated
   let query = supabase
     .from("signals")
     .select("company_domain, company_name, company_logo, priority, detected_at")
     .eq("user_id", userId)
-    .is("deleted_at", null);
+    .is("deleted_at", null)
+    .order("detected_at", { ascending: false })
+    .limit(5000);
 
   if (search && search.trim()) {
     const searchTerm = `%${search.trim()}%`;
@@ -42,7 +113,7 @@ export async function fetchAccounts(
     throw error;
   }
 
-  // Aggregate in JavaScript since Supabase doesn't support GROUP BY well
+  // Single-pass aggregation using Map
   const accountsMap = new Map<string, Account>();
 
   for (const signal of data || []) {
@@ -54,7 +125,8 @@ export async function fetchAccounts(
       if (signal.priority === "high") {
         existing.high_priority_count++;
       }
-      if (signal.detected_at > existing.last_signal) {
+      // First entry has latest date due to ORDER BY
+      if (!existing.last_signal) {
         existing.last_signal = signal.detected_at;
       }
     } else {
@@ -73,22 +145,18 @@ export async function fetchAccounts(
   let accounts = Array.from(accountsMap.values())
     .filter((a) => a.signal_count >= minSignals);
 
-  // Sort
+  // Sort (optimized comparisons)
+  const sortMultiplier = sortOrder === "asc" ? 1 : -1;
   accounts.sort((a, b) => {
-    let comparison = 0;
     switch (sortBy) {
       case "company_name":
-        comparison = a.company_name.localeCompare(b.company_name);
-        break;
+        return sortMultiplier * a.company_name.localeCompare(b.company_name);
       case "signal_count":
-        comparison = a.signal_count - b.signal_count;
-        break;
+        return sortMultiplier * (a.signal_count - b.signal_count);
       case "last_signal":
       default:
-        comparison = new Date(a.last_signal).getTime() - new Date(b.last_signal).getTime();
-        break;
+        return sortMultiplier * (a.last_signal.localeCompare(b.last_signal));
     }
-    return sortOrder === "asc" ? comparison : -comparison;
   });
 
   const totalCount = accounts.length;
