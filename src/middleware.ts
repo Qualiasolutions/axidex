@@ -1,7 +1,51 @@
 import { updateSession } from "@/lib/supabase/middleware";
+import {
+  checkRateLimit,
+  getClientIp,
+  RATE_LIMITS,
+} from "@/lib/rate-limit";
 import { NextResponse, type NextRequest } from "next/server";
 
+// Auth routes that need rate limiting
+const AUTH_ROUTES = ["/login", "/signup", "/forgot-password"];
+
 export async function middleware(request: NextRequest) {
+  const pathname = request.nextUrl.pathname;
+
+  // Rate limit auth routes
+  if (AUTH_ROUTES.includes(pathname)) {
+    const ip = getClientIp(request.headers);
+    const rateLimitKey = `auth:${ip}:${pathname}`;
+
+    // Use stricter limits for password reset
+    const config =
+      pathname === "/forgot-password"
+        ? RATE_LIMITS.passwordReset
+        : pathname === "/signup"
+          ? RATE_LIMITS.signup
+          : RATE_LIMITS.auth;
+
+    const result = checkRateLimit(rateLimitKey, config);
+
+    if (!result.success) {
+      return new NextResponse(
+        JSON.stringify({
+          error: "Too many requests. Please try again later.",
+          retryAfter: result.retryAfter,
+        }),
+        {
+          status: 429,
+          headers: {
+            "Content-Type": "application/json",
+            "Retry-After": String(result.retryAfter),
+            "X-RateLimit-Remaining": "0",
+            "X-RateLimit-Reset": String(result.retryAfter),
+          },
+        }
+      );
+    }
+  }
+
   const { user, supabaseResponse } = await updateSession(request);
 
   // Protected routes - require authentication

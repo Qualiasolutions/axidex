@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
 interface SlackOAuthResponse {
@@ -15,6 +16,7 @@ export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const code = searchParams.get("code");
   const error = searchParams.get("error");
+  const state = searchParams.get("state");
 
   // Handle OAuth errors
   if (error) {
@@ -26,6 +28,24 @@ export async function GET(request: NextRequest) {
   if (!code) {
     return NextResponse.redirect(
       `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/settings?slack_error=no_code`
+    );
+  }
+
+  // Verify CSRF state parameter
+  const cookieStore = await cookies();
+  const storedState = cookieStore.get("slack_oauth_state")?.value;
+
+  // Clear the state cookie regardless of outcome
+  cookieStore.delete("slack_oauth_state");
+
+  if (!state || !storedState || state !== storedState) {
+    console.error("Slack OAuth CSRF validation failed", {
+      hasState: !!state,
+      hasStoredState: !!storedState,
+      statesMatch: state === storedState,
+    });
+    return NextResponse.redirect(
+      `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/settings?slack_error=csrf_validation_failed`
     );
   }
 
