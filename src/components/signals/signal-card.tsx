@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { SignalTypeBadge, PriorityBadge, StatusBadge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn, formatRelativeTime } from "@/lib/utils";
@@ -13,7 +14,7 @@ interface SignalCardProps {
   index?: number;
 }
 
-export function SignalCard({ signal, onGenerateEmail, index = 0 }: SignalCardProps) {
+export const SignalCard = memo(function SignalCard({ signal, onGenerateEmail, index = 0 }: SignalCardProps) {
   return (
     <Link href={`/dashboard/signals/${signal.id}`}>
       <motion.div
@@ -93,4 +94,4 @@ export function SignalCard({ signal, onGenerateEmail, index = 0 }: SignalCardPro
     </motion.div>
     </Link>
   );
-}
+});

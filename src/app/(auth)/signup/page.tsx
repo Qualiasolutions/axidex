@@ -25,8 +25,18 @@ export default function SignupPage() {
       return;
     }
 
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters");
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters");
+      return;
+    }
+
+    // Password complexity: at least one uppercase, one lowercase, one number
+    const hasUppercase = /[A-Z]/.test(password);
+    const hasLowercase = /[a-z]/.test(password);
+    const hasNumber = /[0-9]/.test(password);
+
+    if (!hasUppercase || !hasLowercase || !hasNumber) {
+      setError("Password must include uppercase, lowercase, and a number");
       return;
     }
 
@@ -153,7 +163,7 @@ export default function SignupPage() {
             required
             autoComplete="new-password"
             className="w-full h-10 px-3 rounded-md border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-colors"
-            placeholder="At least 6 characters"
+            placeholder="Min 8 chars, upper, lower, number"
           />
         </div>
 

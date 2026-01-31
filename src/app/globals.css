@@ -44,6 +44,18 @@
   --warm-200: #fde68a;
   --warm-500: #f59e0b;
   --warm-600: #ea580c;
+
+  /* Dashboard semantic variables - maps to base tokens */
+  --bg-primary: var(--background);
+  --bg-secondary: var(--secondary);
+  --bg-tertiary: var(--muted);
+  --text-primary: var(--foreground);
+  --text-secondary: var(--card-foreground);
+  --text-tertiary: var(--muted-foreground);
+  --border-subtle: var(--border);
+  --border-default: rgba(0, 0, 0, 0.12);
+  --success: #22c55e;
+  --danger: #ef4444;
 }
 
 @theme inline {

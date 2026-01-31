@@ -7,136 +7,365 @@ export type Json =
   | Json[]
 
 export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "14.1"
+  }
   public: {
     Tables: {
-      profiles: {
+      audit_log: {
         Row: {
-          id: string
-          email: string
-          full_name: string | null
-          avatar_url: string | null
-          company_name: string | null
-          notification_preferences: Json | null
+          action: string
           created_at: string
-          updated_at: string
+          id: string
+          ip_address: string | null
+          new_values: Json | null
+          old_values: Json | null
+          record_id: string
+          table_name: string
+          user_agent: string | null
+          user_id: string | null
         }
         Insert: {
-          id: string
-          email: string
-          full_name?: string | null
-          avatar_url?: string | null
-          company_name?: string | null
-          notification_preferences?: Json | null
+          action: string
           created_at?: string
-          updated_at?: string
+          id?: string
+          ip_address?: string | null
+          new_values?: Json | null
+          old_values?: Json | null
+          record_id: string
+          table_name: string
+          user_agent?: string | null
+          user_id?: string | null
         }
         Update: {
-          id?: string
-          email?: string
-          full_name?: string | null
-          avatar_url?: string | null
-          company_name?: string | null
-          notification_preferences?: Json | null
+          action?: string
           created_at?: string
-          updated_at?: string
-        }
-      }
-      signals: {
-        Row: {
-          id: string
-          user_id: string
-          company_name: string
-          company_domain: string | null
-          company_logo: string | null
-          signal_type: 'hiring' | 'funding' | 'expansion' | 'partnership' | 'product_launch' | 'leadership_change'
-          title: string
-          summary: string
-          source_url: string
-          source_name: string
-          priority: 'high' | 'medium' | 'low'
-          status: 'new' | 'reviewed' | 'contacted' | 'converted' | 'dismissed'
-          detected_at: string
-          created_at: string
-          metadata: Json
-        }
-        Insert: {
           id?: string
-          user_id: string
-          company_name: string
-          company_domain?: string | null
-          company_logo?: string | null
-          signal_type: 'hiring' | 'funding' | 'expansion' | 'partnership' | 'product_launch' | 'leadership_change'
-          title: string
-          summary: string
-          source_url: string
-          source_name: string
-          priority: 'high' | 'medium' | 'low'
-          status?: 'new' | 'reviewed' | 'contacted' | 'converted' | 'dismissed'
-          detected_at?: string
-          created_at?: string
-          metadata?: Json
+          ip_address?: string | null
+          new_values?: Json | null
+          old_values?: Json | null
+          record_id?: string
+          table_name?: string
+          user_agent?: string | null
+          user_id?: string | null
         }
-        Update: {
-          id?: string
-          user_id?: string
-          company_name?: string
-          company_domain?: string | null
-          company_logo?: string | null
-          signal_type?: 'hiring' | 'funding' | 'expansion' | 'partnership' | 'product_launch' | 'leadership_change'
-          title?: string
-          summary?: string
-          source_url?: string
-          source_name?: string
-          priority?: 'high' | 'medium' | 'low'
-          status?: 'new' | 'reviewed' | 'contacted' | 'converted' | 'dismissed'
-          detected_at?: string
-          created_at?: string
-          metadata?: Json
-        }
+        Relationships: []
       }
       generated_emails: {
         Row: {
+          body: string
+          created_at: string | null
+          deleted_at: string | null
           id: string
           signal_id: string
-          user_id: string
           subject: string
-          body: string
-          tone: 'professional' | 'casual' | 'enthusiastic'
-          created_at: string
+          tone: string
+          user_id: string
         }
         Insert: {
+          body: string
+          created_at?: string | null
+          deleted_at?: string | null
           id?: string
           signal_id: string
-          user_id: string
           subject: string
-          body: string
-          tone: 'professional' | 'casual' | 'enthusiastic'
-          created_at?: string
+          tone: string
+          user_id: string
         }
         Update: {
+          body?: string
+          created_at?: string | null
+          deleted_at?: string | null
           id?: string
           signal_id?: string
-          user_id?: string
           subject?: string
-          body?: string
-          tone?: 'professional' | 'casual' | 'enthusiastic'
-          created_at?: string
+          tone?: string
+          user_id?: string
         }
+        Relationships: [
+          {
+            foreignKeyName: "generated_emails_signal_id_fkey"
+            columns: ["signal_id"]
+            isOneToOne: false
+            referencedRelation: "signals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "generated_emails_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          company_name: string | null
+          created_at: string | null
+          email: string
+          full_name: string | null
+          id: string
+          notification_preferences: Json | null
+          updated_at: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          company_name?: string | null
+          created_at?: string | null
+          email: string
+          full_name?: string | null
+          id: string
+          notification_preferences?: Json | null
+          updated_at?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          company_name?: string | null
+          created_at?: string | null
+          email?: string
+          full_name?: string | null
+          id?: string
+          notification_preferences?: Json | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      signals: {
+        Row: {
+          company_domain: string | null
+          company_logo: string | null
+          company_name: string
+          created_at: string | null
+          deleted_at: string | null
+          detected_at: string
+          embedding: string | null
+          id: string
+          metadata: Json | null
+          priority: string
+          signal_type: string
+          source_name: string
+          source_url: string
+          status: string
+          summary: string
+          title: string
+          user_id: string
+        }
+        Insert: {
+          company_domain?: string | null
+          company_logo?: string | null
+          company_name: string
+          created_at?: string | null
+          deleted_at?: string | null
+          detected_at?: string
+          embedding?: string | null
+          id?: string
+          metadata?: Json | null
+          priority: string
+          signal_type: string
+          source_name: string
+          source_url: string
+          status?: string
+          summary: string
+          title: string
+          user_id: string
+        }
+        Update: {
+          company_domain?: string | null
+          company_logo?: string | null
+          company_name?: string
+          created_at?: string | null
+          deleted_at?: string | null
+          detected_at?: string
+          embedding?: string | null
+          id?: string
+          metadata?: Json | null
+          priority?: string
+          signal_type?: string
+          source_name?: string
+          source_url?: string
+          status?: string
+          summary?: string
+          title?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "signals_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      get_dashboard_stats: {
-        Args: {
-          p_user_id: string
-        }
-        Returns: Json
-      }
+      cleanup_soft_deleted_records: { Args: never; Returns: undefined }
+      find_similar_signals:
+        | {
+            Args: {
+              match_count: number
+              match_threshold: number
+              p_user_id: string
+              query_embedding: string
+            }
+            Returns: {
+              company_name: string
+              id: string
+              signal_type: string
+              similarity: number
+              title: string
+            }[]
+          }
+        | {
+            Args: {
+              max_results?: number
+              query_embedding: string
+              similarity_threshold?: number
+            }
+            Returns: {
+              id: string
+              similarity: number
+              title: string
+            }[]
+          }
+      get_dashboard_stats: { Args: { p_user_id: string }; Returns: Json }
     }
     Enums: {
       [_ in never]: never
     }
+    CompositeTypes: {
+      [_ in never]: never
+    }
   }
 }
+
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
+
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
+
+export type Tables<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+      Row: infer R
+    }
+    ? R
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+        Row: infer R
+      }
+      ? R
+      : never
+    : never
+
+export type TablesInsert<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Insert: infer I
+    }
+    ? I
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Insert: infer I
+      }
+      ? I
+      : never
+    : never
+
+export type TablesUpdate<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Update: infer U
+    }
+    ? U
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Update: infer U
+      }
+      ? U
+      : never
+    : never
+
+export type Enums<
+  DefaultSchemaEnumNameOrOptions extends
+    | keyof DefaultSchema["Enums"]
+    | { schema: keyof DatabaseWithoutInternals },
+  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+    : never = never,
+> = DefaultSchemaEnumNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
+    : never
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof DefaultSchema["CompositeTypes"]
+    | { schema: keyof DatabaseWithoutInternals },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+    : never
+
+export const Constants = {
+  public: {
+    Enums: {},
+  },
+} as const

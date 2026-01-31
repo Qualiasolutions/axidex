@@ -7,8 +7,8 @@ export type SignalStatus = "new" | "reviewed" | "contacted" | "converted" | "dis
 export interface Signal {
   id: string;
   company_name: string;
-  company_domain: string;
-  company_logo?: string;
+  company_domain: string | null;
+  company_logo?: string | null;
   signal_type: SignalType;
   title: string;
   summary: string;
@@ -18,12 +18,14 @@ export interface Signal {
   status: SignalStatus;
   detected_at: string;
   created_at: string;
+  deleted_at?: string | null;
+  embedding?: string | null;
   metadata?: {
     funding_amount?: string;
     job_titles?: string[];
     location?: string;
     industry?: string;
-  };
+  } | null;
 }
 
 export interface GeneratedEmail {

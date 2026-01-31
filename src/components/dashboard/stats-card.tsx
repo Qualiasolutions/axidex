@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { cn } from "@/lib/utils";
 import { motion } from "motion/react";
 
@@ -14,7 +15,7 @@ interface StatsCardProps {
   index?: number;
 }
 
-export function StatsCard({ title, value, change, className, index = 0 }: StatsCardProps) {
+export const StatsCard = memo(function StatsCard({ title, value, change, className, index = 0 }: StatsCardProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
@@ -47,4 +48,4 @@ export function StatsCard({ title, value, change, className, index = 0 }: StatsC
       )}
     </motion.div>
   );
-}
+});

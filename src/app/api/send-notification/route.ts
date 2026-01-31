@@ -34,11 +34,20 @@ interface NotificationRequest {
 
 export async function POST(request: NextRequest) {
   try {
-    // Verify internal API key (optional, for security)
+    // Verify internal API key (required in production)
     const authHeader = request.headers.get("Authorization");
     const internalKey = process.env.INTERNAL_API_KEY;
+    const isProduction = process.env.NODE_ENV === "production";
 
-    // If internal key is set, require it
+    // Require authentication: fail closed in production, warn in development
+    if (!internalKey && isProduction) {
+      console.error("INTERNAL_API_KEY not configured in production");
+      return NextResponse.json(
+        { error: "Server configuration error" },
+        { status: 500 }
+      );
+    }
+
     if (internalKey && authHeader !== `Bearer ${internalKey}`) {
       return NextResponse.json(
         { error: "Unauthorized" },

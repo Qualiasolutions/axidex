@@ -6,6 +6,7 @@ const ALLOWED_REDIRECTS = [
   '/dashboard',
   '/dashboard/signals',
   '/dashboard/settings',
+  '/update-password',
 ];
 
 function isValidRedirect(path: string): boolean {

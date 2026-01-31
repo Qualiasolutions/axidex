@@ -42,7 +42,6 @@ export async function GET() {
         api: "up",
       },
       responseTime: `${responseTime}ms`,
-      version: process.env.npm_package_version || "0.1.0",
     });
   } catch (error) {
     const responseTime = Date.now() - startTime;

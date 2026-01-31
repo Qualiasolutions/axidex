@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { Signal } from "@/types";
 
@@ -8,12 +8,20 @@ export function useRealtimeSignals(
   userId: string,
   onNewSignal: (signal: Signal) => void
 ) {
+  // Use ref to avoid subscription churn when callback changes
+  const callbackRef = useRef(onNewSignal);
+  callbackRef.current = onNewSignal;
+
+  // Memoize supabase client to prevent recreation on every render
+  const supabase = useMemo(() => createClient(), []);
+
   useEffect(() => {
-    const supabase = createClient();
+
+    if (!userId) return;
 
     // Subscribe to INSERT events on signals table
     const channel = supabase
-      .channel("signals-realtime")
+      .channel(`signals-realtime-${userId}`)
       .on(
         "postgres_changes",
         {
@@ -23,22 +31,15 @@ export function useRealtimeSignals(
           filter: `user_id=eq.${userId}`,
         },
         (payload) => {
-          // Call callback with new signal
-          onNewSignal(payload.new as Signal);
+          // Call callback via ref to avoid stale closures
+          callbackRef.current(payload.new as Signal);
         }
       )
-      .subscribe((status) => {
-        if (status === "SUBSCRIBED") {
-          console.log("Realtime subscription active");
-        }
-        if (status === "CHANNEL_ERROR") {
-          console.error("Realtime subscription error");
-        }
-      });
+      .subscribe();
 
     // Cleanup on unmount
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [userId, onNewSignal]);
+  }, [userId, supabase]);
 }
