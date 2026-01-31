@@ -72,8 +72,8 @@ Plans:
 4. Scraper runs on schedule without rate limiting
 
 Plans:
-- [ ] 08-01-PLAN.md — Bright Data API integration and LinkedIn Jobs scraper
-- [ ] 08-02-PLAN.md — Deduplication, rate limiting, and scheduler integration
+- [ ] 08-01-PLAN.md — Verify Bright Data integration and add unit tests
+- [ ] 08-02-PLAN.md — Verify deduplication, scheduler, and update requirements
 
 ### Phase 9: Notifications
 **Goal:** Users receive email alerts for high-priority signals matching their criteria
