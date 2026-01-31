@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-01-31)
 
 ## Current Position
 
-Phase: 15 - Onboarding (In Progress)
-Plan: 1 of 2
-Status: In progress
-Last activity: 2026-01-31 — Completed 15-01-PLAN.md (welcome modal and feature tour)
+Phase: 15 - Onboarding (Complete)
+Plan: 2 of 2
+Status: Phase complete
+Last activity: 2026-02-01 — Completed 15-02-PLAN.md (setup wizard and dashboard integration)
 
-Progress: [████████████████████████████████] 97% (32/33 plans)
+Progress: [██████████] 100% (33/33 plans)
 
 ## Performance Metrics
 
@@ -54,7 +54,7 @@ Progress: [███████████████████████
 
 **Total v1.2:** 10 plans, 41min 29s
 
-| 15. Onboarding | 1/2 | 2min 33s | 2min 33s |
+| 15. Onboarding | 2/2 ✓ | 6min 45s | 3min 23s |
 
 *Updated after each plan completion*
 
@@ -107,6 +107,7 @@ Recent decisions affecting current work:
 | D052 | Use -1 for unlimited tier limits | 14-02 | Clear sentinel value for enterprise tier unlimited resources |
 | D053 | Limit check before email generation | 14-03 | Prevents Claude API credit consumption when user over limit |
 | D054 | Default hasCompletedOnboarding to true | 15-01 | Avoid modal flash; only show if explicitly null in database |
+| D055 | OnboardingProvider wraps dashboard layout | 15-02 | Central orchestration of welcome -> tour -> wizard flow |
 
 ### Pending Todos
 
@@ -146,6 +147,9 @@ Recent decisions affecting current work:
 - Create webhook endpoint in Stripe Dashboard pointing to /api/webhooks/stripe
 - Apply migration 015_billing.sql to Supabase production
 
+**Phase 15 Manual Setup Required:**
+- Apply migration 016_onboarding.sql to Supabase production
+
 **Other Manual Setup:**
 - Add BRIGHT_DATA_API_TOKEN to worker environment
 - Add SENTRY_DSN environment variables (Next.js and worker)
@@ -159,10 +163,10 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-01-31
-Stopped at: Completed 15-01-PLAN.md (welcome modal and feature tour)
-Resume file: .planning/phases/15-onboarding/15-02-PLAN.md
-Next step: Execute 15-02 (dashboard integration and onboarding provider)
+Last session: 2026-02-01
+Stopped at: Completed Phase 15 - Onboarding
+Resume file: None
+Next step: Milestone v1.2 complete! Run /gsd:audit-milestone or /gsd:complete-milestone
 
 ---
 *State initialized: 2026-01-30*
@@ -177,3 +181,4 @@ Next step: Execute 15-02 (dashboard integration and onboarding provider)
 *Phase 13 completed: 2026-01-31*
 *Phase 14 completed: 2026-01-31*
 *Phase 15 plan 01 completed: 2026-01-31*
+*Phase 15 completed: 2026-02-01*

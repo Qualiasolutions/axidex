@@ -31,7 +31,7 @@ Milestone v1.2 focuses on UX polish and feature completion for launch readiness.
 - [x] **Phase 12: Design Polish** - Visual hierarchy, spacing, toasts, empty states
 - [x] **Phase 13: Slack Integration** - OAuth, channel selection, auto-posting
 - [x] **Phase 14: Billing** - Stripe checkout, portal, webhooks, usage limits
-- [ ] **Phase 15: Onboarding** - Welcome screen, guided tour, setup wizard
+- [x] **Phase 15: Onboarding** - Welcome screen, guided tour, setup wizard
 
 ## Phase Details
 
@@ -196,8 +196,8 @@ Plans:
 3. Setup wizard configures initial preferences
 
 Plans:
-- [ ] 15-01-PLAN.md — Welcome modal, feature tour components, database migration
-- [ ] 15-02-PLAN.md — Setup wizard, dashboard integration, settings restart option
+- [x] 15-01-PLAN.md — Welcome modal, feature tour components, database migration
+- [x] 15-02-PLAN.md — Setup wizard, dashboard integration, settings restart option
 
 ## Progress
 
@@ -214,7 +214,7 @@ Plans:
 | 12. Design Polish | 2/2 | Complete |
 | 13. Slack Integration | 1/1 | Complete |
 | 14. Billing | 3/3 | Complete |
-| 15. Onboarding | 0/2 | Pending |
+| 15. Onboarding | 2/2 | Complete |
 
 ---
 *Roadmap created: 2026-01-30*
