@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-01-31)
 
 ## Current Position
 
-Phase: 14 - Billing (Complete)
-Plan: 3 of 3 (Complete)
-Status: Phase complete
-Last activity: 2026-01-31 — Completed 14-03-PLAN.md (gap closure)
+Phase: 15 - Onboarding (In Progress)
+Plan: 1 of 2
+Status: In progress
+Last activity: 2026-01-31 — Completed 15-01-PLAN.md (welcome modal and feature tour)
 
-Progress: [██████████] 100% (31/31 plans)
+Progress: [████████████████████████████████] 97% (32/33 plans)
 
 ## Performance Metrics
 
@@ -53,6 +53,8 @@ Progress: [██████████] 100% (31/31 plans)
 | 14. Billing | 3/3 ✓ | 9min 37s | 3min 12s |
 
 **Total v1.2:** 10 plans, 41min 29s
+
+| 15. Onboarding | 1/2 | 2min 33s | 2min 33s |
 
 *Updated after each plan completion*
 
@@ -104,6 +106,7 @@ Recent decisions affecting current work:
 | D051 | Enforce limits at API route level | 14-02 | More flexible than middleware, allows custom error responses |
 | D052 | Use -1 for unlimited tier limits | 14-02 | Clear sentinel value for enterprise tier unlimited resources |
 | D053 | Limit check before email generation | 14-03 | Prevents Claude API credit consumption when user over limit |
+| D054 | Default hasCompletedOnboarding to true | 15-01 | Avoid modal flash; only show if explicitly null in database |
 
 ### Pending Todos
 
@@ -157,9 +160,9 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-01-31
-Stopped at: Completed 14-03-PLAN.md (gap closure)
-Resume file: None
-Next step: All phases complete! v1.2 milestone ready (Phase 9 manual steps still pending)
+Stopped at: Completed 15-01-PLAN.md (welcome modal and feature tour)
+Resume file: .planning/phases/15-onboarding/15-02-PLAN.md
+Next step: Execute 15-02 (dashboard integration and onboarding provider)
 
 ---
 *State initialized: 2026-01-30*
@@ -173,3 +176,4 @@ Next step: All phases complete! v1.2 milestone ready (Phase 9 manual steps still
 *Phase 12 completed: 2026-01-31*
 *Phase 13 completed: 2026-01-31*
 *Phase 14 completed: 2026-01-31*
+*Phase 15 plan 01 completed: 2026-01-31*
