@@ -17,8 +17,8 @@ from ..db.dedup import is_duplicate, get_content_hash
 
 log = structlog.get_logger()
 
-# Bright Data dataset ID for LinkedIn People Profiles
-LINKEDIN_PROFILES_DATASET_ID = "gd_l1viktl72bvl7bjuj0"  # Update with actual ID from Bright Data
+# Bright Data dataset ID for LinkedIn People Profiles (Collect by URL)
+LINKEDIN_PROFILES_DATASET_ID = "gd_l1viktl72bvl7bjuj0"
 
 
 class LinkedInProfilesScraper(BaseScraper):

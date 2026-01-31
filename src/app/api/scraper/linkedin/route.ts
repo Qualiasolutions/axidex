@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
 const BRIGHT_DATA_API_URL = "https://api.brightdata.com/datasets/v3/trigger";
-const LINKEDIN_PROFILES_DATASET_ID = "gd_l1viktl72bvl7bjuj0"; // LinkedIn People Profiles
+const LINKEDIN_PROFILES_DATASET_ID = "gd_l1viktl72bvl7bjuj0"; // LinkedIn People Profiles (Collect by URL)
 
 interface LinkedInProfile {
   id: string;

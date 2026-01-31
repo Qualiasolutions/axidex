@@ -186,11 +186,12 @@ async function runScrapingSimulation(runId: string, userId: string) {
       company_domain: `${company.toLowerCase().replace(/\s+/g, "")}.com`,
       signal_type: signalType,
       priority,
+      status: "new",
       title: `${company} ${signalType === "hiring" ? "is hiring" : signalType === "funding" ? "raised funding" : signalType === "expansion" ? "is expanding" : signalType === "partnership" ? "announced partnership" : "launched new product"}`,
       summary: `Signal detected from ${source} indicating ${signalType} activity at ${company}.`,
       source_url: `https://${source}.com/article/${Date.now()}`,
       source_name: source,
-      raw_data: { scrape_run_id: runId },
+      metadata: { scrape_run_id: runId },
       detected_at: new Date().toISOString(),
     });
   }

@@ -127,7 +127,7 @@ class LinkedInScraper(BaseScraper):
         api_url = "https://api.brightdata.com/datasets/v3/trigger"
 
         payload = {
-            "dataset_id": "gd_l1viktl72bvl7bjuj0",  # LinkedIn Jobs dataset
+            "dataset_id": "gd_lpfll7v5hcqtkxl6l",  # LinkedIn Jobs dataset
             "include_errors": True,
             "limit_multiple_results": 25,
             "notify": False,

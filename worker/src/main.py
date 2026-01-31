@@ -10,6 +10,13 @@ from .scrapers.news import TechCrunchScraper
 from .scrapers.jobs import JobBoardScraper
 from .scrapers.company import CompanyWebsiteScraper
 from .scrapers.linkedin import LinkedInScraper
+from .scrapers.hackernews import HackerNewsScraper
+from .scrapers.googlenews import GoogleNewsScraper
+from .scrapers.prnewswire import PRNewswireScraper
+from .scrapers.techblogs import TechBlogsScraper
+from .scrapers.producthunt import ProductHuntScraper
+from .scrapers.reddit import RedditScraper
+from .scrapers.globenewswire import GlobeNewswireScraper
 from .db.supabase import (
     insert_signal,
     get_merged_target_companies,
@@ -54,6 +61,8 @@ async def run_scrapers(run_id: str | None = None, user_id: str | None = None):
 
     # Build list of scrapers based on enabled sources
     scrapers = []
+
+    # Original sources (configurable)
     if enabled_sources.get("techcrunch", True):
         scrapers.append(TechCrunchScraper())
     if enabled_sources.get("indeed", True):
@@ -62,6 +71,15 @@ async def run_scrapers(run_id: str | None = None, user_id: str | None = None):
         scrapers.append(CompanyWebsiteScraper(target_companies=target_companies))
     if enabled_sources.get("linkedin", False):
         scrapers.append(LinkedInScraper(target_companies=target_companies, signal_keywords=signal_keywords))
+
+    # New sources - always enabled (free, no API keys needed)
+    scrapers.append(HackerNewsScraper(target_companies=target_companies))
+    scrapers.append(GoogleNewsScraper(target_companies=target_companies))
+    scrapers.append(PRNewswireScraper(target_companies=target_companies))
+    scrapers.append(TechBlogsScraper(target_companies=target_companies))
+    scrapers.append(ProductHuntScraper(target_companies=target_companies))
+    scrapers.append(RedditScraper(target_companies=target_companies))
+    scrapers.append(GlobeNewswireScraper(target_companies=target_companies))
 
     if not scrapers:
         log.warning("no_scrapers_enabled")
