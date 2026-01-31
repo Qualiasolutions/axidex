@@ -31,8 +31,18 @@ export async function GET() {
         .single(),
     ]);
 
-    const config = configResult.data;
+    let config = configResult.data;
     const latestRunData = latestRunResult.data;
+
+    // Auto-create config if it doesn't exist
+    if (!config && (!configResult.error || configResult.error.code === "PGRST116")) {
+      const { data: newConfig } = await supabase
+        .from("scraper_config")
+        .insert({ user_id: user.id })
+        .select()
+        .single();
+      config = newConfig;
+    }
 
     // Check if a scrape is currently running for this user
     const { data: runningRunData } = await supabase
