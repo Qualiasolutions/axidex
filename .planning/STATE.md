@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-01-31)
 ## Current Position
 
 Phase: 10 - Navigation & UX
-Plan: 10-01 ✓ Complete
-Status: Keyboard shortcuts enhanced
-Last activity: 2026-01-31 — Completed 10-01-PLAN.md
+Plan: 10-02 ✓ Complete
+Status: Breadcrumb navigation complete
+Last activity: 2026-01-31 — Completed 10-02-PLAN.md
 
-Progress: [██████░░░░] 65% (20/31 plans)
+Progress: [██████░░░░] 68% (21/31 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 19 (12 v1.0 + 7 v1.2)
-- Average duration: 3min 31s
-- Total execution time: 1.18 hours
+- Total plans completed: 21 (12 v1.0 + 9 v1.2)
+- Average duration: 3min 25s
+- Total execution time: 1.20 hours
 
 **By Phase (v1.0):**
 
@@ -46,7 +46,7 @@ Progress: [██████░░░░] 65% (20/31 plans)
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 10. Navigation & UX | 1/3 ✓ | 2min | 2min |
+| 10. Navigation & UX | 2/3 ✓ | 4min 17s | 2min 09s |
 
 *Updated after each plan completion*
 
@@ -74,6 +74,9 @@ Recent decisions affecting current work:
 | D027 | Custom events for keyboard navigation | 10-01 | Simpler than global state, no prop drilling |
 | D028 | Ring offset matches background color | 10-01 | Clean visual separation for selection ring |
 | D029 | Reset selection on filter changes | 10-01 | Prevents stale selectedIndex references |
+| D030 | Truncate email subjects in breadcrumbs at 40 chars | 10-02 | Prevents overflow on narrow viewports |
+| D031 | Include breadcrumbs in loading/error states | 10-02 | Consistent UI context regardless of page state |
+| D032 | Keep "Back to" buttons alongside breadcrumbs | 10-02 | Mobile-friendly option, desktop hierarchy |
 
 ### Pending Todos
 
@@ -111,9 +114,9 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-01-31
-Stopped at: Completed 10-01-PLAN.md
-Resume file: .planning/phases/10-navigation-ux/10-01-SUMMARY.md
-Next step: Continue with 10-02 or 10-03 for breadcrumbs and UI polish
+Stopped at: Completed 10-02-PLAN.md
+Resume file: .planning/phases/10-navigation-ux/10-02-SUMMARY.md
+Next step: Continue with 10-03 for UI polish
 
 ---
 *State initialized: 2026-01-30*
