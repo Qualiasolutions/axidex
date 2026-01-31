@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 
 interface ShortcutMap {
@@ -19,6 +19,8 @@ const navigationShortcuts: ShortcutMap = {
 
 export function useKeyboardShortcuts() {
   const router = useRouter();
+  const [showHelp, setShowHelp] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
@@ -72,21 +74,50 @@ export function useKeyboardShortcuts() {
 
       // Single key shortcuts
       if (key === "?") {
-        // Show keyboard shortcuts help (could open a modal)
-        console.log("Keyboard shortcuts help");
+        event.preventDefault();
+        setShowHelp((prev) => !prev);
       }
 
       if (key === "escape") {
-        // Close any open modals/drawers
-        const event = new CustomEvent("close-all-modals");
-        window.dispatchEvent(event);
+        // Clear selection first, then close modals
+        if (selectedIndex !== null) {
+          setSelectedIndex(null);
+        } else {
+          const event = new CustomEvent("close-all-modals");
+          window.dispatchEvent(event);
+        }
+      }
+
+      // List navigation shortcuts
+      if (key === "j") {
+        event.preventDefault();
+        const event_ = new CustomEvent("signal-list-next");
+        window.dispatchEvent(event_);
+      }
+
+      if (key === "k") {
+        event.preventDefault();
+        const event_ = new CustomEvent("signal-list-prev");
+        window.dispatchEvent(event_);
+      }
+
+      if (key === "enter") {
+        const event_ = new CustomEvent("signal-list-open");
+        window.dispatchEvent(event_);
       }
     },
-    [router]
+    [router, selectedIndex]
   );
 
   useEffect(() => {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleKeyDown]);
+
+  return {
+    showHelp,
+    setShowHelp,
+    selectedIndex,
+    setSelectedIndex,
+  };
 }
