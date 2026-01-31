@@ -3,11 +3,13 @@ import type { CRMClient } from "./types";
 import { HubSpotClient, getHubSpotAuthUrl, exchangeHubSpotCode } from "./hubspot";
 import { SalesforceClient, getSalesforceAuthUrl, exchangeSalesforceCode } from "./salesforce";
 import { PipedriveClient, getPipedriveAuthUrl, exchangePipedriveCode } from "./pipedrive";
+import { ApolloClient, getApolloAuthUrl, exchangeApolloCode, validateApolloApiKey } from "./apollo";
 
 export * from "./types";
 export { HubSpotClient } from "./hubspot";
 export { SalesforceClient } from "./salesforce";
 export { PipedriveClient } from "./pipedrive";
+export { ApolloClient, validateApolloApiKey } from "./apollo";
 
 // Provider display info
 export const CRM_PROVIDERS: Record<
@@ -72,6 +74,8 @@ export function createCRMClient(integration: CRMIntegration): CRMClient {
         integration.account_id ?? undefined,
         integration.refresh_token ?? undefined
       );
+    case "apollo":
+      return new ApolloClient(integration.access_token);
     case "zoho":
       throw new Error("Zoho CRM integration not yet implemented");
     default:
@@ -94,6 +98,8 @@ export function getCRMAuthUrl(
       return getSalesforceAuthUrl(redirectUri, state);
     case "pipedrive":
       return getPipedriveAuthUrl(redirectUri, state);
+    case "apollo":
+      return getApolloAuthUrl(redirectUri, state);
     case "zoho":
       throw new Error("Zoho CRM OAuth not yet implemented");
     default:
@@ -116,6 +122,8 @@ export async function exchangeCRMCode(
       return exchangeSalesforceCode(code, redirectUri);
     case "pipedrive":
       return exchangePipedriveCode(code, redirectUri);
+    case "apollo":
+      return exchangeApolloCode(code, redirectUri);
     case "zoho":
       throw new Error("Zoho CRM OAuth not yet implemented");
     default:
@@ -183,6 +191,9 @@ export function validateProviderConfig(provider: CRMProvider): {
     case "pipedrive":
       if (!process.env.PIPEDRIVE_CLIENT_ID) missing.push("PIPEDRIVE_CLIENT_ID");
       if (!process.env.PIPEDRIVE_CLIENT_SECRET) missing.push("PIPEDRIVE_CLIENT_SECRET");
+      break;
+    case "apollo":
+      // Apollo uses API key, which is stored per-user, not in env vars
       break;
     case "zoho":
       if (!process.env.ZOHO_CLIENT_ID) missing.push("ZOHO_CLIENT_ID");
