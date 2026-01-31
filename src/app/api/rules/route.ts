@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { checkLimit, getUsageCount } from "@/lib/billing";
 
 export async function GET(request: NextRequest) {
   try {
@@ -64,6 +65,21 @@ export async function POST(request: NextRequest) {
 
     if (!name || !trigger_conditions || !actions) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    }
+
+    // Check automation rule limit
+    const currentRules = await getUsageCount(user.id, 'rules');
+    const { allowed, limit, tier } = await checkLimit(user.id, 'automation_rules', currentRules);
+
+    if (!allowed) {
+      return NextResponse.json(
+        {
+          error: 'Rule limit reached',
+          message: `Your ${tier} plan allows ${limit} automation rules. Upgrade for more.`,
+          upgrade_url: '/pricing'
+        },
+        { status: 403 }
+      );
     }
 
     const { data, error } = await supabase
