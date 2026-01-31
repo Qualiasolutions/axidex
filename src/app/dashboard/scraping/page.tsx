@@ -20,7 +20,6 @@ import {
   Zap,
   TrendingUp,
   AlertCircle,
-  ChevronRight,
   Plus,
   Pause,
   History,
@@ -92,19 +91,72 @@ const DEFAULT_COMPANIES = [
   "Twilio",
 ];
 
-// Popular companies for suggestions
-const SUGGESTED_COMPANIES = [
-  "Stripe", "Shopify", "HubSpot", "Salesforce", "Twilio",
-  "Slack", "Zoom", "Notion", "Figma", "Canva",
-  "Airbnb", "DoorDash", "Instacart", "Uber", "Lyft",
-  "Snowflake", "Datadog", "MongoDB", "Elastic", "Confluent",
-  "Plaid", "Brex", "Ramp", "Mercury", "Carta",
-  "Vercel", "Supabase", "PlanetScale", "Neon", "Railway",
-  "OpenAI", "Anthropic", "Cohere", "Hugging Face", "Scale AI",
-  "Airtable", "Monday.com", "Asana", "ClickUp", "Linear",
-  "Rippling", "Deel", "Remote", "Gusto", "Lattice",
-  "Gong", "Clari", "Outreach", "Salesloft", "Apollo",
+// Popular companies organized by category
+const COMPANY_CATEGORIES = [
+  {
+    name: "Fintech",
+    icon: "💳",
+    companies: ["Stripe", "Plaid", "Brex", "Ramp", "Mercury", "Carta", "Square", "Wise", "Revolut", "Klarna"],
+  },
+  {
+    name: "E-commerce",
+    icon: "🛒",
+    companies: ["Shopify", "Amazon", "eBay", "Etsy", "BigCommerce", "WooCommerce", "Magento", "Squarespace"],
+  },
+  {
+    name: "Sales & CRM",
+    icon: "📊",
+    companies: ["Salesforce", "HubSpot", "Gong", "Clari", "Outreach", "Salesloft", "Apollo", "ZoomInfo", "Pipedrive"],
+  },
+  {
+    name: "Developer Tools",
+    icon: "⚡",
+    companies: ["Vercel", "Supabase", "PlanetScale", "Neon", "Railway", "GitHub", "GitLab", "Atlassian", "JetBrains"],
+  },
+  {
+    name: "AI & ML",
+    icon: "🤖",
+    companies: ["OpenAI", "Anthropic", "Cohere", "Hugging Face", "Scale AI", "Databricks", "DataRobot", "Weights & Biases"],
+  },
+  {
+    name: "Communication",
+    icon: "💬",
+    companies: ["Slack", "Zoom", "Twilio", "Discord", "Microsoft Teams", "Intercom", "Zendesk", "Freshworks"],
+  },
+  {
+    name: "Productivity",
+    icon: "✅",
+    companies: ["Notion", "Airtable", "Monday.com", "Asana", "ClickUp", "Linear", "Trello", "Coda", "Miro"],
+  },
+  {
+    name: "Design",
+    icon: "🎨",
+    companies: ["Figma", "Canva", "Adobe", "InVision", "Sketch", "Framer", "Webflow", "Loom"],
+  },
+  {
+    name: "HR & People",
+    icon: "👥",
+    companies: ["Rippling", "Deel", "Remote", "Gusto", "Lattice", "BambooHR", "Workday", "ADP"],
+  },
+  {
+    name: "Data & Analytics",
+    icon: "📈",
+    companies: ["Snowflake", "Datadog", "MongoDB", "Elastic", "Confluent", "Amplitude", "Mixpanel", "Segment"],
+  },
+  {
+    name: "Cloud & Infra",
+    icon: "☁️",
+    companies: ["AWS", "Google Cloud", "Azure", "Cloudflare", "DigitalOcean", "Heroku", "Fastly", "Akamai"],
+  },
+  {
+    name: "Marketplaces",
+    icon: "🏪",
+    companies: ["Airbnb", "DoorDash", "Instacart", "Uber", "Lyft", "Grab", "Deliveroo", "TaskRabbit"],
+  },
 ];
+
+// Flat list for backwards compatibility
+const SUGGESTED_COMPANIES = COMPANY_CATEGORIES.flatMap(cat => cat.companies);
 
 const INTERVAL_OPTIONS = [
   { value: 15, label: "15 min", description: "Real-time" },
@@ -464,7 +516,25 @@ export default function ScrapingPage() {
         (company) =>
           company.toLowerCase().includes(newCompany.toLowerCase()) &&
           !(config?.target_companies ?? []).includes(company)
-      ).slice(0, 6)
+      ).slice(0, 8)
+    : [];
+
+  // Get category for a company
+  const getCompanyCategory = (company: string) => {
+    for (const cat of COMPANY_CATEGORIES) {
+      if (cat.companies.includes(company)) {
+        return cat;
+      }
+    }
+    return null;
+  };
+
+  // Filter categories based on input
+  const filteredCategories = newCompany.length === 0
+    ? COMPANY_CATEGORIES.map(cat => ({
+        ...cat,
+        companies: cat.companies.filter(c => !(config?.target_companies ?? []).includes(c))
+      })).filter(cat => cat.companies.length > 0)
     : [];
 
   // Close suggestions when clicking outside
@@ -968,22 +1038,148 @@ export default function ScrapingPage() {
                   )}
                 </div>
 
-                <div className="flex gap-2">
-                  <div className="relative flex-1">
-                    <input
-                      ref={inputRef}
-                      type="text"
-                      value={newCompany}
-                      onChange={(e) => setNewCompany(e.target.value)}
-                      onKeyDown={(e) => e.key === "Enter" && addCompany()}
-                      placeholder="Add a company..."
-                      className="w-full px-4 py-2.5 border border-border rounded-xl bg-background focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary text-sm transition-all pr-10"
-                    />
-                    <ChevronRight className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                {/* Enhanced company search */}
+                <div className="relative">
+                  <div className="flex gap-2">
+                    <div className="relative flex-1">
+                      <input
+                        ref={inputRef}
+                        type="text"
+                        value={newCompany}
+                        onChange={(e) => {
+                          setNewCompany(e.target.value);
+                          setShowSuggestions(true);
+                        }}
+                        onFocus={() => setShowSuggestions(true)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" && newCompany.trim()) {
+                            if (filteredSuggestions.length > 0) {
+                              addCompany(filteredSuggestions[0]);
+                            } else {
+                              addCompany();
+                            }
+                          }
+                          if (e.key === "Escape") {
+                            setShowSuggestions(false);
+                          }
+                        }}
+                        placeholder="Search companies or type to add..."
+                        className="w-full px-4 py-3 border border-border rounded-xl bg-background focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary text-sm transition-all"
+                      />
+                      {newCompany && (
+                        <button
+                          onClick={() => setNewCompany("")}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
+                    {newCompany.trim() && (
+                      <Button onClick={() => addCompany()} className="shrink-0">
+                        <Plus className="w-4 h-4 mr-1" />
+                        Add
+                      </Button>
+                    )}
                   </div>
-                  <Button variant="outline" onClick={() => addCompany()}>
-                    <Plus className="w-4 h-4" />
-                  </Button>
+
+                  {/* Dropdown suggestions */}
+                  <AnimatePresence>
+                    {showSuggestions && (
+                      <motion.div
+                        ref={suggestionsRef}
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        className="absolute z-50 left-0 right-0 mt-2 bg-background border border-border rounded-xl shadow-xl overflow-hidden max-h-[400px] overflow-y-auto"
+                      >
+                        {/* Search results */}
+                        {newCompany.length >= 1 && filteredSuggestions.length > 0 && (
+                          <div className="p-2">
+                            <p className="text-xs text-muted-foreground px-2 py-1 font-medium">
+                              Search Results
+                            </p>
+                            {filteredSuggestions.map((company) => {
+                              const category = getCompanyCategory(company);
+                              return (
+                                <button
+                                  key={company}
+                                  onClick={() => {
+                                    addCompany(company);
+                                    setShowSuggestions(false);
+                                  }}
+                                  className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg hover:bg-muted transition-colors text-left"
+                                >
+                                  <div className="flex items-center gap-3">
+                                    <span className="text-lg">{category?.icon || "🏢"}</span>
+                                    <div>
+                                      <span className="text-sm font-medium text-foreground">{company}</span>
+                                      {category && (
+                                        <span className="text-xs text-muted-foreground ml-2">{category.name}</span>
+                                      )}
+                                    </div>
+                                  </div>
+                                  <Plus className="w-4 h-4 text-muted-foreground" />
+                                </button>
+                              );
+                            })}
+                          </div>
+                        )}
+
+                        {/* No search results */}
+                        {newCompany.length >= 1 && filteredSuggestions.length === 0 && (
+                          <div className="p-4 text-center">
+                            <p className="text-sm text-muted-foreground mb-2">
+                              No matching companies found
+                            </p>
+                            <Button size="sm" onClick={() => addCompany()}>
+                              <Plus className="w-4 h-4 mr-1" />
+                              Add "{newCompany}"
+                            </Button>
+                          </div>
+                        )}
+
+                        {/* Browse by category */}
+                        {newCompany.length === 0 && filteredCategories.length > 0 && (
+                          <div className="p-2">
+                            <p className="text-xs text-muted-foreground px-2 py-1 font-medium mb-1">
+                              Browse by Category
+                            </p>
+                            <div className="space-y-1">
+                              {filteredCategories.slice(0, 6).map((category) => (
+                                <div key={category.name} className="px-2 py-2">
+                                  <div className="flex items-center gap-2 mb-2">
+                                    <span className="text-base">{category.icon}</span>
+                                    <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                                      {category.name}
+                                    </span>
+                                  </div>
+                                  <div className="flex flex-wrap gap-1.5">
+                                    {category.companies.slice(0, 5).map((company) => (
+                                      <button
+                                        key={company}
+                                        onClick={() => {
+                                          addCompany(company);
+                                        }}
+                                        className="px-2.5 py-1 text-xs font-medium bg-muted hover:bg-primary/10 hover:text-primary rounded-lg transition-colors"
+                                      >
+                                        {company}
+                                      </button>
+                                    ))}
+                                    {category.companies.length > 5 && (
+                                      <span className="px-2 py-1 text-xs text-muted-foreground">
+                                        +{category.companies.length - 5} more
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               </div>
 
