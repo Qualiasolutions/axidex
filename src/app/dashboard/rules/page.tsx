@@ -3,6 +3,7 @@
 import { Suspense, useEffect, useState, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { toast } from "sonner";
 import { Header } from "@/components/layout/header";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -140,8 +141,10 @@ function RulesPageContent() {
 
       // Revalidate to confirm
       mutate();
+      toast.success(isActive ? "Rule activated" : "Rule paused");
     } catch (err) {
       console.error("Error toggling rule:", err);
+      toast.error("Failed to update rule");
       // Rollback on error
       mutate(
         { rules: previousRules, count: previousCount },
@@ -179,8 +182,10 @@ function RulesPageContent() {
 
       // Revalidate to confirm
       mutate();
+      toast.success("Rule deleted");
     } catch (err) {
       console.error("Error deleting rule:", err);
+      toast.error("Failed to delete rule");
       // Rollback on error
       mutate(
         { rules: previousRules, count: previousCount },
@@ -210,8 +215,10 @@ function RulesPageContent() {
       const data = await response.json();
       // Optimistically update SWR cache
       mutate();
+      toast.success("Rule duplicated");
     } catch (err) {
       console.error("Error duplicating rule:", err);
+      toast.error("Failed to duplicate rule");
     }
   };
 
@@ -242,8 +249,10 @@ function RulesPageContent() {
       // Optimistically update SWR cache
       mutate();
       setShowTemplates(false);
+      toast.success(`Created "${template.name}" rule`);
     } catch (err) {
       console.error("Error creating rule from template:", err);
+      toast.error("Failed to create rule");
     } finally {
       setCreatingFromTemplate(null);
     }
