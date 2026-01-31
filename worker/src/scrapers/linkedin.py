@@ -7,13 +7,13 @@ Only scrapes publicly visible job listings (no login required).
 
 import asyncio
 import random
-from typing import Optional
+from typing import Optional, Literal
 import httpx
 import structlog
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 
 from ..scrapers.base import BaseScraper
-from ..models import Signal
+from ..models import Signal, Priority
 from ..config import get_settings
 from ..db.dedup import is_duplicate, get_content_hash
 
@@ -106,7 +106,7 @@ class LinkedInScraper(BaseScraper):
         before_sleep=lambda retry_state: log.warning(
             "linkedin_retry",
             attempt=retry_state.attempt_number,
-            wait=retry_state.next_action.sleep
+            wait=getattr(retry_state.next_action, 'sleep', None) if retry_state.next_action else None
         )
     )
     async def _scrape_company_jobs(self, company: str) -> list[Signal]:
@@ -264,7 +264,7 @@ class LinkedInScraper(BaseScraper):
             },
         )
 
-    def _assess_priority(self, title: str) -> str:
+    def _assess_priority(self, title: str) -> Priority:
         """
         Assess signal priority based on job title.
 
