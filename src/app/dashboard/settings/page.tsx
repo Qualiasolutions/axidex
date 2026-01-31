@@ -1,15 +1,17 @@
 "use client";
 
 import { useState, useEffect, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { motion } from "motion/react";
-import { Loader2, Check, Bell, BellOff, MessageSquare, ExternalLink, ChevronDown, Link2, Unlink, Key, CreditCard } from "lucide-react";
+import { Loader2, Check, Bell, BellOff, MessageSquare, ExternalLink, ChevronDown, Link2, Unlink, Key, CreditCard, HelpCircle } from "lucide-react";
 import { CRM_PROVIDERS } from "@/lib/crm";
 import type { CRMProvider } from "@/types";
 import Link from "next/link";
 import { RefreshCw, ArrowRight } from "lucide-react";
+import { useOnboarding } from "@/hooks/use-onboarding";
+import { toast } from "sonner";
 
 const SIGNAL_TYPES = [
   { id: "hiring", label: "Hiring", description: "Job postings, team growth" },
@@ -71,7 +73,10 @@ const DEFAULT_SLACK: SlackSettings = {
 
 function SettingsContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const { resetOnboarding } = useOnboarding();
   const [prefs, setPrefs] = useState<NotificationPreferences>(DEFAULT_PREFS);
+  const [resettingTour, setResettingTour] = useState(false);
   const [slack, setSlack] = useState<SlackSettings>(DEFAULT_SLACK);
   const [channels, setChannels] = useState<SlackChannel[]>([]);
   const [channelsOpen, setChannelsOpen] = useState(false);
@@ -1067,6 +1072,52 @@ function SettingsContent() {
             );
           })}
         </div>
+      </motion.div>
+
+      {/* Onboarding Tour */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, delay: 0.35 }}
+        className="bg-card border border-border rounded-lg p-6"
+      >
+        <div className="flex items-center gap-3 mb-4">
+          <HelpCircle className="w-5 h-5 text-primary" />
+          <div>
+            <h2 className="font-medium text-foreground">Onboarding Tour</h2>
+            <p className="text-sm text-muted-foreground">
+              New to Axidex? Restart the onboarding tour to learn about key features.
+            </p>
+          </div>
+        </div>
+
+        <Button
+          variant="outline"
+          onClick={async () => {
+            setResettingTour(true);
+            try {
+              await resetOnboarding();
+              toast.success("Tour restarted! Redirecting to dashboard...");
+              setTimeout(() => {
+                router.push("/dashboard");
+              }, 1000);
+            } catch {
+              toast.error("Failed to restart tour");
+            } finally {
+              setResettingTour(false);
+            }
+          }}
+          disabled={resettingTour}
+        >
+          {resettingTour ? (
+            <>
+              <Loader2 className="w-4 h-4 animate-spin mr-2" />
+              Restarting...
+            </>
+          ) : (
+            "Restart Tour"
+          )}
+        </Button>
       </motion.div>
 
       {/* Error message */}
