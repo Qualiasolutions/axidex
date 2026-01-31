@@ -43,18 +43,18 @@ export function Hero() {
         </p>
 
         {/* Email Form */}
-        <form className="flex flex-col sm:flex-row gap-4 mt-2" onSubmit={handleSubmit}>
+        <form className="flex flex-col sm:flex-row gap-3 mt-2" onSubmit={handleSubmit}>
           <div className="relative flex-1 max-w-sm">
             <Input
               type="email"
               placeholder="you@company.com"
-              className="w-full h-12 bg-white border-border text-foreground placeholder:text-muted-foreground focus:border-accent focus:ring-accent text-sm"
+              className="w-full h-12 bg-white border-border/60 text-foreground placeholder:text-muted-foreground/60 focus:border-foreground/20 focus:ring-foreground/10 text-sm shadow-sm"
               aria-label="Email address"
             />
           </div>
           <Button
             type="submit"
-            className="h-12 px-8 bg-accent text-white hover:bg-accent/90 transition-all duration-300 shadow-md"
+            className="h-12 px-8 bg-foreground text-background hover:bg-foreground/90 transition-all duration-200 shadow-sm hover:shadow-md"
           >
             Start Free Trial
           </Button>

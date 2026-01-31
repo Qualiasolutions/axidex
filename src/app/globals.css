@@ -111,6 +111,26 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "cv11", "ss01";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Premium smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Refined focus states */
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+
+  /* Better selection color */
+  ::selection {
+    background: var(--accent);
+    color: white;
   }
 }
