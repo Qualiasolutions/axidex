@@ -121,7 +121,14 @@ export default function NewRulePage() {
 
   return (
     <>
-      <Header title="New Rule" subtitle="Create an automation rule" />
+      <Header
+        title="New Rule"
+        subtitle="Create an automation rule"
+        breadcrumbs={[
+          { label: "Rules", href: "/dashboard/rules" },
+          { label: "New Rule" },
+        ]}
+      />
       <main className="p-6 lg:p-8">
         <div className="max-w-2xl mx-auto space-y-6">
           {/* Back button */}

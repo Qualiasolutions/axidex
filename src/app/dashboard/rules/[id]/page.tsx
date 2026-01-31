@@ -183,7 +183,14 @@ export default function EditRulePage({ params }: { params: Promise<{ id: string 
   if (loading) {
     return (
       <>
-        <Header title="Edit Rule" subtitle="Loading..." />
+        <Header
+          title="Edit Rule"
+          subtitle="Loading..."
+          breadcrumbs={[
+            { label: "Rules", href: "/dashboard/rules" },
+            { label: "Loading..." },
+          ]}
+        />
         <main className="p-6 lg:p-8">
           <div className="max-w-2xl mx-auto">
             <div className="h-96 bg-[var(--bg-secondary)] rounded-xl animate-pulse" />
@@ -195,7 +202,14 @@ export default function EditRulePage({ params }: { params: Promise<{ id: string 
 
   return (
     <>
-      <Header title="Edit Rule" subtitle={name || "Rule"} />
+      <Header
+        title="Edit Rule"
+        subtitle={name || "Rule"}
+        breadcrumbs={[
+          { label: "Rules", href: "/dashboard/rules" },
+          { label: name || "Edit Rule" },
+        ]}
+      />
       <main className="p-6 lg:p-8">
         <div className="max-w-2xl mx-auto space-y-6">
           {/* Back button */}
