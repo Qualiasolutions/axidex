@@ -22,6 +22,9 @@ class Settings(BaseSettings):
     openai_model: str = "gpt-4o-mini"  # Use mini for cost efficiency, or OpenRouter model name
     ai_enabled: bool = True  # Can disable AI for testing
 
+    # Sentry
+    sentry_dsn: Optional[str] = None
+
     # Health check endpoint
     health_port: int = 8080
 

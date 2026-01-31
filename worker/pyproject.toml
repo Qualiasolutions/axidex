@@ -14,6 +14,7 @@ dependencies = [
     "openai>=1.0",
     "brightdata-sdk>=1.0",
     "tenacity>=8.0",
+    "sentry-sdk>=2.0",
 ]
 
 [project.optional-dependencies]

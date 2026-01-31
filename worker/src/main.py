@@ -2,8 +2,10 @@ import asyncio
 import schedule
 import time
 import structlog
+import sentry_sdk
 from .config import get_settings
 from .health import HealthServer, update_health, set_status
+from .sentry_setup import init_sentry
 from .scrapers.news import TechCrunchScraper
 from .scrapers.jobs import JobBoardScraper
 from .scrapers.company import CompanyWebsiteScraper
@@ -38,28 +40,36 @@ async def run_scrapers():
     enriched_signals = 0
     signals_by_source: dict[str, int] = {}
 
-    for scraper in scrapers:
-        try:
-            signals = await scraper.scrape()
-            scraper_count = 0
+    # Add Sentry context for this scraper run
+    with sentry_sdk.configure_scope() as scope:
+        scope.set_context("scraper_run", {
+            "ai_enabled": settings.ai_enabled,
+            "model": settings.openai_model,
+        })
 
-            for signal in signals:
-                # Enrich with AI before inserting
-                enriched_signal = scraper.enrich_signal(signal)
+        for scraper in scrapers:
+            try:
+                signals = await scraper.scrape()
+                scraper_count = 0
 
-                if enriched_signal.metadata.get('ai_enriched'):
-                    enriched_signals += 1
+                for signal in signals:
+                    # Enrich with AI before inserting
+                    enriched_signal = scraper.enrich_signal(signal)
 
-                result = insert_signal(enriched_signal, DEMO_USER_ID)
-                if result:
-                    total_signals += 1
-                    scraper_count += 1
+                    if enriched_signal.metadata.get('ai_enriched'):
+                        enriched_signals += 1
 
-            signals_by_source[scraper.name] = scraper_count
+                    result = insert_signal(enriched_signal, DEMO_USER_ID)
+                    if result:
+                        total_signals += 1
+                        scraper_count += 1
 
-        except Exception as e:
-            log.error("scraper_failed", scraper=scraper.name, error=str(e))
-            signals_by_source[scraper.name] = 0
+                signals_by_source[scraper.name] = scraper_count
+
+            except Exception as e:
+                sentry_sdk.capture_exception(e)
+                log.error("scraper_failed", scraper=scraper.name, error=str(e))
+                signals_by_source[scraper.name] = 0
 
     log.info(
         "scrape_cycle_complete",
@@ -83,6 +93,9 @@ def job():
 
 
 def main():
+    # Initialize Sentry before any operations
+    init_sentry()
+
     settings = get_settings()
     linkedin_enabled = bool(settings.bright_data_api_token)
     log.info(
