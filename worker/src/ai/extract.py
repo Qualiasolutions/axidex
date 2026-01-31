@@ -15,7 +15,11 @@ def get_openai_client() -> OpenAI:
         settings = get_settings()
         if not settings.openai_api_key:
             raise ValueError("OPENAI_API_KEY not set")
-        _client = OpenAI(api_key=settings.openai_api_key)
+        # Support OpenRouter or other OpenAI-compatible APIs via base_url
+        _client = OpenAI(
+            api_key=settings.openai_api_key,
+            base_url=settings.openai_api_base,  # None uses default OpenAI URL
+        )
     return _client
 
 

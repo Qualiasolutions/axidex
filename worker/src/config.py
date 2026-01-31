@@ -16,9 +16,10 @@ class Settings(BaseSettings):
     # Bright Data API token (for LinkedIn SDK)
     bright_data_api_token: Optional[str] = None
 
-    # OpenAI
+    # OpenAI / OpenRouter
     openai_api_key: Optional[str] = None
-    openai_model: str = "gpt-4o-mini"  # Use mini for cost efficiency, upgrade to gpt-4o for quality
+    openai_api_base: Optional[str] = None  # Set to https://openrouter.ai/api/v1 for OpenRouter
+    openai_model: str = "gpt-4o-mini"  # Use mini for cost efficiency, or OpenRouter model name
     ai_enabled: bool = True  # Can disable AI for testing
 
     @property
