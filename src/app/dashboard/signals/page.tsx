@@ -67,6 +67,7 @@ function SignalsPageContent() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [totalCount, setTotalCount] = useState(0);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
   const activeTypes = searchParams.get("types")?.split(",").filter(Boolean) || [];
   const activePriorities = searchParams.get("priorities")?.split(",").filter(Boolean) || [];
@@ -129,6 +130,7 @@ function SignalsPageContent() {
         const data = await response.json();
         setSignals(data.signals || []);
         setTotalCount(data.count || 0);
+        setSelectedIndex(null); // Reset selection when signals change
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to fetch signals");
         setSignals([]);
@@ -140,6 +142,51 @@ function SignalsPageContent() {
 
     fetchSignals();
   }, [activeTypes.join(","), activePriorities.join(","), searchQuery, from, to, currentPage]);
+
+  // Keyboard navigation for signals list
+  useEffect(() => {
+    const handleNext = () => {
+      if (signals.length === 0) return;
+      setSelectedIndex((prev) => {
+        if (prev === null) return 0;
+        return Math.min(prev + 1, signals.length - 1);
+      });
+    };
+
+    const handlePrev = () => {
+      if (signals.length === 0) return;
+      setSelectedIndex((prev) => {
+        if (prev === null) return 0;
+        return Math.max(prev - 1, 0);
+      });
+    };
+
+    const handleOpen = () => {
+      if (selectedIndex !== null && signals[selectedIndex]) {
+        router.push(`/dashboard/signals/${signals[selectedIndex].id}`);
+      }
+    };
+
+    window.addEventListener("signal-list-next", handleNext);
+    window.addEventListener("signal-list-prev", handlePrev);
+    window.addEventListener("signal-list-open", handleOpen);
+
+    return () => {
+      window.removeEventListener("signal-list-next", handleNext);
+      window.removeEventListener("signal-list-prev", handlePrev);
+      window.removeEventListener("signal-list-open", handleOpen);
+    };
+  }, [signals, selectedIndex, router]);
+
+  // Scroll selected item into view
+  useEffect(() => {
+    if (selectedIndex !== null) {
+      const element = document.getElementById(`signal-card-${selectedIndex}`);
+      if (element) {
+        element.scrollIntoView({ block: "nearest", behavior: "smooth" });
+      }
+    }
+  }, [selectedIndex]);
 
   const toggleTypeFilter = (type: SignalType) => {
     const current = new Set(activeTypes);
@@ -465,7 +512,16 @@ function SignalsPageContent() {
           <>
             <div className="space-y-4">
               {signals.map((signal, index) => (
-                <SignalCard key={signal.id} signal={signal} index={index} />
+                <div
+                  key={signal.id}
+                  id={`signal-card-${index}`}
+                  className={cn(
+                    "rounded-2xl transition-all",
+                    selectedIndex === index && "ring-2 ring-[var(--accent)] ring-offset-2 ring-offset-[var(--bg-primary)]"
+                  )}
+                >
+                  <SignalCard signal={signal} index={index} />
+                </div>
               ))}
             </div>
 
