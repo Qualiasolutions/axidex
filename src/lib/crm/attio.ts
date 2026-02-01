@@ -8,6 +8,7 @@ import type {
   CRMTokenResponse,
 } from "./types";
 import { SIGNAL_TYPE_LABELS, PRIORITY_LABELS } from "./types";
+import { fetchWithTimeout } from "../fetch-with-timeout";
 
 const ATTIO_API_BASE = "https://api.attio.com/v2";
 
@@ -23,13 +24,15 @@ export class AttioClient implements CRMClient {
     endpoint: string,
     options: RequestInit = {}
   ): Promise<T> {
-    const response = await fetch(`${ATTIO_API_BASE}${endpoint}`, {
+    const response = await fetchWithTimeout(`${ATTIO_API_BASE}${endpoint}`, {
       ...options,
       headers: {
         Authorization: `Bearer ${this.apiKey}`,
         "Content-Type": "application/json",
         ...options.headers,
       },
+      timeout: 15000,
+      retries: 2,
     });
 
     if (!response.ok) {

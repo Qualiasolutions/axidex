@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { syncSignalToCRM } from "@/lib/crm";
+import { fetchWithTimeout } from "@/lib/fetch-with-timeout";
 import type { Signal, AutomationRule, CRMIntegration, CRMProvider } from "@/types";
 
 interface ActionResult {
@@ -163,7 +164,7 @@ async function executeGenerateEmail(
   config: Record<string, unknown>
 ): Promise<ActionResult> {
   try {
-    const response = await fetch(
+    const response = await fetchWithTimeout(
       `${process.env.NEXT_PUBLIC_APP_URL || ""}/api/signals/${signal.id}/email`,
       {
         method: "POST",
@@ -171,6 +172,8 @@ async function executeGenerateEmail(
         body: JSON.stringify({
           tone: config.tone || "professional",
         }),
+        timeout: 45000, // AI generation can take time
+        retries: 1,
       }
     );
 
@@ -274,7 +277,7 @@ async function executeNotify(
   // Email notification
   if (channels.includes("email")) {
     try {
-      const response = await fetch(
+      const response = await fetchWithTimeout(
         `${process.env.NEXT_PUBLIC_APP_URL || ""}/api/send-notification`,
         {
           method: "POST",
@@ -283,6 +286,8 @@ async function executeNotify(
             "X-Internal-Api-Key": process.env.INTERNAL_API_KEY || "",
           },
           body: JSON.stringify({ signal }),
+          timeout: 15000,
+          retries: 2,
         }
       );
       results.email = response.ok;

@@ -8,6 +8,7 @@ import type {
   CRMTokenResponse,
 } from "./types";
 import { SIGNAL_TYPE_LABELS, PRIORITY_LABELS } from "./types";
+import { fetchWithTimeout } from "../fetch-with-timeout";
 
 export class SalesforceClient implements CRMClient {
   provider = "salesforce" as const;
@@ -25,13 +26,15 @@ export class SalesforceClient implements CRMClient {
     endpoint: string,
     options: RequestInit = {}
   ): Promise<T> {
-    const response = await fetch(`${this.instanceUrl}/services/data/v59.0${endpoint}`, {
+    const response = await fetchWithTimeout(`${this.instanceUrl}/services/data/v59.0${endpoint}`, {
       ...options,
       headers: {
         Authorization: `Bearer ${this.accessToken}`,
         "Content-Type": "application/json",
         ...options.headers,
       },
+      timeout: 15000,
+      retries: 2,
     });
 
     if (!response.ok) {
@@ -52,7 +55,7 @@ export class SalesforceClient implements CRMClient {
       throw new Error("No refresh token available");
     }
 
-    const response = await fetch("https://login.salesforce.com/services/oauth2/token", {
+    const response = await fetchWithTimeout("https://login.salesforce.com/services/oauth2/token", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: new URLSearchParams({
@@ -61,6 +64,8 @@ export class SalesforceClient implements CRMClient {
         client_secret: process.env.SALESFORCE_CLIENT_SECRET!,
         refresh_token: this.refreshTokenValue,
       }),
+      timeout: 10000,
+      retries: 2,
     });
 
     if (!response.ok) {
@@ -328,7 +333,7 @@ export async function exchangeSalesforceCode(
   code: string,
   redirectUri: string
 ): Promise<CRMTokenResponse> {
-  const response = await fetch(
+  const response = await fetchWithTimeout(
     "https://login.salesforce.com/services/oauth2/token",
     {
       method: "POST",
@@ -340,6 +345,8 @@ export async function exchangeSalesforceCode(
         redirect_uri: redirectUri,
         code,
       }),
+      timeout: 10000,
+      retries: 2,
     }
   );
 

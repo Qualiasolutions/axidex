@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { fetchWithTimeout } from "@/lib/fetch-with-timeout";
 
 const BRIGHT_DATA_API_URL = "https://api.brightdata.com/datasets/v3/trigger";
 const LINKEDIN_PROFILES_DATASET_ID = "gd_l1viktl72bvl7bjuj0"; // LinkedIn People Profiles (Collect by URL)
@@ -79,13 +80,15 @@ export async function POST(request: NextRequest) {
       input: validUrls.map((url) => ({ url })),
     };
 
-    const response = await fetch(BRIGHT_DATA_API_URL, {
+    const response = await fetchWithTimeout(BRIGHT_DATA_API_URL, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${apiToken}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(payload),
+      timeout: 30000,
+      retries: 2,
     });
 
     if (response.status === 401) {
@@ -168,8 +171,10 @@ export async function GET(request: NextRequest) {
 
     // Check progress
     const progressUrl = `https://api.brightdata.com/datasets/v3/progress/${snapshotId}`;
-    const progressResponse = await fetch(progressUrl, {
+    const progressResponse = await fetchWithTimeout(progressUrl, {
       headers: { Authorization: `Bearer ${apiToken}` },
+      timeout: 15000,
+      retries: 2,
     });
 
     if (!progressResponse.ok) {
@@ -199,8 +204,10 @@ export async function GET(request: NextRequest) {
     if (progress.status === "ready") {
       // Fetch results
       const dataUrl = `https://api.brightdata.com/datasets/v3/snapshot/${snapshotId}?format=json`;
-      const dataResponse = await fetch(dataUrl, {
+      const dataResponse = await fetchWithTimeout(dataUrl, {
         headers: { Authorization: `Bearer ${apiToken}` },
+        timeout: 30000,
+        retries: 2,
       });
 
       if (!dataResponse.ok) {

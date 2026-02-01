@@ -8,6 +8,7 @@ import type {
   CRMTokenResponse,
 } from "./types";
 import { SIGNAL_TYPE_LABELS, PRIORITY_LABELS } from "./types";
+import { fetchWithTimeout } from "../fetch-with-timeout";
 
 const APOLLO_API_BASE = "https://api.apollo.io/v1";
 
@@ -23,7 +24,7 @@ export class ApolloClient implements CRMClient {
     endpoint: string,
     options: RequestInit = {}
   ): Promise<T> {
-    const response = await fetch(`${APOLLO_API_BASE}${endpoint}`, {
+    const response = await fetchWithTimeout(`${APOLLO_API_BASE}${endpoint}`, {
       ...options,
       headers: {
         "Content-Type": "application/json",
@@ -31,6 +32,8 @@ export class ApolloClient implements CRMClient {
         "X-Api-Key": this.apiKey,
         ...options.headers,
       },
+      timeout: 15000,
+      retries: 2,
     });
 
     if (!response.ok) {

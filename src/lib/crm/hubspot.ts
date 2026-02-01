@@ -8,6 +8,7 @@ import type {
   CRMTokenResponse,
 } from "./types";
 import { SIGNAL_TYPE_LABELS, PRIORITY_LABELS } from "./types";
+import { fetchWithTimeout } from "../fetch-with-timeout";
 
 const HUBSPOT_API_BASE = "https://api.hubapi.com";
 
@@ -27,13 +28,15 @@ export class HubSpotClient implements CRMClient {
     endpoint: string,
     options: RequestInit = {}
   ): Promise<T> {
-    const response = await fetch(`${HUBSPOT_API_BASE}${endpoint}`, {
+    const response = await fetchWithTimeout(`${HUBSPOT_API_BASE}${endpoint}`, {
       ...options,
       headers: {
         Authorization: `Bearer ${this.accessToken}`,
         "Content-Type": "application/json",
         ...options.headers,
       },
+      timeout: 15000,
+      retries: 2,
     });
 
     if (!response.ok) {
@@ -49,7 +52,7 @@ export class HubSpotClient implements CRMClient {
       throw new Error("No refresh token available");
     }
 
-    const response = await fetch("https://api.hubapi.com/oauth/v1/token", {
+    const response = await fetchWithTimeout("https://api.hubapi.com/oauth/v1/token", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: new URLSearchParams({
@@ -58,6 +61,8 @@ export class HubSpotClient implements CRMClient {
         client_secret: process.env.HUBSPOT_CLIENT_SECRET!,
         refresh_token: this.refreshTokenValue,
       }),
+      timeout: 10000,
+      retries: 2,
     });
 
     if (!response.ok) {

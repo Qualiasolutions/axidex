@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
+import { fetchWithTimeout } from "@/lib/fetch-with-timeout";
 
 interface SlackChannel {
   id: string;
@@ -39,24 +40,28 @@ export async function GET() {
 
   try {
     // Fetch public channels
-    const publicResponse = await fetch(
+    const publicResponse = await fetchWithTimeout(
       "https://slack.com/api/conversations.list?types=public_channel&limit=200",
       {
         headers: {
           Authorization: `Bearer ${profile.slack_access_token}`,
         },
+        timeout: 10000,
+        retries: 2,
       }
     );
 
     const publicData: SlackChannelsResponse = await publicResponse.json();
 
     // Fetch private channels (groups)
-    const privateResponse = await fetch(
+    const privateResponse = await fetchWithTimeout(
       "https://slack.com/api/conversations.list?types=private_channel&limit=200",
       {
         headers: {
           Authorization: `Bearer ${profile.slack_access_token}`,
         },
+        timeout: 10000,
+        retries: 2,
       }
     );
 

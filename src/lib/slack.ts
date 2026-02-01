@@ -1,4 +1,5 @@
 import type { Signal } from "@/types";
+import { fetchWithTimeout } from "./fetch-with-timeout";
 
 interface SlackMessage {
   channel: string;
@@ -108,13 +109,15 @@ export async function postToSlack(
   message.channel = channelId;
 
   try {
-    const response = await fetch("https://slack.com/api/chat.postMessage", {
+    const response = await fetchWithTimeout("https://slack.com/api/chat.postMessage", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(message),
+      timeout: 10000,
+      retries: 2,
     });
 
     const data = await response.json();

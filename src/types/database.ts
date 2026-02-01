@@ -60,7 +60,10 @@ export type Database = {
           description: string | null
           id: string
           is_active: boolean | null
+          last_signal_id: string | null
+          last_triggered_at: string | null
           name: string
+          times_triggered: number | null
           trigger_conditions: Json
           updated_at: string | null
           user_id: string
@@ -71,7 +74,10 @@ export type Database = {
           description?: string | null
           id?: string
           is_active?: boolean | null
+          last_signal_id?: string | null
+          last_triggered_at?: string | null
           name: string
+          times_triggered?: number | null
           trigger_conditions?: Json
           updated_at?: string | null
           user_id: string
@@ -82,12 +88,22 @@ export type Database = {
           description?: string | null
           id?: string
           is_active?: boolean | null
+          last_signal_id?: string | null
+          last_triggered_at?: string | null
           name?: string
+          times_triggered?: number | null
           trigger_conditions?: Json
           updated_at?: string | null
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "automation_rules_last_signal_id_fkey"
+            columns: ["last_signal_id"]
+            isOneToOne: false
+            referencedRelation: "signals"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "automation_rules_user_id_fkey"
             columns: ["user_id"]
@@ -319,19 +335,19 @@ export type Database = {
           full_name: string | null
           id: string
           notification_preferences: Json | null
+          onboarding_completed_at: string | null
           slack_access_token: string | null
           slack_channel_id: string | null
           slack_channel_name: string | null
           slack_enabled: boolean | null
           slack_workspace_id: string | null
           slack_workspace_name: string | null
-          updated_at: string | null
-          subscription_status: string | null
-          subscription_tier: string | null
           stripe_customer_id: string | null
           stripe_subscription_id: string | null
           subscription_period_end: string | null
-          onboarding_completed_at: string | null
+          subscription_status: string | null
+          subscription_tier: string | null
+          updated_at: string | null
         }
         Insert: {
           avatar_url?: string | null
@@ -341,19 +357,19 @@ export type Database = {
           full_name?: string | null
           id: string
           notification_preferences?: Json | null
+          onboarding_completed_at?: string | null
           slack_access_token?: string | null
           slack_channel_id?: string | null
           slack_channel_name?: string | null
           slack_enabled?: boolean | null
           slack_workspace_id?: string | null
           slack_workspace_name?: string | null
-          updated_at?: string | null
-          subscription_status?: string | null
-          subscription_tier?: string | null
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null
           subscription_period_end?: string | null
-          onboarding_completed_at?: string | null
+          subscription_status?: string | null
+          subscription_tier?: string | null
+          updated_at?: string | null
         }
         Update: {
           avatar_url?: string | null
@@ -363,19 +379,19 @@ export type Database = {
           full_name?: string | null
           id?: string
           notification_preferences?: Json | null
+          onboarding_completed_at?: string | null
           slack_access_token?: string | null
           slack_channel_id?: string | null
           slack_channel_name?: string | null
           slack_enabled?: boolean | null
           slack_workspace_id?: string | null
           slack_workspace_name?: string | null
-          updated_at?: string | null
-          subscription_status?: string | null
-          subscription_tier?: string | null
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null
           subscription_period_end?: string | null
-          onboarding_completed_at?: string | null
+          subscription_status?: string | null
+          subscription_tier?: string | null
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -488,56 +504,6 @@ export type Database = {
           },
         ]
       }
-      subscriptions: {
-        Row: {
-          id: string
-          user_id: string
-          stripe_subscription_id: string
-          stripe_customer_id: string
-          status: string
-          tier: string
-          current_period_start: string
-          current_period_end: string
-          cancel_at_period_end: boolean | null
-          created_at: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          id?: string
-          user_id: string
-          stripe_subscription_id: string
-          stripe_customer_id: string
-          status: string
-          tier: string
-          current_period_start: string
-          current_period_end: string
-          cancel_at_period_end?: boolean | null
-          created_at?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          id?: string
-          user_id?: string
-          stripe_subscription_id?: string
-          stripe_customer_id?: string
-          status?: string
-          tier?: string
-          current_period_start?: string
-          current_period_end?: string
-          cancel_at_period_end?: boolean | null
-          created_at?: string | null
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "subscriptions_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       signals: {
         Row: {
           company_domain: string | null
@@ -599,6 +565,56 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "signals_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      subscriptions: {
+        Row: {
+          cancel_at_period_end: boolean | null
+          created_at: string | null
+          current_period_end: string
+          current_period_start: string
+          id: string
+          status: string
+          stripe_customer_id: string
+          stripe_subscription_id: string
+          tier: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          cancel_at_period_end?: boolean | null
+          created_at?: string | null
+          current_period_end: string
+          current_period_start: string
+          id?: string
+          status: string
+          stripe_customer_id: string
+          stripe_subscription_id: string
+          tier: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          cancel_at_period_end?: boolean | null
+          created_at?: string | null
+          current_period_end?: string
+          current_period_start?: string
+          id?: string
+          status?: string
+          stripe_customer_id?: string
+          stripe_subscription_id?: string
+          tier?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscriptions_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"

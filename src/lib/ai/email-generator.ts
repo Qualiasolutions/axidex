@@ -1,5 +1,6 @@
 import OpenAI from "openai";
 import type { Signal } from "@/types";
+import { createTimeoutController } from "../fetch-with-timeout";
 
 export type EmailTone = "professional" | "casual" | "enthusiastic";
 
@@ -85,21 +86,28 @@ Source: ${signal.source_name}
 
 Generate an email that references this specific signal and offers relevant value.`;
 
+  // Create timeout controller (30s for AI generation)
+  const { controller, clear } = createTimeoutController(30000);
+
   try {
-    const completion = await openrouter.chat.completions.create({
-      model: "google/gemini-2.0-flash-001",  // Fast model for email generation
-      max_tokens: 500,
-      messages: [
-        {
-          role: "system",
-          content: systemPrompt,
-        },
-        {
-          role: "user",
-          content: userPrompt,
-        },
-      ],
-    });
+    const completion = await openrouter.chat.completions.create(
+      {
+        model: "google/gemini-2.0-flash-001", // Fast model for email generation
+        max_tokens: 500,
+        messages: [
+          {
+            role: "system",
+            content: systemPrompt,
+          },
+          {
+            role: "user",
+            content: userPrompt,
+          },
+        ],
+      },
+      { signal: controller.signal }
+    );
+    clear();
 
     // Extract text content from response
     const responseText = completion.choices[0]?.message?.content;
@@ -128,9 +136,13 @@ Generate an email that references this specific signal and offers relevant value
       body: parsed.body,
     };
   } catch (error) {
+    clear();
     console.error("Error generating email:", error);
 
     if (error instanceof Error) {
+      if (error.name === "AbortError") {
+        throw new Error("Email generation timed out. Please try again.");
+      }
       if (error.message.includes("authentication") || error.message.includes("API key")) {
         throw new Error(
           "OpenRouter API authentication failed. Please check your OPENROUTER_API_KEY."

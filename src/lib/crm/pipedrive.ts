@@ -8,6 +8,7 @@ import type {
   CRMTokenResponse,
 } from "./types";
 import { SIGNAL_TYPE_LABELS, PRIORITY_LABELS } from "./types";
+import { fetchWithTimeout } from "../fetch-with-timeout";
 
 const PIPEDRIVE_API_BASE = "https://api.pipedrive.com/v1";
 
@@ -36,12 +37,14 @@ export class PipedriveClient implements CRMClient {
     const url = new URL(`${this.apiBase}${endpoint}`);
     url.searchParams.set("api_token", this.accessToken);
 
-    const response = await fetch(url.toString(), {
+    const response = await fetchWithTimeout(url.toString(), {
       ...options,
       headers: {
         "Content-Type": "application/json",
         ...options.headers,
       },
+      timeout: 15000,
+      retries: 2,
     });
 
     if (!response.ok) {
@@ -63,7 +66,7 @@ export class PipedriveClient implements CRMClient {
       throw new Error("No refresh token available");
     }
 
-    const response = await fetch("https://oauth.pipedrive.com/oauth/token", {
+    const response = await fetchWithTimeout("https://oauth.pipedrive.com/oauth/token", {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -75,6 +78,8 @@ export class PipedriveClient implements CRMClient {
         grant_type: "refresh_token",
         refresh_token: this.refreshTokenValue,
       }),
+      timeout: 10000,
+      retries: 2,
     });
 
     if (!response.ok) {
@@ -302,7 +307,7 @@ export async function exchangePipedriveCode(
   code: string,
   redirectUri: string
 ): Promise<CRMTokenResponse> {
-  const response = await fetch("https://oauth.pipedrive.com/oauth/token", {
+  const response = await fetchWithTimeout("https://oauth.pipedrive.com/oauth/token", {
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
@@ -315,6 +320,8 @@ export async function exchangePipedriveCode(
       redirect_uri: redirectUri,
       code,
     }),
+    timeout: 10000,
+    retries: 2,
   });
 
   if (!response.ok) {
